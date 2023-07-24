@@ -1,6 +1,7 @@
 ##Crie a vm do linux
 
 ##instale containernet
+
 sudo apt-get install ansible git aptitude
 git clone https://github.com/ramonfontes/containernet.git
 sudo util/install.sh -W
