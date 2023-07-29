@@ -9,11 +9,13 @@ import lerconfig as cfg
 
 
 
-cid = cfg['id']
-nb_clients = cfg['nc']
-train_batch_size = cfg['trbs']
-test_batch_size = cfg['tsbs']
-epochs = cfg['nr']
+cid = 1
+nb_clients = 10
+train_batch_size = 32
+test_batch_size = 32
+epochs = 10
+
+
 
 train_loader, test_loader = aux.load_data(
     train_batch_size=train_batch_size,
@@ -31,5 +33,5 @@ client = modelo.FlowerClient(
     device=torch.device("cpu"),
 )
 
-client_address = f"{cfg['ip']}:8083"
+client_address = "10.0.0.1:8083"
 fl.client.start_client(server_address=client_address,  client=client)

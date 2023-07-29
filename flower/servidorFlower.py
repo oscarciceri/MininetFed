@@ -10,11 +10,13 @@ def weighted_average(metrics: List[Tuple[int, Metrics]]) -> Metrics:
     return {"accuracy": sum(accuracies) / sum(examples)}
 
 
-strategy = fl.server.strategy.FedAvg(evaluate_metrics_aggregation_fn=weighted_average)
+strategy = fl.server.strategy.FedAvg(
+    evaluate_metrics_aggregation_fn=weighted_average)
 
 
 fl.server.start_server(
     server_address="0.0.0.0:8083",
-    config=fl.server.ServerConfig(num_rounds=cfg['rd']),
+
+    config=fl.server.ServerConfig(num_rounds=200),
     strategy=strategy,
 )
