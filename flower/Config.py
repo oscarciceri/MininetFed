@@ -11,6 +11,8 @@ class Config:
     def data(self):
       return self.config
 
-# Exemplo de uso
-config = Config('flower/config.yaml')
-print(config.data())
+# # Exemplo de uso
+# config = Config('flower/config.yaml')
+# print(config.data())
+# server = config.get(server)
+# print(server["memory"])

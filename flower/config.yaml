@@ -1,38 +1,50 @@
 ---
+# não implementado
 metrics:
   - mean
   - accuracy
 
-model: flower/modelo.py
+general:
+  absolute_path: false
 
-network_components: 2
+network_components: 1
 
+# não implementado
 conections:
-  - c1: s1
-    c2: s2
-    type: (corrigir)
+  - conection1: 1
+    conection2: 2
+    type: (corrigir) # procurar endender melhor os tipos de conexões para implementar isso
     delay: 0.2
     loss: 0.01
     band_wdth: 200
 
 server:
-  memory: 512
-  CPU: (Corrigir)
+  memory: 256m
+  CPU: (Corrigir) # não implementado
   image: johann:ubuntu
-  volume: '[f"{Path.cwd()}:/flw"]'
-  conection: s1
+  volume: /flw
+  conection: 1
+  script: /flower/servidorFlower.py
 
-users:
-  - number: 10
-    memory: 512
-    CPU: (Corrigir)
+client_types:
+  - amount: 1
+    name: tipo1
+    memory: 512m
+    CPU: (Corrigir) # não implementado
     image: johann:ubuntu
-    volume: '[f"{Path.cwd()}:/flw"]'
-    conection: s1
+    volume: /flw
+    model: /flower/clienteFlower.py
+    conection: 1
+    loss: 0
+    bw: 10
 
-  - number: 1
-    memory: 512
-    CPU: (Corrigir)
+  - amount: 1
+    name: tipo2
+    memory: 512m
+    CPU: (Corrigir) # não implementado
     image: johann:ubuntu
-    volume: '[f"{Path.cwd()}:/flw"]'
-    conection: s1
+    volume: /flw
+    model: /flower/clienteFlower.py
+    conection: 1
+    loss: 0
+    bw: 10
