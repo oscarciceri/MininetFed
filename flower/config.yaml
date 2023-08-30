@@ -1,0 +1,38 @@
+---
+metrics:
+  - mean
+  - accuracy
+
+model: flower/modelo.py
+
+network_components: 2
+
+conections:
+  - c1: s1
+    c2: s2
+    type: (corrigir)
+    delay: 0.2
+    loss: 0.01
+    band_wdth: 200
+
+server:
+  memory: 512
+  CPU: (Corrigir)
+  image: johann:ubuntu
+  volume: '[f"{Path.cwd()}:/flw"]'
+  conection: s1
+
+users:
+  - number: 10
+    memory: 512
+    CPU: (Corrigir)
+    image: johann:ubuntu
+    volume: '[f"{Path.cwd()}:/flw"]'
+    conection: s1
+
+  - number: 1
+    memory: 512
+    CPU: (Corrigir)
+    image: johann:ubuntu
+    volume: '[f"{Path.cwd()}:/flw"]'
+    conection: s1
