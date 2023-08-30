@@ -33,5 +33,5 @@ client = modelo.FlowerClient(
     device=torch.device("cpu"),
 )
 
-client_address = "10.0.0.1:8083"
+client_address = "172.17.0.2:8083"
 fl.client.start_client(server_address=client_address,  client=client)
