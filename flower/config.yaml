@@ -1,14 +1,17 @@
 ---
-# não implementado
+# não implementado (pedir ajuda ao Jovane)
 metrics:
   - mean
   - accuracy
 
+# Configurações gerais
 general:
   absolute_path: false
 
+# Número de componentes de rede (atualmente são só switchs)
 network_components: 1
 
+# Definição das conexões entre os componentes de rede
 # não implementado
 conections:
   - conection1: 1
@@ -18,6 +21,7 @@ conections:
     loss: 0.01
     band_wdth: 200
 
+# Configurações do servidor
 server:
   memory: 256m
   CPU: (Corrigir) # não implementado
@@ -26,6 +30,7 @@ server:
   conection: 1
   script: /flower/servidorFlower.py
 
+# Lista de tipo de clientes
 client_types:
   - amount: 1
     name: tipo1
