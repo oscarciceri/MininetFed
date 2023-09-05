@@ -5,7 +5,7 @@ import pandas as pd
 
 class LoadHar():
 	def __init__(self):
-		self.root = "flw/data/pml-training.csv"
+		self.root = "flw/flower/data/pml-training.csv"
 		self.df = pd.read_csv(self.root, low_memory=False)
 		self.parts = ["belt", "arm", "dumbbell", "forearm"]
 		self.variables = ["roll_{}", "pitch_{}", "yaw_{}", "total_accel_{}", 

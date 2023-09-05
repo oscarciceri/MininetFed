@@ -155,7 +155,7 @@ class FlowerClient(fl.client.Client):
             status=status,
             parameters=params_prime,
             num_examples=num_examples_train,
-            metrics={'duration': fit_duration}
+            metrics={'duration':fit_duration}
         )
 
     def evaluate(self, ins: fl.common.EvaluateIns) -> fl.common.EvaluateRes:

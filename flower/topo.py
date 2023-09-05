@@ -21,23 +21,22 @@ net.addController('c0')
 ## 5 -> 
 
 volumes = [f"{Path.cwd()}:/flw"]
-images = "ubutun:jovane"
+images = "johann:ubuntu"
 clientes = list()
-qtdDevice = 10
+qtdDevice = 2
 
 
 info('*** Adicionando SWITCH\n')
 s1 = net.addSwitch('s1')
 
 info('*** Adicionando Containers\n')
-srv1 = net.addDocker('srv1', dimage=images, volumes=volumes, mem_limit="512m",cpuset_cpus=f"{0}")
+srv1 = net.addDocker('srv1',dimage=images, volumes=volumes, mem_limit="256m",cpuset_cpus=f"{0}")
 net.addLink(srv1,s1)
 
 cont = 0
 for x in range(1,qtdDevice+1):
-    d = net.addDocker(f'sta{x}', cpuset_cpus=f"{cont}",dimage=images, volumes=volumes,  mem_limit="1024m")
+    d = net.addDocker(f'sta{x}', cpuset_cpus=f"{cont}",dimage=images, volumes=volumes,  mem_limit="256m")
     net.addLink(d,s1,loss=0,bw=10)
-    eval("")
     clientes.append(d)
     cont=(cont+1)%16
     
@@ -48,13 +47,13 @@ net.start()
 
 
 info('*** Subindo servidor\n')
-makeTerm(srv1,cmd=f"bash -c '. flw/env/bin/activate &&  python3.8 flw/Server.py -nc {qtdDevice}' ;")
+makeTerm(srv1,cmd=f"bash -c '. flw/env/bin/activate && python3 flw/flower/servidorFlower.py -nc {qtdDevice}' ;")
 time.sleep(2)
 
 cont=0
 for b in clientes:
     info(f"*** Subindo cliente {str(cont+1).zfill(2)}\n")
-    cmd = f"bash -c '. flw/env/bin/activate && python3.8 flw/Cliente.py ' ;"
+    cmd = f"bash -c '. flw/env/bin/activate && python3 flw/flower/clienteFlower.py ' ;"
     makeTerm(b,cmd=cmd)
     cont+=1
 
