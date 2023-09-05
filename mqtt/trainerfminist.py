@@ -7,7 +7,7 @@ from tensorflow.keras.optimizers import SGD
 import uuid
 import numpy as np
 
-class TrainerCifar:
+class TrainerFmnist:
     def __init__(self) -> None:
         # id and model
         self.id = uuid.uuid1().int
