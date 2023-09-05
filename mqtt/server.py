@@ -31,7 +31,7 @@ class color:
 
 # subscribe to queues on connection
 def on_connect(client, userdata, flags, rc):
-    subscribe_queues = ['sd/trab42/registerQueue', 'sd/trab42/preAggQueue', 'sd/trab42/metricsQueue']
+    subscribe_queues = ['minifed/registerQueue', 'minifed/preAggQueue', 'minifed/metricsQueue']
     for s in subscribe_queues:
         client.subscribe(s)
 
@@ -61,9 +61,9 @@ controller = Controller(min_trainers=MIN_TRAINERS, trainers_per_round=TRAINERS_P
 client = mqtt.Client('server')
 client.connect(BROKER_ADDR)
 client.on_connect = on_connect
-client.message_callback_add('sd/trab42/registerQueue', on_message_register)
-client.message_callback_add('sd/trab42/preAggQueue', on_message_agg)
-client.message_callback_add('sd/trab42/metricsQueue', on_message_metrics)
+client.message_callback_add('minifed/registerQueue', on_message_register)
+client.message_callback_add('minifed/preAggQueue', on_message_agg)
+client.message_callback_add('minifed/metricsQueue', on_message_metrics)
 
 # start loop
 client.loop_start()
@@ -84,10 +84,10 @@ while controller.get_current_round() != NUM_ROUNDS:
         if t in select_trainers:
             print(f'selected trainer {t} for training on round {controller.get_current_round()}')
             m = json.dumps({'id' : t, 'selected' : True}).replace(' ', '')
-            client.publish('sd/trab42/selectionQueue', m)
+            client.publish('minifed/selectionQueue', m)
         else:
             m = json.dumps({'id' : t, 'selected' : False}).replace(' ', '')
-            client.publish('sd/trab42/selectionQueue', m)
+            client.publish('minifed/selectionQueue', m)
     
     # wait for agg responses
     while controller.get_num_responses() != TRAINERS_PER_ROUND:
@@ -97,7 +97,7 @@ while controller.get_current_round() != NUM_ROUNDS:
     # aggregate and send
     agg_weights = controller.agg_weights()
     response = json.dumps({'weights' : [w.tolist() for w in agg_weights]})
-    client.publish('sd/trab42/posAggQueue', response)
+    client.publish('minifed/posAggQueue', response)
     print(f'sent aggregated weights to trainers!')
 
     # wait for metrics response
@@ -112,12 +112,12 @@ while controller.get_current_round() != NUM_ROUNDS:
         print(color.RED + f'accuracy threshold met! stopping the training!')
         controller.plot_training_metrics()
         m = json.dumps({'stop' : True})
-        client.publish('sd/trab42/stopQueue', m)
+        client.publish('minifed/stopQueue', m)
         time.sleep(1) # time for clients to finish
         exit()
     controller.reset_acc_list()
 
 print(color.RED + f'rounds threshold met! stopping the training!')
-client.publish('sd/trab42/stopQueue', m)
+client.publish('minifed/stopQueue', m)
 controller.plot_training_metrics()
 client.loop_stop()

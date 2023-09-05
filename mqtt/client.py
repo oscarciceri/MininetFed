@@ -27,7 +27,7 @@ class color:
 
 # subscribe to queues on connection
 def on_connect(client, userdata, flags, rc):
-    subscribe_queues = ['sd/trab42/selectionQueue', 'sd/trab42/posAggQueue', 'sd/trab42/stopQueue']
+    subscribe_queues = ['minifed/selectionQueue', 'minifed/posAggQueue', 'minifed/stopQueue']
     for s in subscribe_queues:
         client.subscribe(s)
 
@@ -40,7 +40,7 @@ def on_message_selection(client, userdata, message):
             print(f'trainer was selected for training this round and will start training!')
             trainer.train_model()
             response = json.dumps({'id' : trainer.get_id(), 'weights' : [w.tolist() for w in trainer.get_weights()], 'num_samples' : trainer.get_num_samples()})
-            client.publish('sd/trab42/preAggQueue', response)
+            client.publish('minifed/preAggQueue', response)
             print(f'finished training and sent weights!')
         else:
             print(color.BOLD_START + 'new round starting' + color.BOLD_END)
@@ -54,7 +54,7 @@ def on_message_agg(client, userdata, message):
     trainer.update_weights(agg_weights)
     response = json.dumps({'id' : trainer.get_id(), 'accuracy' : trainer.eval_model()})
     print(f'sending eval metrics!\n')
-    client.publish('sd/trab42/metricsQueue', response)
+    client.publish('minifed/metricsQueue', response)
 
 # callback for stopQueue: if conditions are met, stop training and exit process
 def on_message_stop(client, userdata, message):
@@ -67,10 +67,10 @@ trainer = Trainer()
 client = mqtt.Client(str(trainer.get_id()))
 client.connect(BROKER_ADDR)
 client.on_connect = on_connect
-client.message_callback_add('sd/trab42/selectionQueue', on_message_selection)
-client.message_callback_add('sd/trab42/posAggQueue', on_message_agg)
-client.message_callback_add('sd/trab42/stopQueue', on_message_stop)
-client.publish('sd/trab42/registerQueue', trainer.get_id())
+client.message_callback_add('minifed/selectionQueue', on_message_selection)
+client.message_callback_add('minifed/posAggQueue', on_message_agg)
+client.message_callback_add('minifed/stopQueue', on_message_stop)
+client.publish('minifed/registerQueue', trainer.get_id())
 print(color.BOLD_START + f'trainer {trainer.get_id()} connected!\n' + color.BOLD_END)
 # start waiting for jobs
 client.loop_start()
