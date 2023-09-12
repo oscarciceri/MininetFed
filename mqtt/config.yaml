@@ -28,8 +28,7 @@ server:
   image: johann:ubuntu
   volume: /flw
   conection: 1
-  script: /flower/servidorFlower.py
-  model: TrainerCifar.py
+  script: /flower/server.py
 
 # Lista de tipo de clientes
 client_types:
@@ -39,7 +38,7 @@ client_types:
     CPU: (Corrigir) # não implementado
     image: johann:ubuntu
     volume: /flw
-    model: /flower/clienteFlower.py
+    model: /flower/client.py
     conection: 1
     loss: 0
     bw: 10

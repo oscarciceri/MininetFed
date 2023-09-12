@@ -13,6 +13,16 @@ if (n != 6):
     print("correct use: python server.py <broker_address> <min_clients> <clients_per_round> <num_rounds> <accuracy_threshold>.")
     exit()
 
+## MOSQUITTO (CONTAINER)
+# sudo service mosquitto start
+
+### CLIENTES
+# MIN_TRAINERS: Minimo de treinadores
+# BROKER_ADDR: IP DO BROKEN(Server so precisa de 1)
+
+### CONDICAO DE PARADA
+# NUM_ROUDS 10
+# STOP ACC -> 80% acerto  
 BROKER_ADDR = sys.argv[1]
 MIN_TRAINERS = int(sys.argv[2])
 TRAINERS_PER_ROUND = int(sys.argv[3])
@@ -119,5 +129,6 @@ while controller.get_current_round() != NUM_ROUNDS:
 
 print(color.RED + f'rounds threshold met! stopping the training!')
 client.publish('minifed/stopQueue', m)
+# PODE DA ERRO... 
 controller.plot_training_metrics()
 client.loop_stop()
