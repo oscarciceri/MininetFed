@@ -1,13 +1,20 @@
-
-
-from containernet.cli import CLI
-from containernet.link import TCLink
 from containernet.net import Containernet
 from mininet.node import Controller
 from mininet.log import info, setLogLevel
 from containernet.term import makeTerm
 from pathlib import Path
-import time
+import sys
+
+# total args
+n = len(sys.argv)
+ 
+# check args
+if (n != 2):
+    print("correct use: sudo python3 createEnv.py <requirements.txt>")
+    exit()
+ 
+REQUIREMENTS = sys.argv[1]
+
 
 setLogLevel('info')
 net = Containernet(controller=Controller)
@@ -25,14 +32,11 @@ srv1 = net.addDocker('srv1',dimage=images, volumes=volumes, mem_limit="2048m",cp
 net.addLink(srv1,s1)
    
 net.start()
+info('*** Criando env')
+srv1.cmd(f"bash -c 'cd flw && python3 -m venv env' ;", verbose=True)
 
-info('*** Subindo servidor\n')
-makeTerm(srv1,cmd=f"bash -c 'cd flw && python3 -m venv env' ;")
-time.sleep(5) # sudo apt install python3-pip && 
-makeTerm(srv1,cmd=f"bash -c 'cd flw && . env/bin/activate && pip install -r requirements.txt' ;")
-time.sleep(2)
+info('*** Iniciando instalação')
+srv1.cmd(f"bash -c 'cd flw && . env/bin/activate && pip install -r {REQUIREMENTS}' ;",verbose=True)
 
-info('*** Quanto a instalação estiver concluida, digite "exit" e pressione enter CLI\n')
-CLI(net)
 info('*** Parando MININET')
 net.stop()
