@@ -10,31 +10,28 @@ from Config import Config
 
 setLogLevel('info')
 info('*** Importing configurations\n')
-config = Config('flower/config.yaml') #endereço do arquivo de configurações
+
+#endereço do arquivo de configurações
+config = Config('mqtt/config.yaml') 
 
 general = config.get("general")
 absolute = general["absolute_path"]
 
 server = config.get("server")
 server_volumes = ""
-if absolute: server_volumes = server["volume"] 
-else: server_volumes = [f"{Path.cwd()}:" + server["volume"]]
+server_script = ""
+
+if absolute: 
+    server_volumes = server["volume"] 
+    server_script = server['script']
+else: 
+    server_volumes = [f"{Path.cwd()}:" + server["volume"]]
+    server_script = [f"{Path.cwd()}:" + server["script"]]
 server_images = server["image"]
-
-images = server["image"]
-volumes = [f"{Path.cwd()}:" + server["volume"]]
-
-
 
 net = Containernet(controller=Controller)
 info('*** Adding controller\n')
 net.addController('c0')
-
-
-
-clientes = list()
-
-
 
 info('*** Adicionando SWITCHS\n')
 s = list()
@@ -50,6 +47,7 @@ net.addLink(srv1,s[server["conection"] - 1])
 
 
 # client containers
+clientes = list()
 cont = 0
 qtdDevice = 0
 for client_type in config.get("client_types"):
@@ -74,10 +72,12 @@ TRAINERS_PER_ROUND = 10
 NUM_ROUNDS = 100
 STOP_ACC = 80
 
-srv1.cmd("bash -c 'sudo service mosquitto start'")
+print(srv1.IP())
+
+srv1.cmd("bash -c 'cd run && mkdir mosquitto && sudo service mosquitto start'")
 
 info('*** Subindo servidor\n')
-makeTerm(srv1,cmd=f"bash -c '. flw/env/bin/activate && python3 flw{server['script']} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC}' ;")
+makeTerm(srv1,cmd=f"bash -c '. flw/env/bin/activate && python3 flw/{server_script} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC}' ;")
 time.sleep(2)
 
 cont=0
