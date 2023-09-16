@@ -7,12 +7,23 @@ from containernet.term import makeTerm
 from pathlib import Path
 import time
 from Config import Config
+import sys
+
+# total args
+n = len(sys.argv)
+ 
+# check args
+if (n != 2):
+    print("correct use: sudo python3 run.py <config.yaml>")
+    exit()
+ 
+CONFIGYAML = sys.argv[1]
 
 setLogLevel('info')
 info('*** Importing configurations\n')
 
 #endereço do arquivo de configurações
-config = Config('mqtt/config.yaml') 
+config = Config(CONFIGYAML) 
 
 general = config.get("general")
 absolute = general["absolute_path"]
@@ -29,6 +40,10 @@ else:
     server_script = [f"{Path.cwd()}:" + server["script"]]
 server_images = server["image"]
 
+
+
+
+
 net = Containernet(controller=Controller)
 info('*** Adding controller\n')
 net.addController('c0')
@@ -37,7 +52,6 @@ info('*** Adicionando SWITCHS\n')
 s = list()
 for i in range(1,config.get("network_components") + 1):
     s.append(net.addSwitch(f"s{i}"))
-
 
 
 info('*** Adicionando Containers\n')
@@ -77,14 +91,14 @@ print(srv1.IP())
 srv1.cmd("bash -c 'cd run && mkdir mosquitto && sudo service mosquitto start'")
 
 info('*** Subindo servidor\n')
-makeTerm(srv1,cmd=f"bash -c '. flw/env/bin/activate && python3 flw/{server_script} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC}' ;")
+makeTerm(srv1,cmd=f"bash -c '. flw/env/bin/activate && python3 flw{server_script} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC}' ;")
 time.sleep(2)
 
 cont=0
 for client_type in config.get("client_types"):
     for x in range(1,client_type["amount"]+1):
         info(f"*** Subindo cliente {str(cont+1).zfill(2)}\n")
-        cmd = f"bash -c '. flw/env/bin/activate && python3 flw{client_type['model']} {BROKER_ADDR} ' ;"
+        cmd = f"bash -c '. flw/env/bin/activate && python3 flw/{client_type['script']} {BROKER_ADDR} ' ;"
         makeTerm(clientes[cont],cmd=cmd)
         cont+=1
 
