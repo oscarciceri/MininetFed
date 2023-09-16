@@ -1,17 +1,18 @@
 ---
 # não implementado (pedir ajuda ao Jovane)
+# Output metrics
 metrics:
   - mean
   - accuracy
 
-# Configurações gerais
+# General settings
 general:
   absolute_path: false
 
-# Número de componentes de rede (atualmente são só switchs)
+# (atualmente são só switchs)
 network_components: 1
 
-# Definição das conexões entre os componentes de rede
+# Network conections
 # não implementado
 conections:
   - conection1: 1
@@ -21,24 +22,24 @@ conections:
     loss: 0.01
     band_wdth: 200
 
-# Configurações do servidor
+# Server settings
 server:
   memory: 256m
   CPU: (Corrigir) # não implementado
-  image: johann:ubuntu
+  image: johann:stable
   volume: /flw
   conection: 1
-  script: /flower/server.py
+  script: /mqtt/server.py
 
-# Lista de tipo de clientes
+# Clients settings list
 client_types:
   - amount: 1
     name: tipo1
     memory: 512m
     CPU: (Corrigir) # não implementado
-    image: johann:ubuntu
+    image: johann:stable
     volume: /flw
-    model: /flower/client.py
+    script: /mqtt/client.py
     conection: 1
     loss: 0
     bw: 10
@@ -47,12 +48,11 @@ client_types:
     name: tipo2
     memory: 512m
     CPU: (Corrigir) # não implementado
-    image: johann:ubuntu
+    image: johann:stable
     volume: /flw
-    model: /flower/clienteFlower.py
+    script: /mqtt/client.py
     conection: 1
     loss: 0
     bw: 10
-# Trocar os comentários para ingles
 # Fazer um arquivo de exemplo bem comentado
 #
