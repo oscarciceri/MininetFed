@@ -1,9 +1,16 @@
-FROM ubuntu:23.04
+FROM ubuntu:22.04
 
 VOLUME /flw
 
 # install required packages
 RUN apt-get clean
+
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository -y ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt install -y python3.10
+
 RUN apt-get update \
     && apt-get install -y net-tools \
     curl \
@@ -11,7 +18,7 @@ RUN apt-get update \
     iputils-ping \
     mosquitto \
     sudo \
-    python3.10 -y \
+    # python3.10 -y \
     python3-pip -y \
     python3-venv -y 
 #     && python3 -m venv /flw/env
