@@ -55,6 +55,9 @@ for i in range(1,config.get("network_components") + 1):
 
 
 info('*** Adicionando Containers\n')
+broker = net.addDocker('brk1',dimage="eclipse-mosquitto:latest", mem_limit="128mb",cpuset_cpus=f"{0}")
+net.addLink(broker,s[server["conection"] - 1])
+
 # server container
 srv1 = net.addDocker('srv1',dimage=server_images, volumes=server_volumes, mem_limit=server["memory"],cpuset_cpus=f"{0}")
 net.addLink(srv1,s[server["conection"] - 1])
@@ -80,15 +83,15 @@ info('*** Configurando Links\n')
 
 net.start()
 
-BROKER_ADDR = srv1.IP()
+BROKER_ADDR = broker.IP()
 MIN_TRAINERS = 10
 TRAINERS_PER_ROUND = 10
 NUM_ROUNDS = 100
 STOP_ACC = 80
 
-print(srv1.IP())
+print(broker.IP())
 
-srv1.cmd("bash -c 'cd run && mkdir mosquitto && sudo service mosquitto start'")
+# broker.cmd("bash -c 'sudo service mosquitto start'")
 
 info('*** Subindo servidor\n')
 makeTerm(srv1,cmd=f"bash -c '. flw/env/bin/activate && python3 flw{server_script} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC}' ;")

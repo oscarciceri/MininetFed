@@ -26,7 +26,7 @@ conections:
 server:
   memory: 256m
   CPU: (Corrigir) # não implementado
-  image: johann:stable
+  image: johann:mqtt
   volume: /flw
   conection: 1
   script: /mqtt/server.py
@@ -37,7 +37,7 @@ client_types:
     name: tipo1
     memory: 512m
     CPU: (Corrigir) # não implementado
-    image: johann:stable
+    image: johann:mqtt
     volume: /flw
     script: /mqtt/client.py
     conection: 1
@@ -48,7 +48,7 @@ client_types:
     name: tipo2
     memory: 512m
     CPU: (Corrigir) # não implementado
-    image: johann:stable
+    image: johann:mqtt
     volume: /flw
     script: /mqtt/client.py
     conection: 1

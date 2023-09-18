@@ -24,12 +24,12 @@ net.addController('c0')
 
 
 volumes = [f"{Path.cwd()}:/flw"]
-images = "johann:stable"
+images = "johann:mqtt"
 
 s1 = net.addSwitch('s1')
 
 info('*** Adicionando Containers\n')
-srv1 = net.addDocker('srv1',dimage=images, volumes=volumes, mem_limit="2560m")
+srv1 = net.addDocker('srv1',dimage=images, volumes=volumes, mem_limit="2048m")
 net.addLink(srv1,s1)
    
 net.start()

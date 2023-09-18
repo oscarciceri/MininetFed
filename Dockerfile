@@ -23,6 +23,9 @@ RUN apt-get update \
     python3-venv -y 
 #     && python3 -m venv /flw/env
 
+# Ports used by Mosquitto host:
+EXPOSE 1883
+EXPOSE 8883
 # RUN . /flw/env/bin/activate
 
 # RUN pip3 install -r /flw/requirements.txt
