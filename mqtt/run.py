@@ -37,7 +37,7 @@ if absolute:
     server_script = server['script']
 else: 
     server_volumes = [f"{Path.cwd()}:" + server["volume"]]
-    server_script = [f"{Path.cwd()}:" + server["script"]]
+    server_script = [f"{Path.cwd()}" + server["script"]]
 server_images = server["image"]
 
 
@@ -55,7 +55,7 @@ for i in range(1,config.get("network_components") + 1):
 
 
 info('*** Adicionando Containers\n')
-broker = net.addDocker('brk1',dimage="eclipse-mosquitto:latest", mem_limit="128mb",cpuset_cpus=f"{0}")
+broker = net.addDocker('brk1',dimage=server_images,volumes=server_volumes,  mem_limit="128mb",cpuset_cpus=f"{0}")
 net.addLink(broker,s[server["conection"] - 1])
 
 # server container
@@ -83,27 +83,32 @@ info('*** Configurando Links\n')
 
 net.start()
 
-BROKER_ADDR = broker.IP()
+BROKER_ADDR = broker.IP(0)
 MIN_TRAINERS = 10
 TRAINERS_PER_ROUND = 10
 NUM_ROUNDS = 100
 STOP_ACC = 80
 
-print(broker.IP())
+print(broker.IP(0))
 
-# broker.cmd("bash -c 'sudo service mosquitto start'")
 
+makeTerm(broker,cmd="bash -c 'mosquitto -c /flw/mosquitto.conf'")
+tScrip = server["script"]
 info('*** Subindo servidor\n')
-makeTerm(srv1,cmd=f"bash -c '. flw/env/bin/activate && python3 flw{server_script} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC}' ;")
+cmd = f"bash -c '. flw/env/bin/activate && python3 flw{tScrip} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC}' ;"
+print(cmd)
+makeTerm(srv1,cmd=cmd)
 time.sleep(2)
 
 cont=0
-for client_type in config.get("client_types"):
-    for x in range(1,client_type["amount"]+1):
-        info(f"*** Subindo cliente {str(cont+1).zfill(2)}\n")
-        cmd = f"bash -c '. flw/env/bin/activate && python3 flw/{client_type['script']} {BROKER_ADDR} ' ;"
-        makeTerm(clientes[cont],cmd=cmd)
-        cont+=1
+
+#for client_type in config.get("client_types"):
+#    for x in range(1,client_type["amount"]+1):
+#        info(f"*** Subindo cliente {str(cont+1).zfill(2)}\n")
+#        cmd = f"bash -c '. flw/env/bin/activate && python3 flw{client_type['script']} {BROKER_ADDR} ' ;"
+#        print(cmd)
+#        makeTerm(clientes[cont],cmd=cmd)
+#        cont+=1
 
 info('*** Rodando CLI\n')
 CLI(net)

@@ -24,6 +24,7 @@ if (n != 6):
 # NUM_ROUDS 10
 # STOP ACC -> 80% acerto  
 BROKER_ADDR = sys.argv[1]
+print(BROKER_ADDR)
 MIN_TRAINERS = int(sys.argv[2])
 TRAINERS_PER_ROUND = int(sys.argv[3])
 NUM_ROUNDS = int(sys.argv[4])
@@ -69,7 +70,7 @@ def on_message_metrics(client, userdata, message):
 # connect on queue
 controller = Controller(min_trainers=MIN_TRAINERS, trainers_per_round=TRAINERS_PER_ROUND, num_rounds=NUM_ROUNDS)
 client = mqtt.Client('server')
-client.connect(BROKER_ADDR)
+client.connect(BROKER_ADDR,bind_port=1883)
 client.on_connect = on_connect
 client.message_callback_add('minifed/registerQueue', on_message_register)
 client.message_callback_add('minifed/preAggQueue', on_message_agg)

@@ -26,10 +26,10 @@ conections:
 server:
   memory: 256m
   CPU: (Corrigir) # não implementado
-  image: johann:mqtt
+  image: johann:ubuntu
   volume: /flw
   conection: 1
-  script: /mqtt/server.py
+  script: /server.py
 
 # Clients settings list
 client_types:
@@ -37,9 +37,9 @@ client_types:
     name: tipo1
     memory: 512m
     CPU: (Corrigir) # não implementado
-    image: johann:mqtt
+    image: johann:ubuntu
     volume: /flw
-    script: /mqtt/client.py
+    script: /client.py
     conection: 1
     loss: 0
     bw: 10
@@ -48,9 +48,9 @@ client_types:
     name: tipo2
     memory: 512m
     CPU: (Corrigir) # não implementado
-    image: johann:mqtt
+    image: johann:ubuntu
     volume: /flw
-    script: /mqtt/client.py
+    script: /client.py
     conection: 1
     loss: 0
     bw: 10
