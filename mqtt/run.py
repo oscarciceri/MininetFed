@@ -26,11 +26,14 @@ info('*** Importing configurations\n')
 config = Config(CONFIGYAML) 
 
 general = config.get("general")
-absolute = general["absolute_path"]
+absolute = general["absolute_path"]  
+n_cpu = general["n_available_cpu"]
+broker_image = general["broker_image"]
 
 server = config.get("server")
 server_volumes = ""
 server_script = ""
+server_quota = server["vCPU_percent"] * n_cpu * 1000
 
 if absolute: 
     server_volumes = server["volume"] 
@@ -55,11 +58,12 @@ for i in range(1,config.get("network_components") + 1):
 
 
 info('*** Adicionando Containers\n')
-broker = net.addDocker('brk1',dimage=server_images,volumes=server_volumes,  mem_limit="128mb",cpuset_cpus=f"{0}")
+# broker container
+broker = net.addDocker('brk1',dimage=broker_image,volumes=server_volumes,  mem_limit="128mb")
 net.addLink(broker,s[server["conection"] - 1])
 
 # server container
-srv1 = net.addDocker('srv1',dimage=server_images, volumes=server_volumes, mem_limit=server["memory"],cpuset_cpus=f"{0}")
+srv1 = net.addDocker('srv1',dimage=server_images, volumes=server_volumes, mem_limit=server["memory"],cpu_quota=server_quota)
 net.addLink(srv1,s[server["conection"] - 1])
 
 
@@ -73,7 +77,8 @@ for client_type in config.get("client_types"):
         if absolute: volumes = client_type["volume"]
         else: volumes = [f"{Path.cwd()}:" + client_type["volume"]]
         qtdDevice += 1
-        d = net.addDocker(f'sta{client_type["name"]}{x}', cpuset_cpus=f"{cont}",dimage=client_type["image"], volumes=volumes,  mem_limit=client_type["memory"])
+        client_quota = client_type["vCPU_percent"] * n_cpu*1000
+        d = net.addDocker(f'sta{client_type["name"]}{x}', cpu_quota=client_quota,dimage=client_type["image"], volumes=volumes,  mem_limit=client_type["memory"])
         net.addLink(d,s[client_type['conection'] - 1],loss=client_type["loss"],bw=client_type["bw"])
         clientes.append(d)
         cont=(cont+1)%16
@@ -83,16 +88,16 @@ info('*** Configurando Links\n')
 
 net.start()
 
-BROKER_ADDR = broker.IP(0)
-MIN_TRAINERS = 10
-TRAINERS_PER_ROUND = 10
+BROKER_ADDR = "172.17.0.2"
+MIN_TRAINERS = 2
+TRAINERS_PER_ROUND = 2
 NUM_ROUNDS = 100
-STOP_ACC = 80
+STOP_ACC = 100
 
 print(broker.IP(0))
 
 
-makeTerm(broker,cmd="bash -c 'mosquitto -c /flw/mosquitto.conf'")
+makeTerm(broker,cmd="bash -c 'mosquitto -c /flw/mqtt/mosquitto.conf'")
 tScrip = server["script"]
 info('*** Subindo servidor\n')
 cmd = f"bash -c '. flw/env/bin/activate && python3 flw{tScrip} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC}' ;"
@@ -102,13 +107,13 @@ time.sleep(2)
 
 cont=0
 
-#for client_type in config.get("client_types"):
-#    for x in range(1,client_type["amount"]+1):
-#        info(f"*** Subindo cliente {str(cont+1).zfill(2)}\n")
-#        cmd = f"bash -c '. flw/env/bin/activate && python3 flw{client_type['script']} {BROKER_ADDR} ' ;"
-#        print(cmd)
-#        makeTerm(clientes[cont],cmd=cmd)
-#        cont+=1
+for client_type in config.get("client_types"):
+    for x in range(1,client_type["amount"]+1):
+        info(f"*** Subindo cliente {str(cont+1).zfill(2)}\n")
+        cmd = f"bash -c '. flw/env/bin/activate && python3 flw{client_type['script']} {BROKER_ADDR} ' ;"
+        print(cmd)
+        makeTerm(clientes[cont],cmd=cmd)
+        cont+=1
 
 info('*** Rodando CLI\n')
 CLI(net)
