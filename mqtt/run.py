@@ -90,17 +90,16 @@ net.start()
 
 BROKER_ADDR = "172.17.0.2"
 MIN_TRAINERS = 2
-TRAINERS_PER_ROUND = 2
+TRAINERS_PER_ROUND = 3
 NUM_ROUNDS = 100
-STOP_ACC = 100
+STOP_ACC = 98
 
-print(broker.IP(0))
+print(broker.IP())
 
 
 makeTerm(broker,cmd="bash -c 'mosquitto -c /flw/mqtt/mosquitto.conf'")
-tScrip = server["script"]
 info('*** Subindo servidor\n')
-cmd = f"bash -c '. flw/env/bin/activate && python3 flw{tScrip} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC}' ;"
+cmd = f"bash -c '. flw/env/bin/activate && python3 flw{server_script} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC}' ;"
 print(cmd)
 makeTerm(srv1,cmd=cmd)
 time.sleep(2)

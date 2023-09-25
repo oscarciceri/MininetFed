@@ -8,7 +8,7 @@ metrics:
 # General settings
 general:
   absolute_path: false
-  n_available_cpu: 4
+  n_available_cpu: 6
   broker_image: mqtt:stable
   broker_volume: a # não implementado
 
@@ -36,10 +36,10 @@ server:
 
 # Clients settings list
 client_types:
-  - amount: 1
+  - amount: 2
     name: tipo1
-    memory: 512m
-    vCPU_percent: 30 # não implementado
+    memory: 1024m
+    vCPU_percent: 100 # não implementado
     image: johann:mqtt
     volume: /flw
     script: /mqtt/client.py
@@ -47,10 +47,10 @@ client_types:
     loss: 0
     bw: 10
 
-  - amount: 1
+  - amount: 2
     name: tipo2
-    memory: 512m
-    vCPU_percent: 30 # não implementado
+    memory: 1024m
+    vCPU_percent: 100 # não implementado
     image: johann:mqtt
     volume: /flw
     script: /mqtt/client.py

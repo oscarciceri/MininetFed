@@ -24,7 +24,6 @@ if (n != 6):
 # NUM_ROUDS 10
 # STOP ACC -> 80% acerto  
 BROKER_ADDR = sys.argv[1]
-print(BROKER_ADDR)
 MIN_TRAINERS = int(sys.argv[2])
 TRAINERS_PER_ROUND = int(sys.argv[3])
 NUM_ROUNDS = int(sys.argv[4])
