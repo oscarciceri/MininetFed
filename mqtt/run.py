@@ -35,12 +35,13 @@ server_volumes = ""
 server_script = ""
 server_quota = server["vCPU_percent"] * n_cpu * 1000
 
-if absolute: 
-    server_volumes = server["volume"] 
-    server_script = server['script']
-else: 
-    server_volumes = [f"{Path.cwd()}:" + server["volume"]]
-    server_script = [f"{Path.cwd()}" + server["script"]]
+server_volumes = [f"{Path.cwd()}:" + server["volume"]]
+
+# if absolute: 
+#     server_script = [f"{Path.cwd()}" + server["script"]]
+# else:
+#     server_script = server['script'] 
+    
 server_images = server["image"]
 
 
@@ -92,14 +93,15 @@ BROKER_ADDR = "172.17.0.2"
 MIN_TRAINERS = 2
 TRAINERS_PER_ROUND = 3
 NUM_ROUNDS = 100
-STOP_ACC = 98
+STOP_ACC = 0.98
 
 print(broker.IP())
 
 
 makeTerm(broker,cmd="bash -c 'mosquitto -c /flw/mqtt/mosquitto.conf'")
+tScrip = server["script"]
 info('*** Subindo servidor\n')
-cmd = f"bash -c '. flw/env/bin/activate && python3 flw{server_script} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC}' ;"
+cmd = f"bash -c '. flw/env/bin/activate && python3 flw{tScrip} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC}' ;"
 print(cmd)
 makeTerm(srv1,cmd=cmd)
 time.sleep(2)
