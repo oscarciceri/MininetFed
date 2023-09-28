@@ -9,7 +9,7 @@ metrics:
 general:
   absolute_path: false
   n_available_cpu: 6
-  broker_image: mqtt:stable
+  broker_image: johann:ubuntu
   broker_volume: a # não implementado
 
 # (atualmente são só switchs)
@@ -29,20 +29,20 @@ conections:
 server:
   memory: 256m
   vCPU_percent: 20
-  image: johann:mqtt
+  image: johann:ubuntu
   volume: /flw
   conection: 1
-  script: /mqtt/server.py
+  script: /server.py
 
 # Clients settings list
 client_types:
   - amount: 2
     name: tipo1
     memory: 1024m
-    vCPU_percent: 100 # não implementado
-    image: johann:mqtt
+    vCPU_percent: 20 # não implementado
+    image: johann:ubuntu
     volume: /flw
-    script: /mqtt/client.py
+    script: /client.py
     conection: 1
     loss: 0
     bw: 10
@@ -50,10 +50,10 @@ client_types:
   - amount: 2
     name: tipo2
     memory: 1024m
-    vCPU_percent: 100 # não implementado
-    image: johann:mqtt
+    vCPU_percent: 20 # não implementado
+    image: johann:ubuntu
     volume: /flw
-    script: /mqtt/client.py
+    script: /client.py
     conection: 1
     loss: 0
     bw: 10

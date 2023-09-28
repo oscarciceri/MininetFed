@@ -86,7 +86,7 @@ class Controller:
 
     def plot_training_metrics(self):
         fig, ax = plt.subplots(1, 1)
-        x = self.mean_acc_per_round
+        x = self.mean_acc_per_round #// READFILE LOG
         y = np.arange(len(x)) + 1
         plt.plot([str(s) for s in y], x)
         plt.annotate('%0.3f' % x[-1], xy=(1, x[-1]), xytext=(8, 0), 
@@ -98,5 +98,7 @@ class Controller:
         plt.close(fig)
 
                    
-        
+    def saveFile():
+        pass
+        # implementar o save file -> self.mean_acc_per_round 
 
