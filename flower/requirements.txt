@@ -1,5 +1,0 @@
-pandas
-flwr
-numpy==1.25
-torch
-torchvision
