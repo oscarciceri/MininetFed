@@ -1,12 +1,20 @@
-
-
-from containernet.cli import CLI
-from containernet.link import TCLink
 from containernet.net import Containernet
 from mininet.node import Controller
 from mininet.log import info, setLogLevel
 from containernet.term import makeTerm
 from pathlib import Path
+import sys
+from containernet.cli import CLI
+
+# total args
+n = len(sys.argv)
+ 
+# check args
+if (n != 2):
+    print("correct use: sudo python3 createEnv.py <requirements.txt>")
+    exit()
+ 
+REQUIREMENTS = sys.argv[1]
 
 
 setLogLevel('info')
@@ -16,21 +24,20 @@ net.addController('c0')
 
 
 volumes = [f"{Path.cwd()}:/flw"]
-images = "johann:ubuntu"
+images = "johann:mqtt"
 
 s1 = net.addSwitch('s1')
 
 info('*** Adicionando Containers\n')
-srv1 = net.addDocker('srv1',dimage=images, volumes=volumes, ip="192.168.0.1" , mem_limit="2048m",cpuset_cpus=f"{0}")
+srv1 = net.addDocker('srv1',dimage=images, volumes=volumes, mem_limit="2048m")
 net.addLink(srv1,s1)
-srv2 = net.addDocker('srv2',dimage=images, volumes=volumes, ip="192.168.0.2", mem_limit="2048m",cpuset_cpus=f"{0}")
-net.addLink(srv2,s1)
+   
 net.start()
+info('*** Criando env')
+srv1.cmd(f"bash -c 'cd flw && python3 -m venv env' ;", verbose=True)
 
-info('*** Subindo servidor\n')
-srv1.cmd(f"bash -c 'cd flw apt-get update -y && apt-get install python3-venv -y' ;")
-srv1.cmd(f"bash -c 'cd flw && python3 -m venv env' ;")
-srv1.cmd(f"bash -c 'cd flw && . env/bin/activate && pip install -r requirements.txt' ;")
+info('*** Iniciando instalação')
+srv1.cmd(f"bash -c 'cd flw && . env/bin/activate && pip install -r {REQUIREMENTS}' ;",verbose=True)
+# CLI(net);
 info('*** Parando MININET')
-CLI(net)
 net.stop()
