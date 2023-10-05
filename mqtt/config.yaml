@@ -1,4 +1,5 @@
 ---
+# Criar versão comentada desse arquivo para colocar na documentação da ferramenta
 # Output metrics
 metrics:
   - mean
