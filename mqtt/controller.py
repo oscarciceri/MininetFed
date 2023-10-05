@@ -1,6 +1,6 @@
 import random
 import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
 
 class Controller:
     def __init__(self, min_trainers=2, trainers_per_round=2, num_rounds=5):
@@ -84,21 +84,37 @@ class Controller:
 
         return agg_weights
 
-    def plot_training_metrics(self):
-        fig, ax = plt.subplots(1, 1)
-        x = self.mean_acc_per_round #// READFILE LOG
-        y = np.arange(len(x)) + 1
-        plt.plot([str(s) for s in y], x)
-        plt.annotate('%0.3f' % x[-1], xy=(1, x[-1]), xytext=(8, 0), 
-                    xycoords=('axes fraction', 'data'), textcoords='offset points')
-        plt.xlabel('rounds')
-        plt.ylabel('accuracy')
-        plt.title(f'simulation using num_rounds={len(x)}')
-        plt.savefig(f'./simulation-rounds={len(x)}.png', dpi=600)
-        plt.close(fig)
+    def arrays_to_csv(self,arrays, headers, filename):
+        try:
+            # Verifica se o número de arrays corresponde ao número de cabeçalhos
+            if len(arrays) != len(headers):
+                raise ValueError("O número de arrays deve ser igual ao número de cabeçalhos")
+
+            # Cria um dicionário onde a chave é o cabeçalho e o valor é o array correspondente
+            data = {headers[i]: arrays[i] for i in range(len(headers))}
+
+            # Cria um DataFrame pandas a partir do dicionário
+            df = pd.DataFrame(data)
+
+            # Escreve o DataFrame em um arquivo CSV
+            df.to_csv(filename, sep=';', index=False)
+        except Exception as e:
+            print(f"Ocorreu uma exceção: {e}")  
+            input()
+
+
+
+
+    def save_training_metrics(self, CSV_PATH):
+        # Exemplo de uso da função
+        arrays = [np.array([1, 2, 3]), np.array([4, 5, 6]), np.array([7, 8, 9])]
+        headers = ['Média', 'Tempo', 'Cliente']
+        self.arrays_to_csv(arrays, headers, CSV_PATH)
+
 
                    
     def saveFile():
         pass
         # implementar o save file -> self.mean_acc_per_round 
+
 

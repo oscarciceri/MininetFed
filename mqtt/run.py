@@ -99,12 +99,13 @@ print(broker.IP())
 
 
 makeTerm(broker,cmd="bash -c 'mosquitto -c /flw/mosquitto.conf'")
+time.sleep(2)
 tScrip = server["script"]
 info('*** Subindo servidor\n')
-cmd = f"bash -c '. flw/env/bin/activate && python3 flw{tScrip} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC}' ;"
+cmd = f"bash -c '. flw/env/bin/activate && python3 flw{tScrip} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC} flw/meu_arquivo.csv' ;"
 print(cmd)
 makeTerm(srv1,cmd=cmd)
-time.sleep(2)
+time.sleep(3)
 
 cont=0
 

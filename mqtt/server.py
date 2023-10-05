@@ -9,7 +9,7 @@ import sys
 n = len(sys.argv)
  
 # check args
-if (n != 6):
+if (n != 7):
     print("correct use: python server.py <broker_address> <min_clients> <clients_per_round> <num_rounds> <accuracy_threshold>.")
     exit()
 
@@ -28,6 +28,7 @@ MIN_TRAINERS = int(sys.argv[2])
 TRAINERS_PER_ROUND = int(sys.argv[3])
 NUM_ROUNDS = int(sys.argv[4])
 STOP_ACC = float(sys.argv[5])
+CSV_PATH = float(sys.argv[6])
 
 # class for coloring messages on terminal
 class color:
@@ -127,8 +128,8 @@ while controller.get_current_round() != NUM_ROUNDS:
         exit()
     controller.reset_acc_list()
 
-print(color.RED + f'rounds threshold met! stopping the training!')
+print(color.RED + f'rounds threshold met! stopping the training!' + color.RESET)
 client.publish('minifed/stopQueue', m)
 # PODE DA ERRO... 
-controller.plot_training_metrics()
+controller.save_training_metrics(CSV_PATH)
 client.loop_stop()
