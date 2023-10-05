@@ -1,0 +1,16 @@
+logs:
+O quão verboso ele vai ser? (modos)
+-> Pode ter 2 logs: Um log all e um log de métricas
+
+Biblioteca de log para fazer o tratamento estruturado
+
+Time stamp de quando terminou o round
+
+Qual o erro que deu se deu algum erro
+
+No server, toda vez que receber um model
+
+Quanod o serve receber todos os models, exibir as métricas de acurácia
+-> Baseado nas métricas do flower
+
+se não houver biblioteca de log, fazer classe log
