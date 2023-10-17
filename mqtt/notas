@@ -14,3 +14,18 @@ Quanod o serve receber todos os models, exibir as métricas de acurácia
 -> Baseado nas métricas do flower
 
 se não houver biblioteca de log, fazer classe log
+
+---
+
+Expressão regular em python
+REGEX
+
+Script para explorar o log
+Como mostrar os resultadoS? (extrair informações e plotar o necessário)
+
+para quinta:
+Estruturar para extrair informações
+Montar CSV com coluna tempo, round, accuracy
+-> A linha vai ter tempo (fim 5 - começo 18), round 1, e accuracy do round 1
+
+Mudar a tag INFO para METRIC quando se tratar de métrica ou fazer de outra forma similar
