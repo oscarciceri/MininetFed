@@ -33,9 +33,13 @@ NUM_ROUNDS = int(sys.argv[4])
 STOP_ACC = float(sys.argv[5])
 CSV_PATH = sys.argv[6]
 
+FORMAT = "%(asctime)s - %(infotype)-6s - %(levelname)s - %(message)s"
 
 logging.basicConfig(level=logging.INFO, filename=CSV_PATH,
-                    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", filemode="w")
+                    format=FORMAT, filemode="w")
+metricType = {"infotype": "METRIC"}
+executionType = {"infotype": "EXECUT"}
+logger = logging.getLogger(__name__)
 
 # class for coloring messages on terminal
 
@@ -63,8 +67,8 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message_register(client, userdata, message):
     controller.add_trainer(message.payload.decode("utf-8"))
-    logging.info(
-        f'trainer number {message.payload.decode("utf-8")} just joined the pool')
+    logger.info(
+        f'trainer number {message.payload.decode("utf-8")} just joined the pool', extra=executionType)
     print(
         f'trainer number {message.payload.decode("utf-8")} just joined the pool')
 
@@ -79,7 +83,8 @@ def on_message_agg(client, userdata, message):
     # add num samples to list of num_samples
     controller.add_num_samples(num_samples)
     controller.update_num_responses()
-    logging.info(f'received weights from trainer {m["id"]}!')
+    logger.info(
+        f'received weights from trainer {m["id"]}!', extra=executionType)
     print(f'received weights from trainer {m["id"]}!')
 
 # callback for metricsQueue: get accuracy of every trainer and compute the mean
@@ -102,7 +107,8 @@ def create_string_from_json(data):
 def on_message_metrics(client, userdata, message):
     m = json.loads(message.payload.decode("utf-8"))
     controller.add_accuracy(m['accuracy'])
-    logging.info(f'{m["id"]} {create_string_from_json(m["metrics"])}')
+    logger.info(
+        f'{m["id"]} {create_string_from_json(m["metrics"])}', extra=metricType)
     controller.update_num_responses()
 
 
@@ -118,7 +124,7 @@ client.message_callback_add('minifed/metricsQueue', on_message_metrics)
 
 # start loop
 client.loop_start()
-logging.info('starting server...')
+logger.info('starting server...', extra=executionType)
 print(color.BOLD_START + 'starting server...' + color.BOLD_END)
 
 # wait trainers to connect
@@ -128,23 +134,25 @@ while controller.get_num_trainers() < MIN_TRAINERS:
 # begin training
 while controller.get_current_round() != NUM_ROUNDS:
     controller.update_current_round()
-    logging.info(f'starting round {controller.get_current_round()}')
+    logger.info(f'round: {controller.get_current_round()}', extra=metricType)
     print(color.RESET + '\n' + color.BOLD_START +
           f'starting round {controller.get_current_round()}' + color.BOLD_END)
     # select trainers for round
     trainer_list = controller.get_trainer_list()
+    if not trainer_list:
+        logger.critical("Client's list empty", extra=executionType)
     select_trainers = controller.select_trainers_for_round()
     for t in trainer_list:
         if t in select_trainers:
-            logging.info(
-                f'selected trainer {t} for training on round {controller.get_current_round()}')
+            logger.info(
+                f'selected: {t} round: {controller.get_current_round()}', extra=metricType)
             print(
                 f'selected trainer {t} for training on round {controller.get_current_round()}')
             m = json.dumps({'id': t, 'selected': True}).replace(' ', '')
             client.publish('minifed/selectionQueue', m)
         else:
-            logging.info(
-                f'NOT selected trainer {t} for training on round {controller.get_current_round()}')
+            logger.info(
+                f'NOT_selected: {t} round: {controller.get_current_round()}', extra=metricType)
             m = json.dumps({'id': t, 'selected': False}).replace(' ', '')
             client.publish('minifed/selectionQueue', m)
 
@@ -157,7 +165,7 @@ while controller.get_current_round() != NUM_ROUNDS:
     agg_weights = controller.agg_weights()
     response = json.dumps({'weights': [w.tolist() for w in agg_weights]})
     client.publish('minifed/posAggQueue', response)
-    logging.info(f'sent aggregated weights to trainers!')
+    logger.info(f'sent aggregated weights to trainers!', extra=executionType)
     print(f'sent aggregated weights to trainers!')
 
     # wait for metrics response
@@ -165,14 +173,14 @@ while controller.get_current_round() != NUM_ROUNDS:
         time.sleep(1)
     controller.reset_num_responses()  # reset num_responses for next round
     mean_acc = controller.get_mean_acc()
-    logging.info(
-        f'mean accuracy on round {controller.get_current_round()} was {mean_acc}\n')
+    logger.info(
+        f'round: {controller.get_current_round()} mean_accuracy: {mean_acc}\n', extra=metricType)
     print(color.GREEN +
           f'mean accuracy on round {controller.get_current_round()} was {mean_acc}\n' + color.RESET)
 
     # update stop queue or continue process
     if mean_acc >= STOP_ACC:
-        logging.info('accuracy threshold met! stopping the training!')
+        logger.info('stop_condition: accuracy', extra=metricType)
         print(color.RED + f'accuracy threshold met! stopping the training!')
         m = json.dumps({'stop': True})
         client.publish('minifed/stopQueue', m)
@@ -180,7 +188,7 @@ while controller.get_current_round() != NUM_ROUNDS:
         exit()
     controller.reset_acc_list()
 
-logging.info('rounds threshold met! stopping the training!')
+logger.info('stop_condition: rounds', extra=metricType)
 print(color.RED + f'rounds threshold met! stopping the training!' + color.RESET)
 client.publish('minifed/stopQueue', m)
 # PODE DA ERRO...
