@@ -145,14 +145,14 @@ while controller.get_current_round() != NUM_ROUNDS:
     for t in trainer_list:
         if t in select_trainers:
             logger.info(
-                f'selected: {t} round: {controller.get_current_round()}', extra=metricType)
+                f'selected: {t}', extra=metricType)
             print(
                 f'selected trainer {t} for training on round {controller.get_current_round()}')
             m = json.dumps({'id': t, 'selected': True}).replace(' ', '')
             client.publish('minifed/selectionQueue', m)
         else:
             logger.info(
-                f'NOT_selected: {t} round: {controller.get_current_round()}', extra=metricType)
+                f'NOT_selected: {t}', extra=metricType)
             m = json.dumps({'id': t, 'selected': False}).replace(' ', '')
             client.publish('minifed/selectionQueue', m)
 
@@ -174,7 +174,7 @@ while controller.get_current_round() != NUM_ROUNDS:
     controller.reset_num_responses()  # reset num_responses for next round
     mean_acc = controller.get_mean_acc()
     logger.info(
-        f'round: {controller.get_current_round()} mean_accuracy: {mean_acc}\n', extra=metricType)
+        f'mean_accuracy: {mean_acc}\n', extra=metricType)
     print(color.GREEN +
           f'mean accuracy on round {controller.get_current_round()} was {mean_acc}\n' + color.RESET)
 

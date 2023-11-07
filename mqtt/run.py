@@ -95,8 +95,8 @@ net.start()
 BROKER_ADDR = "172.17.0.2"
 MIN_TRAINERS = 2
 TRAINERS_PER_ROUND = 3
-NUM_ROUNDS = 100
-STOP_ACC = 0.90
+NUM_ROUNDS = 10
+STOP_ACC = 1.0
 
 print(broker.IP())
 

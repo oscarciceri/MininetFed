@@ -29,3 +29,34 @@ Montar CSV com coluna tempo, round, accuracy
 -> A linha vai ter tempo (fim 5 - começo 18), round 1, e accuracy do round 1
 
 Mudar a tag INFO para METRIC quando se tratar de métrica ou fazer de outra forma similar
+
+---
+
+# Métricas
+
+Dados coletados
+-> Tempo de cada um
+-> Tempo total
+
+### Métricas de tempo
+
+- Delta T de cada round (Milisegundos (ms))
+- Tempo para convergir
+
+### Métricas de aprendizado (por cliente e médio)
+
+- Loss
+- Accuracy
+- Precision
+- Recall
+- F1-score
+
+### Métricas de rede (por cliente, médio, e total)
+
+- Uso de rede
+-
+
+### Métricas de aprendizado Federado
+
+- Equidade entre os clientes (gráfico de pizza da quantidade que cada cliente foi escolhido???)
+- Convergência do modelo global
