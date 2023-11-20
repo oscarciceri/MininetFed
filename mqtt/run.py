@@ -115,7 +115,7 @@ cont = 0
 for client_type in config.get("client_types"):
     for x in range(1, client_type["amount"]+1):
         info(f"*** Subindo cliente {str(cont+1).zfill(2)}\n")
-        cmd = f"bash -c '. flw/env/bin/activate && python3 flw{client_type['script']} {BROKER_ADDR} ' ;"
+        cmd = f"bash -c '. flw/env/bin/activate && python3 flw{client_type['script']} {BROKER_ADDR} {clientes[cont].name} ' ;"
         print(cmd)
         makeTerm(clientes[cont], cmd=cmd)
         cont += 1
