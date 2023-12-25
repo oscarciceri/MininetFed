@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-from controller import Controller
+from federated.server.controller import Controller
 import json
 import time
 import numpy as np
