@@ -12,10 +12,11 @@ from .config import Config
 
 
 BROKER_ADDR = "172.17.0.2"
-MIN_TRAINERS = 2
-TRAINERS_PER_ROUND = 3
+MIN_TRAINERS = 3
+TRAINERS_PER_ROUND = 2
 NUM_ROUNDS = 10
 STOP_ACC = 1.0
+CSV_LOG="meu_arquivo.log"
       
 
 class FedNetwork:
@@ -111,10 +112,12 @@ class FedNetwork:
         info('*** Configurando Links\n')
         
         self.net.start()
-        time.sleep(2)
+      
         self.start_broker() 
+        time.sleep(2)
+        self.start_server() 
         time.sleep(3)
-        self.start_clientes
+        self.start_clientes()
         
         info('*** Rodando CLI\n')
         CLI(self.net)
@@ -128,8 +131,8 @@ class FedNetwork:
         
     def start_server(self):
         info('*** Inicializando servidor\n')
-        tScrip = self.server["script"]
-        cmd = f"bash -c '. flw/env/bin/activate && python3 flw{tScrip} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC} flw/meu_arquivo.log' ;"
+        script = self.server["script"]
+        cmd = f"bash -c '. flw/env/bin/activate && python3 flw{script} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC} {CSV_LOG}' ;"
         print(cmd)
         makeTerm(self.srv1, cmd=cmd)
         

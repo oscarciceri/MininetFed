@@ -1,9 +1,11 @@
 import paho.mqtt.client as mqtt
-from trainer import Trainer
-import json
 import numpy as np
+
+import json
 import time
 import sys
+
+from trainer import Trainer
 
 # total args
 n = len(sys.argv)

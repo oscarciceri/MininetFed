@@ -9,7 +9,7 @@ metrics:
 general:
   absolute_path: false
   n_available_cpu: 6
-  broker_image: mqtt:stable
+  broker_image: mininetfed:broker
   broker_volume: a # não implementado
 
 # (atualmente são só switchs)
@@ -29,10 +29,10 @@ conections:
 server:
   memory: 256m
   vCPU_percent: 20
-  image: johann:mqtt
+  image: mininetfed:client
   volume: /flw
   conection: 1
-  script: /server.py
+  script: /server/server.py
 
 # Clients settings list
 client_types:
@@ -40,9 +40,9 @@ client_types:
     name: tipo1
     memory: 1024m
     vCPU_percent: 100
-    image: johann:mqtt
+    image: mininetfed:client
     volume: /flw
-    script: /client.py
+    script: /client/client.py
     conection: 1
     loss: 0
     bw: 10
@@ -51,9 +51,9 @@ client_types:
     name: tipo2
     memory: 1024m
     vCPU_percent: 100
-    image: johann:mqtt
+    image: mininetfed:client
     volume: /flw
-    script: /client.py
+    script: /client/client.py
     conection: 1
     loss: 0
     bw: 10

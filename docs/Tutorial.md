@@ -23,17 +23,18 @@ sudo util/install.sh -W
 
 ```
 
-## Instale a imagem docker
+## Instale as imagens docker
 
 ```
-docker build --tag "johann:ubuntu" .
+docker build --tag "mininetfed:broker" -f docker/Dockerfile.broker .
+docker build --tag "mininetfed:client" -f docker/Dockerfile.container .
 
 ```
 
-"johann:ubuntu" é o nome da imagem.
+"mininetfed:broker" e "mininetfed:client" são os nome das imagens.
 
 ```
-sudo python3 createEnv.py
+sudo python3 scripts/create_env.py mininetfed:client scripts/requirements.txt
 
 ```
 
