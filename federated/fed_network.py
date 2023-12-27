@@ -16,7 +16,7 @@ MIN_TRAINERS = 3
 TRAINERS_PER_ROUND = 2
 NUM_ROUNDS = 10
 STOP_ACC = 1.0
-CSV_LOG="meu_arquivo.log"
+CSV_LOG="novo.log"
       
 
 class FedNetwork:
@@ -37,16 +37,8 @@ class FedNetwork:
         self.broker_image = self.general["broker_image"]
         
         self.server = self.config.get("server")
-        self.server_volumes = ""
-        self.server_script = ""
         self.server_quota = self.server["vCPU_percent"] * self.n_cpu * 1000
-        self.server_volumes = [f"{Path.cwd()}:" + self.server["volume"]]
-
-        # if absolute:
-        #     server_script = [f"{Path.cwd()}" + server["script"]]
-        # else:
-        #     server_script = server['script']
-
+        self.server_docker_volume = [f"{Path.cwd()}:" + self.server["volume"]]
         self.server_images = self.server["image"]
         
         
@@ -73,14 +65,14 @@ class FedNetwork:
         info('*** Adicionando Container do Broker\n')
         # broker container
         self.broker = self.net.addDocker('brk1', dimage=self.broker_image,
-                              volumes=self.server_volumes,  mem_limit=self.broker_mem)
+                              volumes=self.server_docker_volume,  mem_limit=self.broker_mem)
         self.net.addLink(self.broker, self.switchs[self.server["conection"] - 1])
     
     
     
     def insert_server_container(self):
         info('*** Adicionando Container do Server\n')
-        self.srv1 = self.net.addDocker('srv1', dimage=self.server_images, volumes=self.server_volumes,
+        self.srv1 = self.net.addDocker('srv1', dimage=self.server_images, volumes=self.server_docker_volume,
                      mem_limit=self.server["memory"], cpu_quota=self.server_quota)
         self.net.addLink(self.srv1, self.switchs[self.server["conection"] - 1])
       
@@ -92,12 +84,8 @@ class FedNetwork:
       cont = 0
       qtdDevice = 0
       for client_type in self.config.get("client_types"):
-          for x in range(1, client_type["amount"]+1):
-              volumes = ""
-              if self.absolute:
-                  volumes = client_type["volume"]
-              else:
-                  volumes = [f"{Path.cwd()}:" + client_type["volume"]]
+          for x in range(1, client_type["amount"]+1):    
+              volumes = [f"{Path.cwd()}:" + client_type["volume"]]
               qtdDevice += 1
               client_quota = client_type["vCPU_percent"] * self.n_cpu*1000
               d = self.net.addDocker(f'sta{client_type["name"]}{x}', cpu_quota=client_quota,
@@ -127,12 +115,13 @@ class FedNetwork:
           
     def start_broker(self):
         info('*** Inicializando broker\n')
-        makeTerm(self.broker, cmd="bash -c 'mosquitto -c /flw/mosquitto.conf'")
+        makeTerm(self.broker, cmd=f'bash -c "mosquitto -c {self.general["broker_volume"]}/mosquitto.conf"')
         
     def start_server(self):
         info('*** Inicializando servidor\n')
         script = self.server["script"]
-        cmd = f"bash -c '. flw/env/bin/activate && python3 flw{script} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC} {CSV_LOG}' ;"
+        vol = self.server["volume"]
+        cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {script} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC} {CSV_LOG}' ;"
         print(cmd)
         makeTerm(self.srv1, cmd=cmd)
         
@@ -143,7 +132,8 @@ class FedNetwork:
         for client_type in self.config.get("client_types"):
             for x in range(1, client_type["amount"]+1):
                 info(f"*** Subindo cliente {str(cont+1).zfill(2)}\n")
-                cmd = f"bash -c '. flw/env/bin/activate && python3 flw{client_type['script']} {BROKER_ADDR} {self.clientes[cont].name} ' ;"
+                vol = client_type["volume"]
+                cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {client_type['script']} {BROKER_ADDR} {self.clientes[cont].name} ' ;"
                 print(cmd)
                 makeTerm(self.clientes[cont], cmd=cmd)
                 cont += 1

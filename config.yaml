@@ -10,7 +10,7 @@ general:
   absolute_path: false
   n_available_cpu: 6
   broker_image: mininetfed:broker
-  broker_volume: a # não implementado
+  broker_volume: /flw
 
 # (atualmente são só switchs)
 network_components: 1
@@ -32,7 +32,7 @@ server:
   image: mininetfed:client
   volume: /flw
   conection: 1
-  script: /server/server.py
+  script: server/server.py
 
 # Clients settings list
 client_types:
@@ -42,7 +42,7 @@ client_types:
     vCPU_percent: 100
     image: mininetfed:client
     volume: /flw
-    script: /client/client.py
+    script: client/client.py
     conection: 1
     loss: 0
     bw: 10
@@ -53,7 +53,7 @@ client_types:
     vCPU_percent: 100
     image: mininetfed:client
     volume: /flw
-    script: /client/client.py
+    script: client/client.py
     conection: 1
     loss: 0
     bw: 10

@@ -1,0 +1,10 @@
+2023-12-27 17:01:24,374 - EXECUT - INFO - starting server...
+2023-12-27 17:01:32,569 - EXECUT - INFO - trainer number statipo22 just joined the pool
+2023-12-27 17:01:33,010 - EXECUT - INFO - trainer number statipo21 just joined the pool
+2023-12-27 17:01:33,914 - EXECUT - INFO - trainer number statipo12 just joined the pool
+2023-12-27 17:01:34,072 - EXECUT - INFO - trainer number statipo11 just joined the pool
+2023-12-27 17:01:34,383 - METRIC - INFO - round: 1
+2023-12-27 17:01:34,383 - METRIC - INFO - selected: statipo22
+2023-12-27 17:01:34,384 - METRIC - INFO - selected: statipo21
+2023-12-27 17:01:34,385 - METRIC - INFO - NOT_selected: statipo12
+2023-12-27 17:01:34,385 - METRIC - INFO - NOT_selected: statipo11
