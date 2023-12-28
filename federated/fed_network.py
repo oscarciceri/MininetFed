@@ -12,11 +12,11 @@ from .config import Config
 
 
 BROKER_ADDR = "172.17.0.2"
-MIN_TRAINERS = 3
-TRAINERS_PER_ROUND = 2
+MIN_TRAINERS = 10
+TRAINERS_PER_ROUND = 4
 NUM_ROUNDS = 10
 STOP_ACC = 1.0
-CSV_LOG="novo.log"
+CSV_LOG="logs/novo.log"
       
 
 class FedNetwork:

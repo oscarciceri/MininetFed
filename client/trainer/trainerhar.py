@@ -2,56 +2,53 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, Conv1D ,Flatten,Dense
+from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.optimizers import SGD
-import uuid
 import numpy as np
-import utils as harUtil
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 
 class TrainerHar:
     ID = 0
-    def __init__(self) -> None:
-        # id and model
-        Trainer.ID = Trainer.ID + 1
-        self.id = int(Trainer.ID)
+    def __init__(self,ext_id) -> None:
+        self.external_id = ext_id
+        TrainerHar.ID = TrainerHar.ID + 1
+        self.id = int(TrainerHar.ID)
         self.nc = self.id
         self.dividir = True
         self.idColumn = "user_name"
-        self.model = self.define_model()
         self.x_train, self.y_train, self.x_test, self.y_test = self.split_data()
+        input_shape = self.x_train.shape[1:]
+        self.num_samples = self.x_train.shape[0]
+        n_classes = len(np.unique(self.y_train))
+        self.model = self.define_model(input_shape, n_classes)
         self.stop_flag = False
+
+
     
     def get_id(self):
-        return self.id
-    def set_nc(int: clients):
+        return self.external_id
+    
+    def set_nc(self,clients):
         self.nc= clients
     
     def get_num_samples(self):
         return self.num_samples
     
     def define_model(self, input_shape=(28, 28, 1), n_classes=10):
+        model = Sequential()
+        model.add(Flatten(input_shape=input_shape))
+        model.add(Dense(256, activation='relu'))
+        model.add(Dense(256, activation='relu'))
+        model.add(Dense(256, activation='relu'))
+        model.add(Dense(n_classes, activation='softmax'))
 
-            model = Sequential()
-            model.add(Conv1D(64,  1))
-            model.add(Activation('relu'))
-            model.add(Dropout())
-            model.add(Conv1D(64,  1))
-            model.add(Activation('relu'))
-            model.add(Dropout())
-            model.add(Conv1D(64, 1))
-            model.add(Activation('relu'))
-            model.add(Conv1D(64, 3))
-            model.add(Activation('relu'))
-            model.add(Flatten())
-  
-            opt = keras.optimizers.RMSprop(learning_rate=0.0001, decay=1e-6)
-            model.compile(loss='categorical_crossentropy',
-                optimizer=opt,
-                metrics=['accuracy'])
-            return model
+        opt = SGD(learning_rate=0.01)
+        model.compile(optimizer=opt, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+        return model
+
         
     def split_data(self):
         x_train, y_train, x_test, y_test = self.load_data()
@@ -64,6 +61,10 @@ class TrainerHar:
     def eval_model(self):
         acc = self.model.evaluate(x=self.x_test, y=self.y_test, verbose=False)[1]
         return acc
+    
+    def all_metrics(self):
+        return {"metrics_names": self.model.metrics_names, "values": self.model.evaluate(
+            x=self.x_test, y=self.y_test, verbose=False)}
     
     def get_weights(self):
         return self.model.get_weights()
@@ -78,7 +79,7 @@ class TrainerHar:
         return self.stop_flag
     
     def load_data(self):
-        df = pd.read_csv(os.path.abspath("mqtt/data/pml.csv"), low_memory=False)
+        df = pd.read_csv(os.path.abspath("client/data/pml.csv"), low_memory=False)
         le = preprocessing.LabelEncoder()
         idslist = []
         parts = ["belt", "arm", "dumbbell", "forearm"]
@@ -103,7 +104,7 @@ class TrainerHar:
         if self.dividir==True:
             newDf[self.idColumn] = df[self.idColumn]
             idslist = newDf[self.idColumn].unique()
-            newDf = newDf[newDf[self.idColumn] == idslist[int(id%len(idslist))-1]].drop(columns=[self.idColumn])  
+            newDf = newDf[newDf[self.idColumn] == idslist[int(self.id%len(idslist))-1]].drop(columns=[self.idColumn])  
         
         x_train, x_test, y_train, y_test = train_test_split(newDf.drop(columns=["classe"]).values, newDf["classe"].values,test_size=0.20, random_state=42)
     

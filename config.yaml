@@ -36,9 +36,9 @@ server:
 
 # Clients settings list
 client_types:
-  - amount: 2
+  - amount: 10
     name: tipo1
-    memory: 1024m
+    memory: 480m
     vCPU_percent: 100
     image: mininetfed:client
     volume: /flw
@@ -49,7 +49,7 @@ client_types:
 
   - amount: 2
     name: tipo2
-    memory: 1024m
+    memory: 480m
     vCPU_percent: 100
     image: mininetfed:client
     volume: /flw
