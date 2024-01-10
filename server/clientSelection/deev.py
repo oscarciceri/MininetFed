@@ -1,4 +1,3 @@
-import sys
 # Dispositivo eu escolho você (DEEV): Seleciona k clientes com acurácia menor que a média, 
 # onde k decresce com um fator de descrecimento a cada rodada
 class Deev:

@@ -1,4 +1,3 @@
-import random
 
 # FedSecPer: Similar ao DEEV, mas não conta com decaimento
 class FedSecPer:    

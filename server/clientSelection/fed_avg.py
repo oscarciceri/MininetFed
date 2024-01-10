@@ -1,5 +1,3 @@
-import random
-
 # FedAvg: Seleciona todos os clientes
 class FedAvg:
     def __init__(self):
