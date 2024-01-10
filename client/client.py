@@ -62,11 +62,11 @@ def on_message_selection(client, userdata, message):
 
 def on_message_agg(client, userdata, message):
     print(f'received aggregated weights!')
-    msg = json.loads(message.payload.decode("utf-8"))
-    agg_weights = [np.asarray(w, dtype=np.float32) for w in msg["weights"]]
-    trainer.update_weights(agg_weights)
     response = json.dumps({'id': trainer.get_id(
     ), 'accuracy': trainer.eval_model(), "metrics": trainer.all_metrics()})
+    msg = json.loads(message.payload.decode("utf-8"))
+    agg_weights = [np.asarray(w, dtype=np.float32) for w in msg["weights"]]
+    trainer.update_weights(agg_weights)    
     print(f'sending eval metrics!\n')
     client.publish('minifed/metricsQueue', response)
 
@@ -87,9 +87,13 @@ client.on_connect = on_connect
 client.message_callback_add('minifed/selectionQueue', on_message_selection)
 client.message_callback_add('minifed/posAggQueue', on_message_agg)
 client.message_callback_add('minifed/stopQueue', on_message_stop)
-client.publish('minifed/registerQueue', trainer.get_id())
+
+response = json.dumps({'id': trainer.get_id(
+    ), 'accuracy': trainer.eval_model(), "metrics": trainer.all_metrics()})
+client.publish('minifed/registerQueue',  response)
 print(color.BOLD_START +
       f'trainer {trainer.get_id()} connected!\n' + color.BOLD_END)
+
 # start waiting for jobs
 client.loop_start()
 

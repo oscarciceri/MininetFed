@@ -6,14 +6,14 @@ from mininet.node import Controller
 
 from pathlib import Path
 import time
+from datetime import datetime
 
 from .config import Config
 
 
 
 BROKER_ADDR = "172.17.0.2"
-MIN_TRAINERS = 10
-TRAINERS_PER_ROUND = 4
+MIN_TRAINERS = 3
 NUM_ROUNDS = 10
 STOP_ACC = 1.0
 CSV_LOG="logs/novo.log"
@@ -35,6 +35,14 @@ class FedNetwork:
         self.absolute = self.general["absolute_path"]
         self.n_cpu = self.general["n_available_cpu"]
         self.broker_image = self.general["broker_image"]
+        
+        now = datetime.now()
+        now_str = now.strftime("_%d_%m_%Y_%Hh%Mm%Ss")
+        self.csv_name = "logs/" + self.general["experiment_name"] + now_str
+        
+        self.stop_acc = self.general["stop_accuracy"]
+        self.max_n_rounds = self.general["max_n_rounds"]
+        self.min_trainers = self.general["min_trainers"]
         
         self.server = self.config.get("server")
         self.server_quota = self.server["vCPU_percent"] * self.n_cpu * 1000
@@ -121,7 +129,7 @@ class FedNetwork:
         info('*** Inicializando servidor\n')
         script = self.server["script"]
         vol = self.server["volume"]
-        cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {script} {BROKER_ADDR} {MIN_TRAINERS} {TRAINERS_PER_ROUND} {NUM_ROUNDS} {STOP_ACC} {CSV_LOG}' ;"
+        cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {script} {BROKER_ADDR} {self.min_trainers} {self.max_n_rounds} {self.stop_acc} {self.csv_name}.log 2> {self.csv_name}_err.txt' ;"
         print(cmd)
         makeTerm(self.srv1, cmd=cmd)
         

@@ -63,8 +63,10 @@ class TrainerHar:
         return acc
     
     def all_metrics(self):
-        return {"metrics_names": self.model.metrics_names, "values": self.model.evaluate(
-            x=self.x_test, y=self.y_test, verbose=False)}
+        metrics_names = self.model.metrics_names
+        values = self.model.evaluate(x=self.x_test, y=self.y_test, verbose=False)
+        return dict(zip(metrics_names, values))
+
     
     def get_weights(self):
         return self.model.get_weights()

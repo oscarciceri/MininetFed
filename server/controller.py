@@ -1,12 +1,14 @@
 import random
 import numpy as np
 import pandas as pd
+from clientSelection import ClientSelection
+
 
 class Controller:
     def __init__(self, min_trainers=2, trainers_per_round=2, num_rounds=5):
         self.trainer_list = []
         self.min_trainers = min_trainers
-        self.trainers_per_round = trainers_per_round
+        # self.trainers_per_round = trainers_per_round
         self.current_round = 0
         self.num_rounds = num_rounds # total number of rounds
         self.num_responses = 0 # number of responses received on aggWeights and metrics
@@ -14,6 +16,8 @@ class Controller:
         self.trainer_samples = [] # save num_samples scale for agg
         self.acc_list = []
         self.mean_acc_per_round = []
+        self.clientSelection = ClientSelection()
+        self.metrics={}
     
     # getters
     def get_trainer_list(self):
@@ -34,6 +38,9 @@ class Controller:
         return mean
     
     # "setters"
+    def update_metrics(self, trainer_id, metrics):
+        self.metrics[trainer_id] = metrics
+    
     def update_num_responses(self):
         self.num_responses += 1
     
@@ -59,8 +66,10 @@ class Controller:
         self.acc_list.append(acc)
 
     # operations
+    
     def select_trainers_for_round(self):
-        return random.sample(self.trainer_list, self.trainers_per_round)
+        return self.clientSelection.select_trainers_for_round(self.trainer_list, self.metrics)
+
     
     def agg_weights(self):
         scaling_factor = list(np.array(self.trainer_samples) / np.array(self.trainer_samples).sum())
@@ -84,6 +93,7 @@ class Controller:
 
         return agg_weights
 
+    # output
     def arrays_to_csv(self,arrays, headers, filename):
         try:
             # Verifica se o número de arrays corresponde ao número de cabeçalhos

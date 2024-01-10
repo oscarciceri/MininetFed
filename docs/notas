@@ -60,3 +60,14 @@ Dados coletados
 
 - Equidade entre os clientes (gráfico de pizza da quantidade que cada cliente foi escolhido???)
 - Convergência do modelo global
+
+
+-----------------------------------
+
+[] Implementar métodos de seleção de clientes do artigo
+[] Implementar gráficos comparativos (seleção relativa de clientes)
+[] Implementar gráfico de pizza para seleção de clientes
+
+
+[] Implementar controle de épocas no cliente
+[] 

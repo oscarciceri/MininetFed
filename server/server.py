@@ -12,9 +12,9 @@ def server():
     n = len(sys.argv)
 
     # check args
-    if (n != 7):
+    if (n != 6):
         logging.critical("incorrect use of server.py arguments")
-        print("correct use: python server.py <broker_address> <min_clients> <clients_per_round> <num_rounds> <accuracy_threshold> <arquivo.log>.")
+        print("correct use: python server.py <broker_address> <min_clients> <num_rounds> <accuracy_threshold> <arquivo.log>.")
         exit()
 
     # MOSQUITTO (CONTAINER)
@@ -29,10 +29,10 @@ def server():
     # STOP ACC -> 80% acerto
     BROKER_ADDR = sys.argv[1]
     MIN_TRAINERS = int(sys.argv[2])
-    TRAINERS_PER_ROUND = int(sys.argv[3])
-    NUM_ROUNDS = int(sys.argv[4])
-    STOP_ACC = float(sys.argv[5])
-    CSV_PATH = sys.argv[6]
+    # TRAINERS_PER_ROUND = int(10)
+    NUM_ROUNDS = int(sys.argv[3])
+    STOP_ACC = float(sys.argv[4])
+    CSV_PATH = sys.argv[5]
 
     FORMAT = "%(asctime)s - %(infotype)-6s - %(levelname)s - %(message)s"
 
@@ -67,11 +67,13 @@ def server():
 
 
     def on_message_register(client, userdata, message):
-        controller.add_trainer(message.payload.decode("utf-8"))
+        m = json.loads(message.payload.decode("utf-8"))
+        controller.update_metrics(m["id"],m['metrics'])
+        controller.add_trainer(m["id"])
         logger.info(
-            f'trainer number {message.payload.decode("utf-8")} just joined the pool', extra=executionType)
+            f'trainer number {m["id"]} just joined the pool', extra=executionType)
         print(
-            f'trainer number {message.payload.decode("utf-8")} just joined the pool')
+            f'trainer number {m["id"]} just joined the pool')
 
     # callback for preAggQueue: get weights of trainers, aggregate and send back
 
@@ -93,21 +95,23 @@ def server():
 
     def create_string_from_json(data):
         # data = json.loads(json_str)
-        metrics_names = data['metrics_names']
-        values = data['values']
+        # metrics_names = data['metrics_names']
+        # values = data['values']
 
-        result = ''
-        for i in range(len(metrics_names)):
-            result += f'{metrics_names[i]}: {values[i]}'
-            if i != len(metrics_names) - 1:
-                result += ' - '
+        # result = ''
+        # for i in range(len(metrics_names)):
+        #     result += f'{metrics_names[i]}: {values[i]}'
+        #     if i != len(metrics_names) - 1:
+        #         result += ' - '
 
-        return result
+        # return result
+        return " - ".join(f"{name}: {value}" for name, value in data.items())
 
 
     def on_message_metrics(client, userdata, message):
         m = json.loads(message.payload.decode("utf-8"))
         controller.add_accuracy(m['accuracy'])
+        controller.update_metrics(m["id"],m['metrics'])
         logger.info(
             f'{m["id"]} {create_string_from_json(m["metrics"])}', extra=metricType)
         controller.update_num_responses()
@@ -115,7 +119,7 @@ def server():
 
     # connect on queue
     controller = Controller(min_trainers=MIN_TRAINERS,
-                            trainers_per_round=TRAINERS_PER_ROUND, num_rounds=NUM_ROUNDS)
+                            num_rounds=NUM_ROUNDS)
     client = mqtt.Client('server')
     client.connect(BROKER_ADDR, bind_port=1883)
     client.on_connect = on_connect
@@ -133,6 +137,7 @@ def server():
         time.sleep(1)
 
     # begin training
+    selected_qtd = 0
     while controller.get_current_round() != NUM_ROUNDS:
         controller.update_current_round()
         logger.info(f'round: {controller.get_current_round()}', extra=metricType)
@@ -143,22 +148,25 @@ def server():
         if not trainer_list:
             logger.critical("Client's list empty", extra=executionType)
         select_trainers = controller.select_trainers_for_round()
+        selected_qtd = len(select_trainers)
+        
+        logger.info(f"selected_trainers: {' - '.join(select_trainers)}", extra=metricType)
         for t in trainer_list:
             if t in select_trainers:
-                logger.info(
-                    f'selected: {t}', extra=metricType)
+                # logger.info(
+                #     f'selected: {t}', extra=metricType)
                 print(
                     f'selected trainer {t} for training on round {controller.get_current_round()}')
                 m = json.dumps({'id': t, 'selected': True}).replace(' ', '')
                 client.publish('minifed/selectionQueue', m)
             else:
-                logger.info(
-                    f'NOT_selected: {t}', extra=metricType)
+                # logger.info(
+                #     f'NOT_selected: {t}', extra=metricType)
                 m = json.dumps({'id': t, 'selected': False}).replace(' ', '')
                 client.publish('minifed/selectionQueue', m)
 
         # wait for agg responses
-        while controller.get_num_responses() != TRAINERS_PER_ROUND:
+        while controller.get_num_responses() != selected_qtd:
             time.sleep(1)
         controller.reset_num_responses()  # reset num_responses for next round
 

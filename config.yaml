@@ -7,6 +7,10 @@ metrics:
 
 # General settings
 general:
+  experiment_name: deev
+  max_n_rounds: 200
+  stop_accuracy: 0.97
+  min_trainers: 12
   absolute_path: false
   n_available_cpu: 6
   broker_image: mininetfed:broker
