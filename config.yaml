@@ -8,9 +8,9 @@ metrics:
 # General settings
 general:
   experiment_name: deev
-  max_n_rounds: 200
-  stop_accuracy: 0.97
-  min_trainers: 12
+  max_n_rounds: 150
+  stop_accuracy: 1.0
+  min_trainers: 4
   absolute_path: false
   n_available_cpu: 6
   broker_image: mininetfed:broker
@@ -40,7 +40,7 @@ server:
 
 # Clients settings list
 client_types:
-  - amount: 10
+  - amount: 3
     name: tipo1
     memory: 480m
     vCPU_percent: 100
@@ -51,7 +51,7 @@ client_types:
     loss: 0
     bw: 10
 
-  - amount: 2
+  - amount: 1
     name: tipo2
     memory: 480m
     vCPU_percent: 100
