@@ -10,11 +10,11 @@ from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 
 class TrainerHar:
-    ID = 0
+    # ID = 0
     def __init__(self,ext_id) -> None:
         self.external_id = ext_id
-        TrainerHar.ID = TrainerHar.ID + 1
-        self.id = int(TrainerHar.ID)
+        # TrainerHar.ID = TrainerHar.ID + 1
+        self.id = int(ext_id) + 1
         self.nc = self.id
         self.dividir = True
         self.idColumn = "user_name"
@@ -27,8 +27,8 @@ class TrainerHar:
 
 
     
-    def get_id(self):
-        return self.external_id
+    # def get_id(self):
+    #     return self.external_id
     
     def set_nc(self,clients):
         self.nc= clients
@@ -110,16 +110,16 @@ class TrainerHar:
         
         x_train, x_test, y_train, y_test = train_test_split(newDf.drop(columns=["classe"]).values, newDf["classe"].values,test_size=0.20, random_state=42)
     
-        if not self.dividir:
-            return self.partition(x_train,y_train,self.id,self.nc), self.partition(x_test,y_test,self.id,self.nc)
+        # if not self.dividir:
+        #     return self.partition(x_train,y_train,self.id,self.nc), self.partition(x_test,y_test,self.id,self.nc)
 
         return x_train, y_train, x_test, y_test
 
-    def partition(X: np.ndarray, y: np.ndarray, id, nc):
-        if len(X[0]) == 41:
-            X = X[:,:-1]
+    # def partition(X: np.ndarray, y: np.ndarray, id, nc):
+    #     if len(X[0]) == 41:
+    #         X = X[:,:-1]
     
-        return np.array_split(X, int(nc))[id], np.array_split(y, int(nc))[id]
+    #     return np.array_split(X, int(nc))[id], np.array_split(y, int(nc))[id]
 
 
         

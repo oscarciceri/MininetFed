@@ -11,12 +11,13 @@ from trainer import Trainer
 n = len(sys.argv)
 
 # check args
-if (n != 3):
-    print("correct use: python client.py <broker_address> <name>.")
+if (n != 4):
+    print("correct use: python client.py <broker_address> <name> <id>.")
     exit()
 
 BROKER_ADDR = sys.argv[1]
-NAME_NODE   = sys.argv[2]
+CLIENT_ID = sys.argv[2]
+CLIENT_NUMBER   = int(sys.argv[3])
 # class for coloring messages on terminal
 
 
@@ -43,13 +44,13 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message_selection(client, userdata, message):
     msg = json.loads(message.payload.decode("utf-8"))
-    if msg['id'] == trainer.get_id():
+    if msg['id'] == CLIENT_ID:
         if bool(msg['selected']) == True:
             print(color.BOLD_START + 'new round starting' + color.BOLD_END)
             print(
                 f'trainer was selected for training this round and will start training!')
             trainer.train_model()
-            response = json.dumps({'id': trainer.get_id(), 'weights': [w.tolist(
+            response = json.dumps({'id': CLIENT_ID, 'weights': [w.tolist(
             ) for w in trainer.get_weights()], 'num_samples': trainer.get_num_samples()})
             client.publish('minifed/preAggQueue', response)
             print(f'finished training and sent weights!')
@@ -62,10 +63,11 @@ def on_message_selection(client, userdata, message):
 
 def on_message_agg(client, userdata, message):
     print(f'received aggregated weights!')
-    response = json.dumps({'id': trainer.get_id(
-    ), 'accuracy': trainer.eval_model(), "metrics": trainer.all_metrics()})
+    # response = json.dumps({'id': CLIENT_ID, 'accuracy': trainer.eval_model(), "metrics": trainer.all_metrics()})
     msg = json.loads(message.payload.decode("utf-8"))
     agg_weights = [np.asarray(w, dtype=np.float32) for w in msg["weights"]]
+    results = trainer.all_metrics()
+    response = json.dumps({'id': CLIENT_ID, 'accuracy': results["accuracy"], "metrics": results})
     trainer.update_weights(agg_weights)    
     print(f'sending eval metrics!\n')
     client.publish('minifed/metricsQueue', response)
@@ -80,19 +82,18 @@ def on_message_stop(client, userdata, message):
 
 
 # connect on queue and send register
-trainer = Trainer(NAME_NODE)
-client = mqtt.Client(str(trainer.get_id()))
+trainer = Trainer(CLIENT_NUMBER)
+client = mqtt.Client(str(CLIENT_ID))
 client.connect(BROKER_ADDR, keepalive=2000)
 client.on_connect = on_connect
 client.message_callback_add('minifed/selectionQueue', on_message_selection)
 client.message_callback_add('minifed/posAggQueue', on_message_agg)
 client.message_callback_add('minifed/stopQueue', on_message_stop)
 
-response = json.dumps({'id': trainer.get_id(
-    ), 'accuracy': trainer.eval_model(), "metrics": trainer.all_metrics()})
+response = json.dumps({'id': CLIENT_ID, 'accuracy': trainer.eval_model(), "metrics": trainer.all_metrics()})
 client.publish('minifed/registerQueue',  response)
 print(color.BOLD_START +
-      f'trainer {trainer.get_id()} connected!\n' + color.BOLD_END)
+      f'trainer {CLIENT_ID} connected!\n' + color.BOLD_END)
 
 # start waiting for jobs
 client.loop_start()

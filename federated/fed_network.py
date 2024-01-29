@@ -89,7 +89,6 @@ class FedNetwork:
     def insert_client_containers(self):
       info('*** Adicionando Container do Server\n')
      
-      cont = 0
       qtdDevice = 0
       for client_type in self.config.get("client_types"):
           for x in range(1, client_type["amount"]+1):    
@@ -101,8 +100,6 @@ class FedNetwork:
               self.net.addLink(d, self.switchs[client_type['conection'] - 1],
                           loss=client_type["loss"], bw=client_type["bw"])
               self.clientes.append(d)
-              cont = (cont+1) % 16
-              
               
     def start(self):
         info('*** Configurando Links\n')
@@ -136,12 +133,12 @@ class FedNetwork:
         
     def start_clientes(self):
         info('*** Inicializando clientes\n')
-        cont = 0
+        count = 0
         for client_type in self.config.get("client_types"):
             for x in range(1, client_type["amount"]+1):
-                info(f"*** Subindo cliente {str(cont+1).zfill(2)}\n")
+                info(f"*** Subindo cliente {str(count+1).zfill(2)}\n")
                 vol = client_type["volume"]
-                cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {client_type['script']} {BROKER_ADDR} {self.clientes[cont].name} ' ;"
+                cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {client_type['script']} {BROKER_ADDR} {self.clientes[count].name} {count}' ;"
                 print(cmd)
-                makeTerm(self.clientes[cont], cmd=cmd)
-                cont += 1
+                makeTerm(self.clientes[count], cmd=cmd)
+                count += 1

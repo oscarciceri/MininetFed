@@ -9,18 +9,15 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
 class Trainer:
-    def __init__(self,id) -> None:
+    def __init__(self,num_id) -> None:
         # id and model
-        self.id = id
+        self.num_id = num_id
         self.model = self.define_model()
         # split data
         # select a random number ranging from 10000 < num_samples < 20000
         self.num_samples = int(np.random.choice(np.arange(10000, 20000, 1000)))
         self.x_train, self.y_train, self.x_test, self.y_test = self.split_data()
         self.stop_flag = False
-
-    def get_id(self):
-        return self.id
 
     def get_num_samples(self):
         return self.num_samples
@@ -63,13 +60,13 @@ class Trainer:
                        batch_size=64, epochs=10, verbose=3)
 
     def eval_model(self):
-        acc = self.model.evaluate(
-            x=self.x_test, y=self.y_test, verbose=False)[1]
+        acc = self.model.evaluate(x=self.x_test, y=self.y_test, verbose=False)[1]
         return acc
-
+    
     def all_metrics(self):
-        return {"metrics_names": self.model.metrics_names, "values": self.model.evaluate(
-            x=self.x_test, y=self.y_test, verbose=False)}
+        metrics_names = self.model.metrics_names
+        values = self.model.evaluate(x=self.x_test, y=self.y_test, verbose=False)
+        return dict(zip(metrics_names, values))
 
     def get_weights(self):
         return self.model.get_weights()
@@ -84,8 +81,8 @@ class Trainer:
         return self.stop_flag
 
 
-if __name__ == '__main__':
-    trainer = Trainer()
-    for l in trainer.model.layers:
-        print(l.name)
-        print(l.get_weights())
+# if __name__ == '__main__':
+#     trainer = Trainer()
+#     for l in trainer.model.layers:
+#         print(l.name)
+#         print(l.get_weights())
