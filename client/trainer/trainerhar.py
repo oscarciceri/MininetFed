@@ -124,8 +124,27 @@ class TrainerHar:
 
         
 
-# if __name__ == '__main__':
-#     trainer = TrainerCifar()
-#     for l in trainer.model.layers:
-#         print(l.name)
-#         print(l.get_weights())
+if __name__ == '__main__':
+    trainer = TrainerHar(0)
+    x_train, y_train, x_test, y_test = trainer.load_data()
+    trainer.train_model()
+    y_predict = trainer.model.predict(x_test)
+    
+    # Convertendo os arrays numpy para DataFrames
+    x_train_df = pd.DataFrame(x_train)
+    y_train_df = pd.DataFrame(y_train)
+    x_test_df = pd.DataFrame(x_test)
+    y_test_df = pd.DataFrame(y_test)
+    y_predict_df = pd.DataFrame(y_predict)
+
+    # Salvando os DataFrames como arquivos CSV
+   
+    
+    x_train_df.to_csv('x_train.csv', index=False)
+    y_train_df.to_csv('y_train.csv', index=False)
+    x_test_df.to_csv('x_test.csv', index=False)
+    y_test_df.to_csv('y_test.csv', index=False)
+    y_predict_df.to_csv('y_predict.csv', index=False)
+
+    
+    

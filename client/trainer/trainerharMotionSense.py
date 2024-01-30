@@ -1,5 +1,6 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+import tensorflow as tf 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.optimizers import SGD
@@ -14,14 +15,14 @@ class TrainerHarMotionSense:
         self.x_train, self.y_train, self.x_test, self.y_test = self.split_data()
         input_shape = self.x_train.shape[1:]
         self.num_samples = self.x_train.shape[0]
-        n_classes = len(np.unique(self.y_train))
+        n_classes = len(self.y_train[0])
         self.model = self.define_model(input_shape, n_classes)
         self.stop_flag = False
     
     def get_num_samples(self):
         return self.num_samples
     
-    def define_model(self, input_shape=(28, 28, 1), n_classes=10):
+    def define_model(self, input_shape=(28, 28, 1), n_classes=4):
         model = Sequential()
         model.add(Flatten(input_shape=input_shape))
         model.add(Dense(256, activation='relu'))
@@ -30,7 +31,7 @@ class TrainerHarMotionSense:
         model.add(Dense(n_classes, activation='softmax'))
 
         opt = SGD(learning_rate=0.01)
-        model.compile(optimizer=opt, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+        model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
 
         return model
 
@@ -87,13 +88,13 @@ class TrainerHarMotionSense:
 
         x_test = x_test[mask_test]
         y_test = y_test[mask_test]['act']
-        print(y_test.shape,x_test.shape)
-        print(y_train.shape,x_train.shape)
+        # print(y_test.shape,x_test.shape)
+        # print(y_train.shape,x_train.shape)
         # Converter os dataframes para numpy arrays antes de usá-los no treinamento do modelo
         x_train = x_train.values
-        y_train = y_train.values
+        y_train = tf.one_hot(y_train.values.astype(np.int32), depth=4)
         x_test = x_test.values
-        y_test = y_test.values
+        y_test = tf.one_hot(y_test.values.astype(np.int32), depth=4)
 
         return x_train, y_train, x_test, y_test
 
@@ -101,8 +102,34 @@ class TrainerHarMotionSense:
 
         
 
-# if __name__ == '__main__':
-#     trainer = TrainerCifar()
-#     for l in trainer.model.layers:
-#         print(l.name)
-#         print(l.get_weights())
+if __name__ == '__main__':
+    trainer = TrainerHarMotionSense(0)
+    x_train, y_train, x_test, y_test = trainer.load_data()
+    # print(x_train.shape,y_train.shape, x_test.shape,y_test.shape)
+    acc = trainer.eval_model()
+    print(acc)
+    while acc < 0.9:
+        trainer.train_model()
+        acc = trainer.eval_model()
+        print(acc)
+    
+    
+    y_predict = trainer.model.predict(x_test)
+   
+    # Convertendo os arrays numpy para DataFrames
+    x_train_df = pd.DataFrame(x_train)
+    y_train_df = pd.DataFrame(y_train)
+    x_test_df = pd.DataFrame(x_test)
+    y_test_df = pd.DataFrame(y_test)
+    y_predict_df = pd.DataFrame(y_predict)
+
+    # Salvando os DataFrames como arquivos CSV
+   
+  
+    x_train_df.to_csv('x_train.csv', index=False)
+    y_train_df.to_csv('y_train.csv', index=False)
+    x_test_df.to_csv('x_test.csv', index=False)
+    y_test_df.to_csv('y_test.csv', index=False)
+    y_predict_df.to_csv('y_predict.csv', index=False)
+
+    

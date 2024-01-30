@@ -1,6 +1,5 @@
 from tensorflow.keras.layers import Conv2D, MaxPool2D, Flatten, Dense
 import numpy as np
-import uuid
 from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.models import Sequential
 import tensorflow as tf
