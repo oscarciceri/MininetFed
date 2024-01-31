@@ -3,3 +3,4 @@ local/
 .vscode/
 __pycache__/
 localenv/
+analysis/env2

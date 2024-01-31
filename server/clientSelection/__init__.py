@@ -1,1 +1,1 @@
-from .deev import Deev as ClientSelection
+from .fed_avg import FedAvg as ClientSelection
