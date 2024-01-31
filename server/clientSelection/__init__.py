@@ -1,1 +1,1 @@
-from .fed_avg import FedAvg as ClientSelection
+from .fed_sec_per import FedSecPer as ClientSelection
