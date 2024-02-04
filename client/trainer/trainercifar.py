@@ -11,12 +11,12 @@ import pandas as pd
 import numpy as np
 
 class TrainerCifar:
-    def __init__(self, id) -> None:
+    def __init__(self, id, mode) -> None:
         # id and model
         self.id = id
+        self.mode = mode # 'class' 'random' 'all'
         self.model = self.define_model()
         # split data
-        self.modo = 'random' # 'class' 'random' 'all'
         self.num_samples = int(np.random.choice(np.arange(10000, 20000, 1000))) # select a random number ranging from 10000 < num_samples < 20000
         self.x_train, self.y_train, self.x_test, self.y_test = self.split_data()
         self.stop_flag = False
@@ -72,7 +72,7 @@ class TrainerCifar:
         train_labels = tf.one_hot(np.squeeze(train_labels), depth=num_classes).numpy()
         test_labels = tf.one_hot(np.squeeze(test_labels), depth=num_classes).numpy()
         
-        if self.modo == 'random':
+        if self.mode == 'random':
             # Calculate the proportion of test samples
             test_ratio = test_images.shape[0] / (train_images.shape[0] + test_images.shape[0])
             test_sample_size = int(self.num_samples * test_ratio)
@@ -85,14 +85,14 @@ class TrainerCifar:
             train_labels = train_labels[train_indices]
             test_images = test_images[test_indices]
             test_labels = test_labels[test_indices]
-        elif self.modo == 'class':
+        elif self.mode == 'class':
             selected_label = self.id % num_classes
             train_indices = np.where(np.argmax(train_labels, axis=1) == selected_label)[0]
             test_indices = np.where(np.argmax(test_labels, axis=1) == selected_label)[0]
 
             train_images, train_labels = train_images[train_indices], train_labels[train_indices]
             test_images, test_labels = test_images[test_indices], test_labels[test_indices]
-        elif self.modo == 'all':
+        elif self.mode == 'all':
             pass
         
         return train_images, train_labels, test_images, test_labels
@@ -124,7 +124,7 @@ class TrainerCifar:
         
 
 if __name__ == '__main__':
-    trainer = TrainerCifar(0)
+    trainer = TrainerCifar(0, 'random')
     # x_train, y_train, x_test, y_test = trainer.load_data()
     print(trainer.x_train.shape,trainer.y_train.shape, trainer.x_test.shape,trainer.y_test.shape)
     acc = 0.0

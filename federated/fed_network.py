@@ -138,7 +138,7 @@ class FedNetwork:
             for x in range(1, client_type["amount"]+1):
                 info(f"*** Subindo cliente {str(count+1).zfill(2)}\n")
                 vol = client_type["volume"]
-                cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {client_type['script']} {BROKER_ADDR} {self.clientes[count].name} {count}' ;"
+                cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {client_type['script']} {BROKER_ADDR} {self.clientes[count].name} {count} {self.general['trainer_mode']}' ;"
                 print(cmd)
                 makeTerm(self.clientes[count], cmd=cmd)
                 count += 1

@@ -11,8 +11,9 @@ from sklearn import preprocessing
 
 class TrainerHar:
     # ID = 0
-    def __init__(self,ext_id) -> None:
+    def __init__(self,ext_id, mode) -> None:
         self.external_id = ext_id
+        self.mode = mode # client
         # TrainerHar.ID = TrainerHar.ID + 1
         self.id = int(ext_id) + 1
         self.nc = self.id
@@ -103,7 +104,7 @@ class TrainerHar:
         newDf["classe"] = le.transform(df["classe"])
 
       
-        if self.dividir==True:
+        if self.mode=="client":
             newDf[self.idColumn] = df[self.idColumn]
             idslist = newDf[self.idColumn].unique()
             newDf = newDf[newDf[self.idColumn] == idslist[int(self.id%len(idslist))-1]].drop(columns=[self.idColumn])  
@@ -125,7 +126,7 @@ class TrainerHar:
         
 
 if __name__ == '__main__':
-    trainer = TrainerHar(0)
+    trainer = TrainerHar(0,'client')
     x_train, y_train, x_test, y_test = trainer.load_data()
     trainer.train_model()
     y_predict = trainer.model.predict(x_test)

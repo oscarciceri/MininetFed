@@ -11,13 +11,14 @@ from trainer import Trainer
 n = len(sys.argv)
 
 # check args
-if (n != 4):
-    print("correct use: python client.py <broker_address> <name> <id>.")
+if (n != 5):
+    print("correct use: python client.py <broker_address> <name> <id> <trainer_mode>.")
     exit()
 
-BROKER_ADDR = sys.argv[1]
-CLIENT_ID = sys.argv[2]
+BROKER_ADDR     = sys.argv[1]
+CLIENT_ID       = sys.argv[2]
 CLIENT_NUMBER   = int(sys.argv[3])
+MODE            = sys.argv[4]
 # class for coloring messages on terminal
 
 
@@ -82,7 +83,7 @@ def on_message_stop(client, userdata, message):
 
 
 # connect on queue and send register
-trainer = Trainer(CLIENT_NUMBER)
+trainer = Trainer(CLIENT_NUMBER, MODE)
 client = mqtt.Client(str(CLIENT_ID))
 client.connect(BROKER_ADDR, keepalive=2000)
 client.on_connect = on_connect

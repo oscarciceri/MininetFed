@@ -9,9 +9,10 @@ import pandas as pd
 
 class TrainerHarMotionSense:
         
-    def __init__(self,num_id) -> None:
+    def __init__(self,num_id, mode) -> None:
         self.folder = "client/data"
         self.id = num_id
+        self.mode = mode # client, all
         self.x_train, self.y_train, self.x_test, self.y_test = self.split_data()
         input_shape = self.x_train.shape[1:]
         self.num_samples = self.x_train.shape[0]
@@ -78,18 +79,19 @@ class TrainerHarMotionSense:
         x_test = pd.read_csv(os.path.join(folder_path, 'MotionSense_x_test.csv'), sep=',', decimal='.')
         y_test = pd.read_csv(os.path.join(folder_path, 'MotionSense_y_test.csv'), sep=',', decimal='.')
 
-        # print(self.external_id,self.id)
-        # Selecionar linhas com base no self.id
-        mask_train = y_train['id'] == self.id
-        mask_test = y_test['id'] == self.id
-        
-        x_train = x_train[mask_train]
-        y_train = y_train[mask_train]['act']
+        if self.mode == 'client':
+            # print(self.external_id,self.id)
+            # Selecionar linhas com base no self.id
+            mask_train = y_train['id'] == self.id
+            mask_test = y_test['id'] == self.id
+            
+            x_train = x_train[mask_train]
+            y_train = y_train[mask_train]['act']
 
-        x_test = x_test[mask_test]
-        y_test = y_test[mask_test]['act']
-        # print(y_test.shape,x_test.shape)
-        # print(y_train.shape,x_train.shape)
+            x_test = x_test[mask_test]
+            y_test = y_test[mask_test]['act']
+        elif self.mode == 'all':
+            pass
         # Converter os dataframes para numpy arrays antes de usá-los no treinamento do modelo
         x_train = x_train.values
         y_train = tf.one_hot(y_train.values.astype(np.int32), depth=4)
@@ -103,7 +105,7 @@ class TrainerHarMotionSense:
         
 
 if __name__ == '__main__':
-    trainer = TrainerHarMotionSense(0)
+    trainer = TrainerHarMotionSense(0,'client')
     x_train, y_train, x_test, y_test = trainer.load_data()
     # print(x_train.shape,y_train.shape, x_test.shape,y_test.shape)
     acc = trainer.eval_model()

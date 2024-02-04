@@ -8,9 +8,10 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
 class Trainer:
-    def __init__(self,num_id) -> None:
+    def __init__(self,num_id, mode) -> None:
         # id and model
         self.num_id = num_id
+        self.mode = mode
         self.model = self.define_model()
         # split data
         # select a random number ranging from 10000 < num_samples < 20000

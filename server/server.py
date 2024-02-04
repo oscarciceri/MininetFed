@@ -150,6 +150,7 @@ def server():
         select_trainers = controller.select_trainers_for_round()
         selected_qtd = len(select_trainers)
         
+        logger.info(f"n_selected: {len(select_trainers)}", extra=metricType)
         logger.info(f"selected_trainers: {' - '.join(select_trainers)}", extra=metricType)
         for t in trainer_list:
             if t in select_trainers:
