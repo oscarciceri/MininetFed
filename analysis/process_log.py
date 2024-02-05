@@ -7,8 +7,9 @@ import numpy as np
 
 class File:
     def __init__(self, name):
+        
         self.name = name
-        self.data = pd.DataFrame(columns=['round', 'deltaT', 'mean_accuracy'])
+        self.data = pd.DataFrame() # columns=['round', 'deltaT', 'mean_accuracy']
         
         with open(self.name + '.log', 'r') as file:
             self.content = file.readlines()
@@ -42,7 +43,7 @@ class File:
                     round_end_time = datetime.strptime(line.split(' - ')[0], '%Y-%m-%d %H:%M:%S,%f')
                     deltaT = round_end_time - round_start_time
                     self.save_data(round_number,deltaT.total_seconds()*1000,  mean_accuracy)
-                    self.save_to_csv()
+                    # self.save_to_csv()
                         
     def save_data(self, round, deltaT, mean_accuracy):
         new_data = pd.DataFrame({'round': [round], 'deltaT': [deltaT], 'mean_accuracy': [mean_accuracy],'n_selected':[self.n_selected]})
@@ -53,6 +54,9 @@ class File:
 
     def save_to_csv(self):
         self.data.to_csv(self.name + '.csv', index=False)
+        
+    def get_dataframe(self):
+        return self.data
 
 
 if __name__ == '__main__':
@@ -61,13 +65,15 @@ if __name__ == '__main__':
 
     #  check args
     if (n < 2):
-        print("correct use: sudo python3 trainingLog.py <1.log> ...")
+        print("correct use: sudo python3 process_log.py <1.log> ...")
         exit()
 
     files = []
     
     for fileName in sys.argv[1:]:
-        files.append(File(fileName.split('.')[0]))
+        file = File(fileName.split('.')[0])
+        file.save_to_csv()
+        files.append(file)
    
 
 

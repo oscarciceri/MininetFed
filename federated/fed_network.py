@@ -9,14 +9,15 @@ import time
 from datetime import datetime
 
 from .config import Config
+from .experiment import Experiment
 
 
 
 BROKER_ADDR = "172.17.0.2"
-MIN_TRAINERS = 3
-NUM_ROUNDS = 10
-STOP_ACC = 1.0
-CSV_LOG="logs/novo.log"
+# MIN_TRAINERS = 3
+# NUM_ROUNDS = 10
+# STOP_ACC = 1.0
+# CSV_LOG="logs/novo.log"
       
 
 class FedNetwork:
@@ -31,14 +32,13 @@ class FedNetwork:
         
         self.config = Config(filename)
         
+        
         self.general = self.config.get("general")
         self.absolute = self.general["absolute_path"]
         self.n_cpu = self.general["n_available_cpu"]
         self.broker_image = self.general["broker_image"]
         
-        now = datetime.now()
-        now_str = now.strftime("_%d_%m_%Y_%Hh%Mm%Ss")
-        self.csv_name = "logs/" + self.general["experiment_name"] + now_str
+       
         
         self.stop_acc = self.general["stop_accuracy"]
         self.max_n_rounds = self.general["max_n_rounds"]
@@ -59,7 +59,10 @@ class FedNetwork:
         self.insert_server_container()
         self.insert_client_containers()
 
+        
 
+        self.experiment = Experiment("experiments",self.general["experiment_name"],create_new=self.general["new_experiment"],reopen_name=self.general["reopen_name"])
+        self.experiment.copyFileToExperimentFolder(filename)
 
     def insert_switch(self, qtd):
         info('*** Adicionando SWITCHS\n')
@@ -126,7 +129,7 @@ class FedNetwork:
         info('*** Inicializando servidor\n')
         script = self.server["script"]
         vol = self.server["volume"]
-        cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {script} {BROKER_ADDR} {self.min_trainers} {self.max_n_rounds} {self.stop_acc} {self.csv_name}.log 2> {self.csv_name}_err.txt' ;"
+        cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {script} {BROKER_ADDR} {self.min_trainers} {self.max_n_rounds} {self.stop_acc} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt' ;"
         print(cmd)
         makeTerm(self.srv1, cmd=cmd)
         

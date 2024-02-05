@@ -11,8 +11,9 @@ n = len(sys.argv)
  
 # check args
 if (n != 2):
-    print("correct use: sudo python3 create_env.py <image>")
-    exit()
+    print("Default image: mininetfed:client")
+    print("use suggestion: sudo python3 create_env.py <image>")
+   
 
 images = sys.argv[1] 
 

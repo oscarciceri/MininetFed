@@ -5,10 +5,11 @@ import time
 import numpy as np
 import sys
 import logging
-
+import os
 
 def server():
     # total args
+    os.umask(0o000)
     n = len(sys.argv)
 
     # check args
