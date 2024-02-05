@@ -8,14 +8,15 @@ from containernet.cli import CLI
 
 # total args
 n = len(sys.argv)
- 
+
+images = "mininetfed:client" 
 # check args
 if (n != 2):
     print("Default image: mininetfed:client")
     print("use suggestion: sudo python3 create_env.py <image>")
    
-
-images = sys.argv[1] 
+else:
+    images = sys.argv[1] 
 
 
 setLogLevel('info')
