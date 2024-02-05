@@ -2,7 +2,7 @@ from analysis.config import Config
 from analysis.process_log import File
 from analysis.generate_graphics import Graphics
 # from .federated.experiment import Experiment
-# from .client.trainer import Trainer
+from client import Trainer
 
 import sys
 import os
@@ -65,20 +65,67 @@ if __name__ == '__main__':
                 plot.network_consumption()
     
         
-        
-        
-        
-        
-        
-        
-        
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    # import seaborn as sns
     datasets_analysis = config.get("datasets_analysis")
-    print(datasets_analysis)
+    if datasets_analysis != None:
+        trainer = Trainer(datasets_analysis["id"],datasets_analysis["mode"])
+        
+        for graphic in datasets_analysis["graphics"]:
+            # Distribuição de classes
+            if 'class_distribution' == graphic["type"]:
+                plt.figure(figsize=(10, 6))
+                plt.hist(trainer.y_train, bins=30)
+                plt.title('Distribuição de Classes')
+                plt.show()
+
+            # Histograma
+            if 'histogram' == graphic["type"]:
+                plt.figure(figsize=(15,10))
+                plt.hist(trainer.x_train, bins=30)
+                plt.title('Histograma')
+                plt.show()
+
+            # Boxplot
+            if 'boxplot'  == graphic["type"]:
+                plt.figure(figsize=(10, 6))
+                plt.boxplot(trainer.x_train)
+                plt.title('Boxplot')
+                plt.show()
+
+            # Matriz de correlação
+            if 'correlation_matrix' == graphic["type"]:
+                df = pd.DataFrame(trainer.x_train)
+                corr = df.corr()
+                cax = plt.matshow(corr, cmap='coolwarm')
+                plt.colorbar(cax)
+                plt.title('Matriz de Correlação')
+                plt.show()
+        # # Distribuição de classes
+        # if 'class_distribution' in datasets_analysis["graphics"]:
+        #     plt.figure(figsize=(10, 6))
+        #     sns.countplot(x=trainer.y_train)
+        #     plt.title('Distribuição de Classes')
+        #     plt.show()
+
+        # # Histograma
+        # if 'histogram' in datasets_analysis["graphics"]:
+        #     trainer.x_train.hist(bins=30, figsize=(15,10))
+        #     plt.title('Histograma')
+        #     plt.show()
+
+        # # Boxplot
+        # if 'boxplot' in datasets_analysis["graphics"]:
+        #     plt.figure(figsize=(10, 6))
+        #     trainer.x_train.boxplot()
+        #     plt.title('Boxplot')
+        #     plt.show()
+
+        # # Matriz de correlação
+        # if 'correlation_matrix' in datasets_analysis["graphics"]:
+        #     plt.figure(figsize=(10, 6))
+        #     sns.heatmap(trainer.x_train.corr(), annot=True, fmt=".2f")
+        #     plt.title('Matriz de Correlação')
+        #     plt.show()
     
-    
-    # files = []
-    
-    # for fileName in sys.argv[1:]:
-    #     file = File(fileName.split('.')[0])
-    #     file.save_to_csv()
-    #     files.append(file)

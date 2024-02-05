@@ -24,5 +24,10 @@ experiments_analysis:
     - type: network_consumption
 
 datasets_analysis:
+  id: 0
+  mode: client
   graphics:
     - type: class_distribution
+    - type: histogram
+    - type: boxplot
+    - type: correlation_matrix
