@@ -78,4 +78,13 @@ class Graphics:
             plt.show()
     
     def network_consumption(self):
-        pass
+        plt.figure(figsize=(10, 6))
+        for item in self.dfs:
+            df = item['netdf']
+            plt.plot(df['segs'], df['recived'], label=item['name'])
+            
+        plt.xlabel('segundos')
+        plt.ylabel('bytes recived by the broker')
+        plt.title('Gráfico de bytes recebidos no decorrer do tempo')
+        plt.legend()
+        plt.show()

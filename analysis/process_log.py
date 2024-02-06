@@ -10,10 +10,38 @@ class File:
         
         self.name = name
         self.data = pd.DataFrame() # columns=['round', 'deltaT', 'mean_accuracy']
+        self.net = pd.DataFrame()
         
         with open(self.name + '.log', 'r') as file:
             self.content = file.readlines()
+            
+        with open(self.name + '.net', 'r') as file:
+            self.network = file.readlines()
         self.processContent()
+        self.processNetworkContent()
+        
+    def processNetworkContent(self):
+        self.n_net_saves = 0
+        self.recived = 0
+        self.sent = 0
+        for line in self.network:
+            if 'recived' in line:
+                self.recived_old = self.recived
+                self.recived = int(re.search('recived: (\d+)', line).group(1))
+            if 'sent' in line:
+                self.sent_old = self.sent
+                self.sent = int(re.search('sent: (\d+)', line).group(1))
+                self.save_network()
+    
+    def save_network(self):
+        new_net = pd.DataFrame({'segs':[self.n_net_saves],'recived': [self.recived], 'sent': [self.sent], 'recived_dt': [self.recived - self.recived_old],'sent_dt':[self.sent - self.sent_old]})
+        if self.net.empty:
+            self.net = new_net
+        else:
+            self.net = pd.concat([self.net, new_net], ignore_index=True)
+        self.n_net_saves += 5 # COLOCAR TIME STAMP NO ARQUIVO .net
+                
+                
     
     def processContent(self):
         round_start_time = None
@@ -54,10 +82,13 @@ class File:
 
     def save_to_csv(self):
         self.data.to_csv(self.name + '.csv', index=False)
+        self.net.to_csv(self.name +'_net.csv',index=False)
         
     def get_dataframe(self):
         return self.data
 
+    def get_net_dataframe(self):
+        return self.net
 
 if __name__ == '__main__':
     # total args

@@ -8,6 +8,7 @@ experiments_analysis:
         - 20h29m32sfed_sec_per_har.log
 
     - experiment: 05_02_2024fed_sec_per_har #implicitly get all .log files from the folder
+    - experiment: 06_02_2024fed_sec_per_har
 
   graphics:
     - type: deltaT_per_round

@@ -36,18 +36,20 @@ if __name__ == '__main__':
                     name = fileName.split(".")[0]
                     f = File(f"{FOLDER}/{experiment_name}/{name}")
                     df = f.get_dataframe()
+                    netdf = f.get_net_dataframe()
                     if csv:
                         f.save_to_csv()
-                    dfs.append({'name':f"{experiment_name}/{name}" ,'df':df})
+                    dfs.append({'name':f"{experiment_name}/{name}" ,'df':df,'netdf':netdf})
             else:
                 for fileName in os.listdir(f"{FOLDER}/{experiment_name}"):
                     if fileName.endswith(".log"):
                         name = fileName.split(".")[0]
                         f = File(f"{FOLDER}/{experiment_name}/{name}")
                         df = f.get_dataframe()
+                        netdf = f.get_net_dataframe()
                         if csv:
                             f.save_to_csv()
-                        dfs.append({'name':f"{experiment_name}/{name}" ,'df':df})
+                        dfs.append({'name':f"{experiment_name}/{name}" ,'df':df, 'netdf':netdf})
         
         plot = Graphics(dfs,experiments_analysis.get("save_graphics"),FOLDER)
         

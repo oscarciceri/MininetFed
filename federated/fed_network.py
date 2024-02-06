@@ -56,6 +56,7 @@ class FedNetwork:
         
         self.insert_switch(self.config.get("network_components"))
         self.insert_broker_container()
+        self.insert_monitor_container()
         self.insert_server_container()
         self.insert_client_containers()
 
@@ -80,15 +81,18 @@ class FedNetwork:
         self.net.addLink(self.broker, self.switchs[self.server["conection"] - 1])
     
     
+    def insert_monitor_container(self):
+        info('*** Adicionando Container do monitor\n')
+        self.mnt1 = self.net.addDocker('mnt1', dimage=self.server_images, volumes=self.server_docker_volume,
+                     mem_limit=self.server["memory"], cpu_quota=self.server_quota)
+        self.net.addLink(self.mnt1, self.switchs[self.server["conection"] - 1])
     
     def insert_server_container(self):
         info('*** Adicionando Container do Server\n')
         self.srv1 = self.net.addDocker('srv1', dimage=self.server_images, volumes=self.server_docker_volume,
                      mem_limit=self.server["memory"], cpu_quota=self.server_quota)
         self.net.addLink(self.srv1, self.switchs[self.server["conection"] - 1])
-      
-      
-      
+        
     def insert_client_containers(self):
       info('*** Adicionando Container do Server\n')
      
@@ -111,6 +115,7 @@ class FedNetwork:
       
         self.start_broker() 
         time.sleep(2)
+        self.start_monitor()
         self.start_server() 
         time.sleep(3)
         self.start_clientes()
@@ -125,12 +130,18 @@ class FedNetwork:
         info('*** Inicializando broker\n')
         makeTerm(self.broker, cmd=f'bash -c "mosquitto -c {self.general["broker_volume"]}/mosquitto.conf"')
         
+    def start_monitor(self):
+        info('*** Inicializando monitor\n')
+        cmd2 = f"bash -c 'cd {self.server['''volume''']} && . env/bin/activate && python3 network_monitor.py {BROKER_ADDR} {self.experiment.getFileName(extension='''''')}.net'"
+        makeTerm(self.mnt1, cmd=cmd2)
+        
+        
     def start_server(self):
         info('*** Inicializando servidor\n')
         script = self.server["script"]
         vol = self.server["volume"]
         cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {script} {BROKER_ADDR} {self.min_trainers} {self.max_n_rounds} {self.stop_acc} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt' ;"
-        print(cmd)
+        # print(cmd)
         makeTerm(self.srv1, cmd=cmd)
         
         
@@ -142,6 +153,6 @@ class FedNetwork:
                 info(f"*** Subindo cliente {str(count+1).zfill(2)}\n")
                 vol = client_type["volume"]
                 cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {client_type['script']} {BROKER_ADDR} {self.clientes[count].name} {count} {self.general['trainer_mode']}' ;"
-                print(cmd)
+                # print(cmd)
                 makeTerm(self.clientes[count], cmd=cmd)
                 count += 1
