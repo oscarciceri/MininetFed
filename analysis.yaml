@@ -9,6 +9,7 @@ experiments_analysis:
 
     - experiment: 05_02_2024fed_sec_per_har #implicitly get all .log files from the folder
     - experiment: 06_02_2024fed_sec_per_har
+    - experiment: 06_02_2024fed_sec_per_mnist
 
   graphics:
     - type: deltaT_per_round
@@ -17,10 +18,10 @@ experiments_analysis:
 
     - type: n_clients_absolute
 
-    - type: n_clients_relative
-      relative_to:
-        experiment: 04_02_2024fed_sec_per_har
-        file: 20h29m32sfed_sec_per_har.log
+    # - type: n_clients_relative
+    #   relative_to:
+    #     experiment: 04_02_2024fed_sec_per_har
+    #     file: 20h29m32sfed_sec_per_har.log
 
     - type: network_consumption
 
