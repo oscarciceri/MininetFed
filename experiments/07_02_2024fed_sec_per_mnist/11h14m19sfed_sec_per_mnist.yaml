@@ -1,0 +1,68 @@
+---
+# Criar versão comentada desse arquivo para colocar na documentação da ferramenta
+# Output metrics
+metrics:
+  - mean
+  - accuracy
+
+# General settings
+general:
+  new_experiment: True
+  reopen_name: null
+  experiment_name: fed_sec_per_mnist
+  trainer_mode: client
+  max_n_rounds: 50
+  stop_accuracy: 0.97
+  min_trainers: 4
+  absolute_path: false
+  n_available_cpu: 6
+  broker_image: mininetfed:broker
+  broker_volume: /flw
+
+# (atualmente são só switchs)
+network_components: 1
+
+# Network conections
+# não implementado
+conections:
+  - conection1: 1
+    conection2: 2
+    type: (corrigir) # procurar endender melhor os tipos de conexões para implementar isso
+    delay: 0.2
+    loss: 0.01
+    band_wdth: 200
+
+# Server settings
+server:
+  memory: 256m
+  vCPU_percent: 20
+  image: mininetfed:client
+  volume: /flw
+  conection: 1
+  script: server/server.py
+
+# Clients settings list
+client_types:
+  - amount: 3
+    name: tipo1
+    memory: 480m
+    # memory: 2048m
+    vCPU_percent: 100
+    image: mininetfed:client
+    volume: /flw
+    script: client/client.py
+    conection: 1
+    loss: 0
+    bw: 10
+
+  - amount: 1
+    name: tipo2
+    memory: 480m
+    # memory: 2048m
+    vCPU_percent: 100
+    image: mininetfed:client
+    volume: /flw
+    script: client/client.py
+    conection: 1
+    loss: 0
+    bw: 10

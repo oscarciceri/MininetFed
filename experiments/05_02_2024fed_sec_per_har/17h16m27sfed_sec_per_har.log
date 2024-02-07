@@ -1,0 +1,606 @@
+2024-02-05 20:16:30,259 - EXECUT - INFO - starting server...
+2024-02-05 20:16:36,523 - EXECUT - INFO - trainer number statipo21 just joined the pool
+2024-02-05 20:16:36,532 - EXECUT - INFO - trainer number statipo12 just joined the pool
+2024-02-05 20:16:36,533 - EXECUT - INFO - trainer number statipo13 just joined the pool
+2024-02-05 20:16:36,559 - EXECUT - INFO - trainer number statipo11 just joined the pool
+2024-02-05 20:16:37,266 - METRIC - INFO - round: 1
+2024-02-05 20:16:37,267 - METRIC - INFO - n_selected: 2
+2024-02-05 20:16:37,267 - METRIC - INFO - selected_trainers: statipo12 - statipo11
+2024-02-05 20:16:38,373 - EXECUT - INFO - received weights from trainer statipo11!
+2024-02-05 20:16:38,425 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:16:39,397 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:16:39,535 - METRIC - INFO - statipo21 loss: 21.87369728088379 - accuracy: 0.1497175097465515
+2024-02-05 20:16:39,535 - METRIC - INFO - statipo11 loss: 0.1694551557302475 - accuracy: 0.9407051205635071
+2024-02-05 20:16:39,539 - METRIC - INFO - statipo13 loss: 58.069114685058594 - accuracy: 0.18589743971824646
+2024-02-05 20:16:39,570 - METRIC - INFO - statipo12 loss: 0.5134837627410889 - accuracy: 0.8582375645637512
+2024-02-05 20:16:40,398 - METRIC - INFO - mean_accuracy: 0.5336394086480141
+
+2024-02-05 20:16:40,399 - METRIC - INFO - round: 2
+2024-02-05 20:16:40,399 - METRIC - INFO - n_selected: 2
+2024-02-05 20:16:40,399 - METRIC - INFO - selected_trainers: statipo21 - statipo13
+2024-02-05 20:16:41,433 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:16:41,496 - EXECUT - INFO - received weights from trainer statipo13!
+2024-02-05 20:16:42,420 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:16:42,505 - METRIC - INFO - statipo12 loss: 1.7274011373519897 - accuracy: 0.20114941895008087
+2024-02-05 20:16:42,507 - METRIC - INFO - statipo11 loss: 20.02065086364746 - accuracy: 0.21153846383094788
+2024-02-05 20:16:42,511 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:16:42,543 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:16:43,422 - METRIC - INFO - mean_accuracy: 0.25799595937132835
+
+2024-02-05 20:16:43,422 - METRIC - INFO - round: 3
+2024-02-05 20:16:43,422 - METRIC - INFO - n_selected: 2
+2024-02-05 20:16:43,422 - METRIC - INFO - selected_trainers: statipo12 - statipo11
+2024-02-05 20:16:44,012 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:16:44,089 - EXECUT - INFO - received weights from trainer statipo11!
+2024-02-05 20:16:44,471 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:16:44,559 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:16:44,560 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:16:44,565 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:16:44,596 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:16:45,473 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:16:45,473 - METRIC - INFO - round: 4
+2024-02-05 20:16:45,473 - METRIC - INFO - n_selected: 2
+2024-02-05 20:16:45,474 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:16:46,065 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:16:46,208 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:16:46,522 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:16:46,608 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:16:46,610 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:16:46,614 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:16:46,647 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:16:47,524 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:16:47,524 - METRIC - INFO - round: 5
+2024-02-05 20:16:47,524 - METRIC - INFO - n_selected: 2
+2024-02-05 20:16:47,525 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:16:48,116 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:16:48,256 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:16:48,542 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:16:48,628 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:16:48,629 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:16:48,633 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:16:48,635 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:16:49,542 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:16:49,543 - METRIC - INFO - round: 6
+2024-02-05 20:16:49,543 - METRIC - INFO - n_selected: 2
+2024-02-05 20:16:49,543 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:16:50,202 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:16:50,365 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:16:50,587 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:16:50,680 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:16:50,681 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:16:50,682 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:16:50,724 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:16:51,588 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:16:51,589 - METRIC - INFO - round: 7
+2024-02-05 20:16:51,589 - METRIC - INFO - n_selected: 2
+2024-02-05 20:16:51,589 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:16:52,206 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:16:52,347 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:16:52,639 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:16:52,730 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:16:52,734 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:16:52,769 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:16:52,769 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:16:53,641 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:16:53,641 - METRIC - INFO - round: 8
+2024-02-05 20:16:53,641 - METRIC - INFO - n_selected: 2
+2024-02-05 20:16:53,641 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:16:54,234 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:16:54,375 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:16:54,668 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:16:54,769 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:16:54,770 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:16:54,774 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:16:54,805 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:16:55,669 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:16:55,670 - METRIC - INFO - round: 9
+2024-02-05 20:16:55,670 - METRIC - INFO - n_selected: 2
+2024-02-05 20:16:55,670 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:16:56,265 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:16:56,406 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:16:56,717 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:16:56,801 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:16:56,804 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:16:56,810 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:16:56,841 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:16:57,719 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:16:57,719 - METRIC - INFO - round: 10
+2024-02-05 20:16:57,720 - METRIC - INFO - n_selected: 2
+2024-02-05 20:16:57,720 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:16:58,418 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:16:58,439 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:16:58,766 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:16:58,853 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:16:58,856 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:16:58,859 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:16:58,900 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:16:59,766 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:16:59,767 - METRIC - INFO - round: 11
+2024-02-05 20:16:59,767 - METRIC - INFO - n_selected: 2
+2024-02-05 20:16:59,767 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:00,349 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:00,495 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:00,816 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:00,898 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:00,905 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:00,906 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:00,910 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:01,818 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:01,818 - METRIC - INFO - round: 12
+2024-02-05 20:17:01,819 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:01,819 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:02,396 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:02,548 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:02,836 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:02,921 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:02,923 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:02,925 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:02,958 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:03,838 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:03,838 - METRIC - INFO - round: 13
+2024-02-05 20:17:03,838 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:03,838 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:04,435 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:04,569 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:04,885 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:04,973 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:04,974 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:04,981 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:05,014 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:05,886 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:05,887 - METRIC - INFO - round: 14
+2024-02-05 20:17:05,887 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:05,887 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:06,471 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:06,608 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:06,935 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:07,023 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:07,026 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:07,031 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:07,034 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:07,936 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:07,936 - METRIC - INFO - round: 15
+2024-02-05 20:17:07,936 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:07,937 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:08,538 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:08,680 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:08,980 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:09,075 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:09,082 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:09,083 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:09,114 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:09,982 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:09,982 - METRIC - INFO - round: 16
+2024-02-05 20:17:09,982 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:09,983 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:10,938 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:11,351 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:11,999 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:12,088 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:12,088 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:12,090 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:12,092 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:13,000 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:13,000 - METRIC - INFO - round: 17
+2024-02-05 20:17:13,000 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:13,000 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:13,649 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:13,792 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:14,044 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:14,143 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:14,151 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:14,152 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:14,155 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:15,045 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:15,046 - METRIC - INFO - round: 18
+2024-02-05 20:17:15,046 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:15,046 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:15,747 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:15,801 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:16,074 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:16,167 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:16,173 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:16,174 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:16,176 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:17,076 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:17,076 - METRIC - INFO - round: 19
+2024-02-05 20:17:17,076 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:17,076 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:17,650 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:17,799 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:18,114 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:18,209 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:18,210 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:18,214 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:18,215 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:19,116 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:19,116 - METRIC - INFO - round: 20
+2024-02-05 20:17:19,117 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:19,117 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:19,810 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:20,008 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:20,161 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:20,255 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:20,260 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:20,265 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:20,294 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:21,163 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:21,163 - METRIC - INFO - round: 21
+2024-02-05 20:17:21,164 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:21,164 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:21,790 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:21,947 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:22,187 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:22,273 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:22,278 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:22,280 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:22,315 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:23,189 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:23,189 - METRIC - INFO - round: 22
+2024-02-05 20:17:23,190 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:23,190 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:23,797 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:23,964 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:24,219 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:24,367 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:24,370 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:24,374 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:24,407 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:25,221 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:25,221 - METRIC - INFO - round: 23
+2024-02-05 20:17:25,221 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:25,221 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:25,876 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:26,030 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:26,267 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:26,362 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:26,367 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:26,406 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:26,407 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:27,268 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:27,269 - METRIC - INFO - round: 24
+2024-02-05 20:17:27,269 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:27,269 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:27,882 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:28,029 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:28,318 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:28,410 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:28,413 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:28,444 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:28,445 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:29,318 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:29,319 - METRIC - INFO - round: 25
+2024-02-05 20:17:29,319 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:29,319 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:30,052 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:30,089 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:30,366 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:30,456 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:30,457 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:30,463 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:30,464 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:31,368 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:31,368 - METRIC - INFO - round: 26
+2024-02-05 20:17:31,368 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:31,368 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:32,113 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:32,162 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:32,409 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:32,497 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:32,499 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:32,508 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:32,538 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:33,410 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:33,410 - METRIC - INFO - round: 27
+2024-02-05 20:17:33,410 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:33,410 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:34,028 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:34,188 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:34,435 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:34,526 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:34,529 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:34,535 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:34,563 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:35,437 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:35,437 - METRIC - INFO - round: 28
+2024-02-05 20:17:35,438 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:35,438 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:36,065 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:36,219 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:36,484 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:36,579 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:36,580 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:36,584 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:36,619 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:37,485 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:37,486 - METRIC - INFO - round: 29
+2024-02-05 20:17:37,486 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:37,486 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:38,102 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:38,254 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:38,533 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:38,621 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:38,623 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:38,626 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:38,633 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:39,534 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:39,534 - METRIC - INFO - round: 30
+2024-02-05 20:17:39,534 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:39,535 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:40,159 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:40,346 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:40,557 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:40,656 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:40,656 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:40,661 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:40,684 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:41,558 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:41,559 - METRIC - INFO - round: 31
+2024-02-05 20:17:41,559 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:41,559 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:42,170 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:42,328 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:42,607 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:42,707 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:42,720 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:42,720 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:42,777 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:43,608 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:43,608 - METRIC - INFO - round: 32
+2024-02-05 20:17:43,609 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:43,609 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:44,298 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:44,453 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:44,655 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:44,745 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:44,749 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:44,752 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:44,753 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:45,657 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:45,657 - METRIC - INFO - round: 33
+2024-02-05 20:17:45,657 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:45,658 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:46,259 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:46,433 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:46,705 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:46,798 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:46,804 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:46,806 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:46,839 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:47,707 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:47,707 - METRIC - INFO - round: 34
+2024-02-05 20:17:47,708 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:47,708 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:48,359 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:48,526 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:48,740 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:48,829 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:48,836 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:48,837 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:48,870 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:49,742 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:49,742 - METRIC - INFO - round: 35
+2024-02-05 20:17:49,743 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:49,743 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:50,478 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:50,568 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:50,768 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:50,863 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:50,868 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:50,901 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:50,904 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:51,769 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:51,770 - METRIC - INFO - round: 36
+2024-02-05 20:17:51,770 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:51,770 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:52,382 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:52,526 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:52,819 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:52,909 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:52,911 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:52,911 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:52,914 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:53,820 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:53,820 - METRIC - INFO - round: 37
+2024-02-05 20:17:53,821 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:53,821 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:54,409 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:54,553 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:54,866 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:54,958 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:54,967 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:54,994 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:55,024 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:55,868 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:55,868 - METRIC - INFO - round: 38
+2024-02-05 20:17:55,869 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:55,869 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:56,462 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:56,607 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:56,894 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:56,996 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:56,999 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:57,008 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:57,027 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:57,894 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:57,894 - METRIC - INFO - round: 39
+2024-02-05 20:17:57,895 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:57,895 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:17:58,515 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:17:58,655 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:17:58,925 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:17:59,010 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:17:59,012 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:17:59,016 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:17:59,017 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:17:59,926 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:17:59,927 - METRIC - INFO - round: 40
+2024-02-05 20:17:59,927 - METRIC - INFO - n_selected: 2
+2024-02-05 20:17:59,927 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:18:00,516 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:18:00,657 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:18:00,973 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:18:01,056 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:18:01,063 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:18:01,066 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:18:01,098 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:18:01,974 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:18:01,975 - METRIC - INFO - round: 41
+2024-02-05 20:18:01,975 - METRIC - INFO - n_selected: 2
+2024-02-05 20:18:01,975 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:18:02,622 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:18:02,769 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:18:03,018 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:18:03,108 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:18:03,113 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:18:03,113 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:18:03,115 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:18:04,019 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:18:04,020 - METRIC - INFO - round: 42
+2024-02-05 20:18:04,020 - METRIC - INFO - n_selected: 2
+2024-02-05 20:18:04,020 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:18:04,701 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:18:04,854 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:18:05,063 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:18:05,150 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:18:05,158 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:18:05,195 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:18:05,195 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:18:06,064 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:18:06,065 - METRIC - INFO - round: 43
+2024-02-05 20:18:06,065 - METRIC - INFO - n_selected: 2
+2024-02-05 20:18:06,065 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:18:06,763 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:18:06,843 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:18:07,109 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:18:07,200 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:18:07,203 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:18:07,204 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:18:07,207 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:18:08,110 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:18:08,111 - METRIC - INFO - round: 44
+2024-02-05 20:18:08,111 - METRIC - INFO - n_selected: 2
+2024-02-05 20:18:08,111 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:18:08,712 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:18:08,854 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:18:09,158 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:18:09,251 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:18:09,254 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:18:09,262 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:18:09,268 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:18:10,160 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:18:10,160 - METRIC - INFO - round: 45
+2024-02-05 20:18:10,161 - METRIC - INFO - n_selected: 2
+2024-02-05 20:18:10,161 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:18:10,819 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:18:10,972 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:18:11,202 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:18:11,299 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:18:11,300 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:18:11,303 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:18:11,335 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:18:12,204 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:18:12,204 - METRIC - INFO - round: 46
+2024-02-05 20:18:12,204 - METRIC - INFO - n_selected: 2
+2024-02-05 20:18:12,205 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:18:12,926 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:18:13,092 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:18:13,239 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:18:13,333 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:18:13,337 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:18:13,340 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:18:13,343 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:18:14,240 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:18:14,241 - METRIC - INFO - round: 47
+2024-02-05 20:18:14,241 - METRIC - INFO - n_selected: 2
+2024-02-05 20:18:14,241 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:18:14,889 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:18:15,036 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:18:15,288 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:18:15,374 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:18:15,376 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:18:15,379 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:18:15,382 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:18:16,289 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:18:16,290 - METRIC - INFO - round: 48
+2024-02-05 20:18:16,290 - METRIC - INFO - n_selected: 2
+2024-02-05 20:18:16,290 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:18:16,971 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:18:17,124 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:18:17,336 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:18:17,423 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:18:17,427 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:18:17,430 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:18:17,432 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:18:18,337 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:18:18,338 - METRIC - INFO - round: 49
+2024-02-05 20:18:18,338 - METRIC - INFO - n_selected: 2
+2024-02-05 20:18:18,338 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:18:18,937 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:18:19,080 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:18:19,354 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:18:19,439 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:18:19,444 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:18:19,444 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:18:19,479 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:18:20,354 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:18:20,354 - METRIC - INFO - round: 50
+2024-02-05 20:18:20,354 - METRIC - INFO - n_selected: 2
+2024-02-05 20:18:20,355 - METRIC - INFO - selected_trainers: statipo21 - statipo12
+2024-02-05 20:18:21,363 - EXECUT - INFO - received weights from trainer statipo12!
+2024-02-05 20:18:21,550 - EXECUT - INFO - received weights from trainer statipo21!
+2024-02-05 20:18:22,406 - EXECUT - INFO - sent aggregated weights to trainers!
+2024-02-05 20:18:22,498 - METRIC - INFO - statipo21 loss: nan - accuracy: 0.2923728823661804
+2024-02-05 20:18:22,502 - METRIC - INFO - statipo13 loss: nan - accuracy: 0.32692307233810425
+2024-02-05 20:18:22,533 - METRIC - INFO - statipo12 loss: nan - accuracy: 0.25670498609542847
+2024-02-05 20:18:22,535 - METRIC - INFO - statipo11 loss: nan - accuracy: 0.3044871687889099
+2024-02-05 20:18:23,408 - METRIC - INFO - mean_accuracy: 0.29512202739715576
+
+2024-02-05 20:18:23,408 - METRIC - INFO - stop_condition: rounds
