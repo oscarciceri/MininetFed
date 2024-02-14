@@ -5,7 +5,7 @@ import os
 import stat
 
 class Experiment:
-  def __init__(self, experiments_folder,experiment_name,create_new=True,reopen_name=None):
+  def __init__(self, experiments_folder,experiment_name,create_new=True):
     self.name = experiment_name
     self.experiments_folder = experiments_folder
     self.create_new = create_new
@@ -13,7 +13,7 @@ class Experiment:
     if self.create_new:
       self.create_folder()
     else:
-      self.path = f"{self.experiments_folder}/{self.reopen_name}"
+      self.path = f"{self.experiments_folder}/{self.name}"
       
     
   def create_folder(self):

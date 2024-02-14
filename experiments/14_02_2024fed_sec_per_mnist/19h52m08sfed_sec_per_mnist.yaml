@@ -9,6 +9,7 @@
 general:
   n_available_cpu: 6
   broker_image: mininetfed:broker
+  broker_volume: /flw
 
 experiment:
   new_experiment: True
@@ -18,26 +19,26 @@ experiment:
   stop_accuracy: 0.97
   min_trainers: 4
 
-network:
-  network_monitor_script: network_monitor.py
-  network_monitor_image: mininetfed:client
-  network_components: 1
+# (atualmente são só switchs)
+network_components: 1
 
-  # Não implementado
-  connections:
-    - connection1: 1
-      connection2: 2
-      type: (corrigir) # procurar endender melhor os tipos de conexões para implementar isso
-      delay: 0.2
-      loss: 0.01
-      band_wdth: 200
+# Network conections
+# não implementado
+conections:
+  - conection1: 1
+    conection2: 2
+    type: (corrigir) # procurar endender melhor os tipos de conexões para implementar isso
+    delay: 0.2
+    loss: 0.01
+    band_wdth: 200
 
 # Server settings
 server:
   memory: 256m
   vCPU_percent: 20
   image: mininetfed:client
-  connection: 1
+  volume: /flw
+  conection: 1
   script: server/server.py
 
 # Clients settings list
@@ -48,8 +49,9 @@ client_types:
     # memory: 2048m
     vCPU_percent: 100
     image: mininetfed:client
+    volume: /flw
     script: client/client.py
-    connection: 1
+    conection: 1
     loss: 0
     bw: 10
 
@@ -59,7 +61,8 @@ client_types:
     # memory: 2048m
     vCPU_percent: 100
     image: mininetfed:client
+    volume: /flw
     script: client/client.py
-    connection: 1
+    conection: 1
     loss: 0
     bw: 10
