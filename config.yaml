@@ -9,6 +9,7 @@
 general:
   n_available_cpu: 6
   broker_image: mininetfed:broker
+  experiments_folder: experiments
 
 experiment:
   new_experiment: True
