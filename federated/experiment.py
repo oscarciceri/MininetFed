@@ -20,7 +20,7 @@ class Experiment:
 
       self.now = datetime.now()
       if self.create_new:
-        today_str = self.now.strftime("%d_%m_%Y")
+        today_str = self.now.strftime("%Y_%m_%d_")
         self.path = f"{self.experiments_folder}/{today_str}{self.name}"
       else:
         self.path = f"{self.experiments_folder}/{self.name}"
