@@ -2,6 +2,7 @@ import random
 import numpy as np
 import pandas as pd
 from clientSelection import ClientSelection
+from aggregator import Aggregator
 
 
 class Controller:
@@ -17,6 +18,7 @@ class Controller:
         self.acc_list = []
         self.mean_acc_per_round = []
         self.clientSelection = ClientSelection()
+        self.aggregator = Aggregator()
         self.metrics={}
     
     # getters
@@ -72,20 +74,7 @@ class Controller:
 
     
     def agg_weights(self):
-        scaling_factor = list(np.array(self.trainer_samples) / np.array(self.trainer_samples).sum())
-        
-        # scale weights
-        for scaling, weights in zip(scaling_factor, self.weights):
-            for i in range(0, len(weights)):
-                weights[i] = weights[i] * scaling
-        
-        # agg weights
-        agg_weights = []
-        for layer in range(0, len(self.weights[0])):
-            var = []
-            for model in range(0, len(self.weights)):
-                var.append(self.weights[model][layer])
-            agg_weights.append(sum(var))
+        agg_weights= self.aggregator.aggregate(self.trainer_samples, self.weights)
 
         # reset weights and samples for next round
         self.weights = []
@@ -93,38 +82,38 @@ class Controller:
 
         return agg_weights
 
-    # output
-    def arrays_to_csv(self,arrays, headers, filename):
-        try:
-            # Verifica se o número de arrays corresponde ao número de cabeçalhos
-            if len(arrays) != len(headers):
-                raise ValueError("O número de arrays deve ser igual ao número de cabeçalhos")
+    # # output
+    # def arrays_to_csv(self,arrays, headers, filename):
+    #     try:
+    #         # Verifica se o número de arrays corresponde ao número de cabeçalhos
+    #         if len(arrays) != len(headers):
+    #             raise ValueError("O número de arrays deve ser igual ao número de cabeçalhos")
 
-            # Cria um dicionário onde a chave é o cabeçalho e o valor é o array correspondente
-            data = {headers[i]: arrays[i] for i in range(len(headers))}
+    #         # Cria um dicionário onde a chave é o cabeçalho e o valor é o array correspondente
+    #         data = {headers[i]: arrays[i] for i in range(len(headers))}
 
-            # Cria um DataFrame pandas a partir do dicionário
-            df = pd.DataFrame(data)
+    #         # Cria um DataFrame pandas a partir do dicionário
+    #         df = pd.DataFrame(data)
 
-            # Escreve o DataFrame em um arquivo CSV
-            df.to_csv(filename, sep=';', index=False)
-        except Exception as e:
-            print(f"Ocorreu uma exceção: {e}")  
-            input()
-
-
+    #         # Escreve o DataFrame em um arquivo CSV
+    #         df.to_csv(filename, sep=';', index=False)
+    #     except Exception as e:
+    #         print(f"Ocorreu uma exceção: {e}")  
+    #         input()
 
 
-    def save_training_metrics(self, CSV_PATH):
-        # Exemplo de uso da função
-        arrays = [np.array([1, 2, 3]), np.array([4, 5, 6]), np.array([7, 8, 9])]
-        headers = ['Média', 'Tempo', 'Cliente']
-        self.arrays_to_csv(arrays, headers, CSV_PATH)
+
+
+    # def save_training_metrics(self, CSV_PATH):
+    #     # Exemplo de uso da função
+    #     arrays = [np.array([1, 2, 3]), np.array([4, 5, 6]), np.array([7, 8, 9])]
+    #     headers = ['Média', 'Tempo', 'Cliente']
+    #     self.arrays_to_csv(arrays, headers, CSV_PATH)
 
 
                    
-    def saveFile():
-        pass
-        # implementar o save file -> self.mean_acc_per_round 
+    # def saveFile():
+    #     pass
+    #     # implementar o save file -> self.mean_acc_per_round 
 
 
