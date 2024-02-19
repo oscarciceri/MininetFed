@@ -18,6 +18,10 @@ class Trainer:
         self.num_samples = int(np.random.choice(np.arange(10000, 20000, 1000)))
         self.x_train, self.y_train, self.x_test, self.y_test = self.split_data()
         self.stop_flag = False
+        self.args = None
+
+    def set_args(self,args):
+        self.args = args
 
     def get_num_samples(self):
         return self.num_samples
@@ -79,7 +83,6 @@ class Trainer:
 
     def get_stop_flag(self):
         return self.stop_flag
-
 
 # if __name__ == '__main__':
 #     trainer = Trainer()

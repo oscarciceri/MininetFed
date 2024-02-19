@@ -19,6 +19,10 @@ class TrainerHarMotionSense:
         n_classes = len(self.y_train[0])
         self.model = self.define_model(input_shape, n_classes)
         self.stop_flag = False
+        self.args = None
+    
+    def set_args(self,args):
+        self.args = args
     
     def get_num_samples(self):
         return self.num_samples

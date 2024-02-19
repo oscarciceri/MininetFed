@@ -16,6 +16,10 @@ class TrainerFmnist:
         self.num_samples = int(np.random.choice(np.arange(10000, 20000, 1000))) # select a random number ranging from 10000 < num_samples < 20000
         self.x_train, self.y_train, self.x_test, self.y_test = self.split_data()
         self.stop_flag = False
+        self.args = None
+    
+    def set_args(self,args):
+        self.args = args
     
     def get_id(self):
         return self.id

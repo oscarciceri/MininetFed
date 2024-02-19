@@ -36,12 +36,17 @@ class color:
 
 def on_connect(client, userdata, flags, rc):
     subscribe_queues = ['minifed/selectionQueue',
-                        'minifed/posAggQueue', 'minifed/stopQueue']
+                            'minifed/posAggQueue', 'minifed/stopQueue','minifed/args']
     for s in subscribe_queues:
         client.subscribe(s)
 
 # callback for selectionQueue: if trainer gets chosen, then starts training, else just wait
 
+def on_args(client, userdata, message):
+    msg = json.loads(message.payload.decode("utf-8"))
+    if msg['id'] == CLIENT_ID:
+        trainer.set_args(msg['args'])
+        client.publish('minifed/ready', json.dumps({"id":CLIENT_ID}))
 
 def on_message_selection(client, userdata, message):
     msg = json.loads(message.payload.decode("utf-8"))
@@ -90,14 +95,17 @@ client.on_connect = on_connect
 client.message_callback_add('minifed/selectionQueue', on_message_selection)
 client.message_callback_add('minifed/posAggQueue', on_message_agg)
 client.message_callback_add('minifed/stopQueue', on_message_stop)
+client.message_callback_add('minifed/args', on_args)
+
+# start waiting for jobs
+client.loop_start()
 
 response = json.dumps({'id': CLIENT_ID, 'accuracy': trainer.eval_model(), "metrics": trainer.all_metrics()})
 client.publish('minifed/registerQueue',  response)
 print(color.BOLD_START +
       f'trainer {CLIENT_ID} connected!\n' + color.BOLD_END)
 
-# start waiting for jobs
-client.loop_start()
+
 
 while not trainer.get_stop_flag():
     time.sleep(1)

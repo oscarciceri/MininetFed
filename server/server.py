@@ -13,9 +13,9 @@ def server():
     n = len(sys.argv)
 
     # check args
-    if (n != 6):
+    if (n < 6):
         logging.critical("incorrect use of server.py arguments")
-        print("correct use: python server.py <broker_address> <min_clients> <num_rounds> <accuracy_threshold> <arquivo.log>.")
+        print("correct use: python server.py <broker_address> <min_clients> <num_rounds> <accuracy_threshold> <arquivo.log> <...>.")
         exit()
 
     # MOSQUITTO (CONTAINER)
@@ -34,7 +34,10 @@ def server():
     NUM_ROUNDS = int(sys.argv[3])
     STOP_ACC = float(sys.argv[4])
     CSV_PATH = sys.argv[5]
-
+    CLIENT_ARGS = None
+    if len(sys.argv) >= 7 and (sys.argv[6] is not None):
+        CLIENT_ARGS = json.loads(sys.argv[6])
+    
     FORMAT = "%(asctime)s - %(infotype)-6s - %(levelname)s - %(message)s"
 
     logging.basicConfig(level=logging.INFO, filename=CSV_PATH,
@@ -60,21 +63,26 @@ def server():
 
     def on_connect(client, userdata, flags, rc):
         subscribe_queues = ['minifed/registerQueue',
-                            'minifed/preAggQueue', 'minifed/metricsQueue']
+                            'minifed/preAggQueue', 'minifed/metricsQueue', 'minifed/ready']
         for s in subscribe_queues:
             client.subscribe(s)
 
     # callback for registerQueue: add trainer to the pool of trainers
 
+    def on_message_ready(client, userdata, message):
+        m = json.loads(message.payload.decode("utf-8"))
+        controller.add_trainer(m["id"])
 
     def on_message_register(client, userdata, message):
         m = json.loads(message.payload.decode("utf-8"))
         controller.update_metrics(m["id"],m['metrics'])
-        controller.add_trainer(m["id"])
         logger.info(
             f'trainer number {m["id"]} just joined the pool', extra=executionType)
         print(
             f'trainer number {m["id"]} just joined the pool')
+        
+        
+        client.publish('minifed/args', json.dumps({"id":m["id"],"args":CLIENT_ARGS}))
 
     # callback for preAggQueue: get weights of trainers, aggregate and send back
 
@@ -95,17 +103,6 @@ def server():
 
 
     def create_string_from_json(data):
-        # data = json.loads(json_str)
-        # metrics_names = data['metrics_names']
-        # values = data['values']
-
-        # result = ''
-        # for i in range(len(metrics_names)):
-        #     result += f'{metrics_names[i]}: {values[i]}'
-        #     if i != len(metrics_names) - 1:
-        #         result += ' - '
-
-        # return result
         return " - ".join(f"{name}: {value}" for name, value in data.items())
 
 
@@ -127,6 +124,7 @@ def server():
     client.message_callback_add('minifed/registerQueue', on_message_register)
     client.message_callback_add('minifed/preAggQueue', on_message_agg)
     client.message_callback_add('minifed/metricsQueue', on_message_metrics)
+    client.message_callback_add('minifed/ready',on_message_ready)
 
     # start loop
     client.loop_start()
