@@ -4,6 +4,7 @@ from containernet.term import makeTerm
 from mininet.log import info, setLogLevel
 from mininet.node import Controller
 
+import json
 from pathlib import Path
 import time
 from datetime import datetime
@@ -141,8 +142,13 @@ class FedNetwork:
     def start_server(self):
         info('*** Inicializando servidor\n')
         script = self.server["script"]
-        vol = self.volume
-        cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {script} {BROKER_ADDR} {self.min_trainers} {self.max_n_rounds} {self.stop_acc} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt' ;"
+        vol = self.volume  
+        cmd = f"""bash -c "cd {vol} && . env/bin/activate && python3 {script} {BROKER_ADDR} {self.min_trainers} {self.max_n_rounds} {self.stop_acc} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt """
+        args = self.exp_conf.get("client_args")
+        if args is not None:
+            json_str = json.dumps(args).replace('"', '\\"')
+            cmd += f"'{json_str}'"
+        cmd += '" ;'
         # print(cmd)
         makeTerm(self.srv1, cmd=cmd)
         

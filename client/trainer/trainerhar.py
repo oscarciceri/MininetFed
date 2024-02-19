@@ -25,11 +25,10 @@ class TrainerHar:
         n_classes = len(np.unique(self.y_train))
         self.model = self.define_model(input_shape, n_classes)
         self.stop_flag = False
+        self.args = None
 
-
-    
-    # def get_id(self):
-    #     return self.external_id
+    def set_args(self,args):
+        self.args = args
     
     def set_nc(self,clients):
         self.nc= clients
