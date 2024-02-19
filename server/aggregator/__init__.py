@@ -1,0 +1,1 @@
+from .mudar_nome import MudarNome as Aggregator

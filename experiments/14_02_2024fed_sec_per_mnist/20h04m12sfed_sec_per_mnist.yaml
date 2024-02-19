@@ -9,7 +9,6 @@
 general:
   n_available_cpu: 6
   broker_image: mininetfed:broker
-  experiments_folder: experiments
 
 experiment:
   new_experiment: True
@@ -23,8 +22,6 @@ network:
   network_monitor_script: network_monitor.py
   network_monitor_image: mininetfed:client
   network_components: 1
-
-  # Não implementado
   connections:
     - connection1: 1
       connection2: 2
