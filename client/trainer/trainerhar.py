@@ -26,8 +26,8 @@ class TrainerHar:
         self.stop_flag = False
         self.args = None
         
-        print(f"id:{self.id}")
-        print(f"mode:{self.mode}")
+        # print(f"id:{self.id}")
+        # print(f"mode:{self.mode}")
 
     def set_args(self,args):
         self.args = args
@@ -67,17 +67,17 @@ class TrainerHar:
     def all_metrics(self):
         metrics_names = self.model.metrics_names
         values = self.model.evaluate(x=self.x_test, y=self.y_test, verbose=False)
-        dicio = dict(zip(metrics_names, values))
-        print(f'loss:{dicio["loss"]}')
-        return dicio
-        # return dict(zip(metrics_names, values))
+        # dicio = dict(zip(metrics_names, values))
+        # print(f'loss:{dicio["loss"]}')
+        # return dicio
+        return dict(zip(metrics_names, values))
 
     
     def get_weights(self):
         return self.model.get_weights()
     
     def update_weights(self, weights):
-        print(weights)
+        # print(weights)
         self.model.set_weights(weights)
     
     def set_stop_true(self):
