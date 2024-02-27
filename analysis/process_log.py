@@ -1,7 +1,7 @@
 import re
 import pandas as pd
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 import sys
 import numpy as np
 
@@ -24,22 +24,41 @@ class File:
         self.n_net_saves = 0
         self.recived = 0
         self.sent = 0
+        self.start_time = datetime.now()
+        self.time = datetime.now()
         for line in self.network:
-            if 'recived' in line:
-                self.recived_old = self.recived
-                self.recived = int(re.search('recived: (\d+)', line).group(1))
-            if 'sent' in line:
-                self.sent_old = self.sent
-                self.sent = int(re.search('sent: (\d+)', line).group(1))
-                self.save_network()
-    
+            if 'METRIC' in line:
+                if 'start' in line:
+                    self.start_time = datetime.strptime(line.split(' - ')[0], '%Y-%m-%d %H:%M:%S,%f')
+                    
+                if 'recived' in line:
+                    self.recived_old = self.recived
+                    self.recived = int(re.search('recived: (\d+)', line).group(1))
+                    self.time = datetime.strptime(line.split(' - ')[0], '%Y-%m-%d %H:%M:%S,%f')
+                if 'sent' in line:
+                    self.sent_old = self.sent
+                    self.sent = int(re.search('sent: (\d+)', line).group(1))
+                    self.time = datetime.strptime(line.split(' - ')[0], '%Y-%m-%d %H:%M:%S,%f')
+                    self.save_network()
+            elif 'INFO' not in line:
+                if 'recived' in line:
+                    self.recived_old = self.recived
+                    self.recived = int(re.search('recived: (\d+)', line).group(1))
+                    self.time = self.time + timedelta(seconds=5)
+                if 'sent' in line:
+                    self.sent_old = self.sent
+                    self.sent = int(re.search('sent: (\d+)', line).group(1))
+                    self.time = self.time + timedelta(seconds=5)
+                    self.save_network()
+                
     def save_network(self):
+        self.n_net_saves = (self.time - self.start_time).total_seconds()
         new_net = pd.DataFrame({'segs':[self.n_net_saves],'recived': [self.recived], 'sent': [self.sent], 'recived_dt': [self.recived - self.recived_old],'sent_dt':[self.sent - self.sent_old]})
         if self.net.empty:
             self.net = new_net
         else:
             self.net = pd.concat([self.net, new_net], ignore_index=True)
-        self.n_net_saves += 5 # COLOCAR TIME STAMP NO ARQUIVO .net
+        # self.n_net_saves += 5 # COLOCAR TIME STAMP NO ARQUIVO .net
                 
                 
     

@@ -19,7 +19,7 @@ class Graphics:
             plt.plot(df['round'], df['deltaT'], label=item['name'])
             
         plt.xlabel('round')
-        plt.ylabel('Delta T')
+        plt.ylabel('Delta T (milisegundos)')
         plt.title('Gráfico de Delta T vs round')
         plt.legend()
         plt.show()
@@ -83,7 +83,7 @@ class Graphics:
             df = item['netdf']
             plt.scatter(df['segs'], df['recived'], label=item['name'], marker='o', s=20)
             
-        plt.xlabel('segundos')
+        plt.xlabel('Tempo de execução (segundos)')
         plt.ylabel('bytes recived by the broker')
         plt.title('Gráfico de bytes recebidos no decorrer do tempo')
         plt.legend()

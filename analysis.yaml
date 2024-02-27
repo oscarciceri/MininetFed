@@ -10,7 +10,8 @@ experiments_analysis:
     # - experiment: 05_02_2024fed_sec_per_har #implicitly get all .log files from the folder
     # - experiment: 06_02_2024fed_sec_per_har
     # - experiment: 06_02_2024fed_sec_per_mnist
-    - experiment: 2024_02_26_poc_favg_har
+    # - experiment: 2024_02_26_poc_favg_har
+    - experiment: 2024_02_27_poc_favg_har
 
   graphics:
     - type: deltaT_per_round
