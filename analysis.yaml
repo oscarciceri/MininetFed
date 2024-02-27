@@ -3,20 +3,21 @@ experiments_analysis:
   save_graphics: true # não implementado
 
   from:
-    - experiment: 04_02_2024fed_sec_per_har
-      files:
-        - 20h29m32sfed_sec_per_har.log
+    # - experiment: 04_02_2024fed_sec_per_har
+    #   files:
+    #     - 20h29m32sfed_sec_per_har.log
 
-    - experiment: 05_02_2024fed_sec_per_har #implicitly get all .log files from the folder
-    - experiment: 06_02_2024fed_sec_per_har
-    - experiment: 06_02_2024fed_sec_per_mnist
+    # - experiment: 05_02_2024fed_sec_per_har #implicitly get all .log files from the folder
+    # - experiment: 06_02_2024fed_sec_per_har
+    # - experiment: 06_02_2024fed_sec_per_mnist
+    - experiment: 2024_02_26_poc_favg_har
 
   graphics:
     - type: deltaT_per_round
 
     - type: mean_acc
 
-    - type: n_clients_absolute
+    # - type: n_clients_absolute
 
     # - type: n_clients_relative
     #   relative_to:
@@ -24,12 +25,11 @@ experiments_analysis:
     #     file: 20h29m32sfed_sec_per_har.log
 
     - type: network_consumption
-
-datasets_analysis:
-  id: 0
-  mode: client
-  graphics:
-    - type: class_distribution
-    - type: histogram
-    - type: boxplot
-    - type: correlation_matrix
+# datasets_analysis:
+#   id: 0
+#   mode: client
+#   graphics:
+#     - type: class_distribution
+#     - type: histogram
+#     - type: boxplot
+#     - type: correlation_matrix

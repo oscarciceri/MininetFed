@@ -1,5 +1,5 @@
-# FedAvg: Seleciona todos os clientes
-class FedAvg:
+# Seleciona todos os clientes
+class All:
     def __init__(self):
       pass
     

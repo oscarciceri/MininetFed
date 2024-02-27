@@ -23,7 +23,7 @@ BROKER_ADDR = sys.argv[1]
 FILE_NAME  = sys.argv[2]
 
 
-# Callback quando o cliente recebe uma resposta CONNACK do servidor.
+# Callback quando o cliente recebe uma resposta CONNACT do servidor.
 def on_connect(client, userdata, flags, rc):
     print("Conectado com o código de resultado "+str(rc))
     client.subscribe("$SYS/broker/bytes/#")

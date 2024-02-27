@@ -1,1 +1,1 @@
-from .mudar_nome import MudarNome as Aggregator
+from .fed_avg import FedAvg as Aggregator

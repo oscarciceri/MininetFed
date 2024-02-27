@@ -81,7 +81,7 @@ class Graphics:
         plt.figure(figsize=(10, 6))
         for item in self.dfs:
             df = item['netdf']
-            plt.plot(df['segs'], df['recived'], label=item['name'])
+            plt.scatter(df['segs'], df['recived'], label=item['name'], marker='o', s=20)
             
         plt.xlabel('segundos')
         plt.ylabel('bytes recived by the broker')
