@@ -90,7 +90,7 @@ def on_message_stop(client, userdata, message):
 # connect on queue and send register
 trainer = Trainer(CLIENT_NUMBER, MODE)
 client = mqtt.Client(str(CLIENT_ID))
-client.connect(BROKER_ADDR, keepalive=2000)
+client.connect(BROKER_ADDR, keepalive=0)
 client.on_connect = on_connect
 client.message_callback_add('minifed/selectionQueue', on_message_selection)
 client.message_callback_add('minifed/posAggQueue', on_message_agg)
