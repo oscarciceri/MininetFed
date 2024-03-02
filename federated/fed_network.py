@@ -114,6 +114,9 @@ class FedNetwork:
     def start(self):
         info('*** Configurando Links\n')
         
+        stop = self.net.addDocker('stop', dimage=self.network_monitor_image, volumes=self.docker_volume)
+        self.net.addLink(stop, self.switchs[self.server["connection"] - 1]) 
+        
         self.net.start()
       
         self.start_broker() 
@@ -124,7 +127,8 @@ class FedNetwork:
         self.start_clientes()
         
         info('*** Rodando CLI\n')
-        CLI(self.net)
+        stop.cmd(f'bash -c "cd {self.volume} && . env/bin/activate && python3 stop.py {BROKER_ADDR}"', verbose=True)
+        # CLI(self.net)
         info('*** Parando MININET')
         self.net.stop()
         
