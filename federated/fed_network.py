@@ -1,6 +1,11 @@
-from containernet.cli import CLI
-from containernet.net import Containernet
-from containernet.term import makeTerm
+try:
+    from containernet.net import Containernet
+    from containernet.term import makeTerm
+    from containernet.cli import CLI
+except:
+    from mininet.net import Containernet
+    from mininet.term import makeTerm
+    from mininet.cli import CLI
 from mininet.log import info, setLogLevel
 from mininet.node import Controller
 
