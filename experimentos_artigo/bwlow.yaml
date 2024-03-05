@@ -9,11 +9,11 @@
 general:
   n_available_cpu: 6
   broker_image: mininetfed:broker
-  experiments_folder: experiments
+  experiments_folder: experimentos_artigo
 
 experiment:
-  new_experiment: True
-  experiment_name: poc_favg_har
+  new_experiment: False
+  experiment_name: poc_favg_har_bw_05_new
   trainer_mode: client
   max_n_rounds: 50
   stop_accuracy: 0.97
@@ -50,22 +50,22 @@ client_types:
     name: tipo1
     memory: 480m
     # memory: 2048m
-    vCPU_percent: 34
+    vCPU_percent: 100
     image: mininetfed:client
     script: client/client.py
     connection: 1
     loss: 0
     delay: 0ms
-    bw: 10
+    bw: 0.5
 
   - amount: 1
     name: tipo2
     memory: 480m
     # memory: 2048m
-    vCPU_percent: 34
+    vCPU_percent: 100
     image: mininetfed:client
     script: client/client.py
     connection: 1
     loss: 0
     delay: 0ms
-    bw: 10
+    bw: 0.5

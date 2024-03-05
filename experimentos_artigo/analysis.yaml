@@ -6,11 +6,11 @@ experiments_analysis:
     # - experiment: 04_02_2024fed_sec_per_har
     #   files:
 
-    - experiment: poc_favg_har_50_CPU
-    - experiment: poc_favg_har_100_CPU
-    - experiment: poc_favg_har_bw_1
+    - experiment: poc_favg_har_50_CPU_new
+    - experiment: poc_favg_har_100_CPU_new
+    - experiment: poc_favg_har_bw_1_new
     # - experiment: poc_favg_har_bw_01
-    - experiment: poc_favg_har_bw_001
+    # - experiment: poc_favg_har_bw_001
 
   graphics:
     - type: deltaT_per_round

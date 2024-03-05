@@ -29,9 +29,9 @@ network:
     - connection1: 1
       connection2: 2
       type: (corrigir) # procurar endender melhor os tipos de conexões para implementar isso
-      delay: 0.2
-      loss: 0.01
-      band_wdth: 200
+      loss: 0
+      delay: 0ms
+      bw: 10
 
 # Server settings
 server:
@@ -52,6 +52,7 @@ client_types:
     script: client/client.py
     connection: 1
     loss: 0
+    delay: 0ms
     bw: 10
 
   - amount: 1
@@ -63,4 +64,5 @@ client_types:
     script: client/client.py
     connection: 1
     loss: 0
+    delay: 0ms
     bw: 10
