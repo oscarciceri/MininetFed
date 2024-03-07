@@ -115,7 +115,7 @@ class FedNetwork:
                 d = self.net.addDocker(f'sta{client_type["name"]}{x}', ip=f'10.0.0.{qtdDevice+3}',cpu_quota=client_quota,
                                     dimage=client_type["image"], volumes=volumes,  mem_limit=client_type["memory"])
                 self.net.addLink(d, self.switchs[client_type['connection'] - 1],
-                                cls=TCLink, delay=client_type["delay"], loss=client_type["loss"], bw=client_type["bw"])
+                                cls=TCLink, delay=client_type.get("delay"), loss=client_type.get("loss"), bw=client_type.get("bw"))
                 self.clientes.append(d)
               
     def start(self):
