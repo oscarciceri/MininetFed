@@ -1,3 +1,5 @@
+experiments_folder: experiments
+
 experiments_analysis:
   save_csv: true
   save_graphics: true # não implementado

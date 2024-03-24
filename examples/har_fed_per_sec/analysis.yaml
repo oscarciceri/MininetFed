@@ -1,9 +1,12 @@
+experiments_folder: experiments
+
 experiments_analysis:
   save_csv: true
   save_graphics: true # não implementado
 
   from:
     - experiment: example_har_fed_per_sec
+      alias: dataset HAR, agregação feg_avg, seleção fed_per_sec
 
   graphics:
     - type: deltaT_per_round
