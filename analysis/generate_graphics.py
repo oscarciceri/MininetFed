@@ -11,32 +11,32 @@ class Graphics:
         self.experiments_folder = experiments_folder
         # dfs = [{'name': name, 'df': df} for name, df in zip(names, data_frames)]
         
-        # Gráfico 1: Delta T vs Round
-    def deltaT_per_round(self):
-        plt.figure(figsize=(10, 6))
-        for item in self.dfs:
-            df = item['df']
-            plt.plot(df['round'], df['deltaT'], label=item['name'])
+    #     # Gráfico 1: Delta T vs Round
+    # def deltaT_per_round(self):
+    #     plt.figure(figsize=(10, 6))
+    #     for item in self.dfs:
+    #         df = item['df']
+    #         plt.plot(df['round'], df['deltaT'], label=item['name'])
             
-        plt.xlabel('round')
-        plt.ylabel('Delta T (milisegundos)')
-        plt.title('Gráfico de Delta T vs round')
-        plt.legend()
-        plt.show()
+    #     plt.xlabel('round')
+    #     plt.ylabel('Delta T (milisegundos)')
+    #     plt.title('Gráfico de Delta T vs round')
+    #     plt.legend()
+    #     plt.show()
         
-        # Gráfico 2: acurácia média vs round
-    def mean_acc(self):
-        # plt.clf()
-        plt.figure(figsize=(10, 6))
-        for item in self.dfs:
-            df = item['df']
-            # for column in df.columns[2:]:  # Ignorando as colunas 'round' e 'round Delta T'
-            plt.plot(df['round'], df['mean_accuracy'], label=item['name'])
-        plt.xlabel('round')
-        plt.ylabel('Acurácia')
-        plt.title('Gráfico de Acurácia vs round')
-        plt.legend()
-        plt.show()
+    #     # Gráfico 2: acurácia média vs round
+    # def mean_acc(self):
+    #     # plt.clf()
+    #     plt.figure(figsize=(10, 6))
+    #     for item in self.dfs:
+    #         df = item['df']
+    #         # for column in df.columns[2:]:  # Ignorando as colunas 'round' e 'round Delta T'
+    #         plt.plot(df['round'], df['mean_accuracy'], label=item['name'])
+    #     plt.xlabel('round')
+    #     plt.ylabel('Acurácia')
+    #     plt.title('Gráfico de Acurácia vs round')
+    #     plt.legend()
+    #     plt.show()
     
     def n_clients_absolute(self):
         # plt.clf()
@@ -77,14 +77,52 @@ class Graphics:
             plt.legend()
             plt.show()
     
+    # def network_consumption(self):
+    #     plt.figure(figsize=(10, 6))
+    #     for item in self.dfs:
+    #         df = item['netdf']
+    #         plt.scatter(df['segs'], df['recived'], label=item['name'], marker='o', s=20)
+            
+    #     plt.xlabel('Tempo de execução (segundos)')
+    #     plt.ylabel('bytes recived by the broker')
+    #     plt.title('Gráfico de bytes recebidos no decorrer do tempo')
+    #     plt.legend()
+    #     plt.show()
+    
     def network_consumption(self):
         plt.figure(figsize=(10, 6))
         for item in self.dfs:
             df = item['netdf']
-            plt.scatter(df['segs'], df['recived'], label=item['name'], marker='o', s=20)
+            plt.scatter(df['segs'], df['recived']/1e6, label=item['name'], marker='o', s=20)
             
-        plt.xlabel('Tempo de execução (segundos)')
-        plt.ylabel('bytes recived by the broker')
-        plt.title('Gráfico de bytes recebidos no decorrer do tempo')
-        plt.legend()
+        plt.xlabel('Tempo de execução (segundos)', fontsize=18)
+        plt.ylabel('Tráfego de rede no treinamento em Mbytes', fontsize=18)
+        plt.legend(fontsize=16)
+        plt.tick_params(labelsize=16)
+        plt.show()
+
+    # Gráfico 1: Delta T vs Round
+    def deltaT_per_round(self):
+        plt.figure(figsize=(10, 6))
+        for item in self.dfs:
+            df = item['df']
+            plt.plot(df['round'], df['deltaT'], label=item['name'])
+            
+        plt.xlabel('round', fontsize=18)
+        plt.ylabel('Delta T (milisegundos)', fontsize=18)
+        plt.legend(fontsize=16)
+        plt.tick_params(labelsize=16)
+        plt.show()
+
+    # Gráfico 2: acurácia média vs round
+    def mean_acc(self):
+        plt.figure(figsize=(10, 6))
+        for item in self.dfs:
+            df = item['df']
+            plt.plot(df['round'], df['mean_accuracy'], label=item['name'])
+            
+        plt.xlabel('round', fontsize=18)
+        plt.ylabel('Acurácia', fontsize=18)
+        plt.legend(fontsize=16)
+        plt.tick_params(labelsize=16)
         plt.show()
