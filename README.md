@@ -112,6 +112,11 @@ sudo python3 main.py examples/<nome do exemplo escolhido>/config.yaml
 
 ```
 
+> ### Exemplo Trainer Har com fed_per_sec e fed_avg
+>
+> ```
+> sudo python3 main.py examples/har_fed_per_sec/config.yaml
+> ```
 
 Se tudo estiver funcionando, o exeperimento deve começar a executar abrindo as seguintes janelas:
 
@@ -135,4 +140,9 @@ modifique o comando a seguir e execute-o:
 python3 analysis.py examples/<nome do experimento>/analysis.yaml
 ```
 
+> ### Exemplo Trainer Har com fed_per_sec e fed_avg
+>
+> ```
+> python3 analysis.py examples/har_fed_per_sec/analysis.yaml
+> ```
 
