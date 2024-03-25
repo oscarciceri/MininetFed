@@ -68,7 +68,7 @@ O MininetFed também depende de algumas imagens docker pré configuradas.
 Utilize os comandos a seguir para criar essas imagens.
 
 ```
-cd mininetFed
+cd MininetFed
 ```
 
 ```
