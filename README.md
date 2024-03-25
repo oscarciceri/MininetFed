@@ -72,11 +72,11 @@ cd mininetFed
 ```
 
 ```
-docker build --tag "mininetfed:broker" -f docker/Dockerfile.broker .
+sudo docker build --tag "mininetfed:broker" -f docker/Dockerfile.broker .
 ```
 
 ```
-docker build --tag "mininetfed:client" -f docker/Dockerfile.container .
+sudo docker build --tag "mininetfed:client" -f docker/Dockerfile.container .
 
 ```
 
