@@ -73,9 +73,6 @@ cd MininetFed
 
 ```
 sudo docker build --tag "mininetfed:broker" -f docker/Dockerfile.broker .
-```
-
-```
 sudo docker build --tag "mininetfed:client" -f docker/Dockerfile.container .
 
 ```
@@ -84,11 +81,17 @@ sudo docker build --tag "mininetfed:client" -f docker/Dockerfile.container .
 
 ## Criando o env com as respectivas dependências
 
-O comando a seguir roda um script que cria um **env python** e instala as dependências padrões e as necessárias para os Trainers fornecidos de exemplo. Esse **env** é usado pelos clientes e pelo servidor
+O comando a seguir roda um script que cria um **env** python e instala as dependências padrões e as necessárias para os Trainers fornecidos de exemplo. Esse **env** é usado pelos clientes e pelo servidor
 
 ```
 sudo python3 scripts/create_env.py mininetfed:client scripts/requirements.txt
 
+```
+
+O comando a seguir cria o **env_analysis** que será usado posteriormente para analisar os resultados gerados por um experimento
+
+```
+./scripts/env_analysis.sh
 ```
 
 # Executar o MininetFed com um exemplo
@@ -108,6 +111,7 @@ Após essa modificação, modifique e execute o comando a seguir
 sudo python3 main.py examples/<nome do exemplo escolhido>/config.yaml
 
 ```
+
 
 Se tudo estiver funcionando, o exeperimento deve começar a executar abrindo as seguintes janelas:
 
