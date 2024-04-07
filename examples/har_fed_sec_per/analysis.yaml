@@ -6,7 +6,7 @@ experiments_analysis:
 
   from:
     - experiment: example_har_fed_per_sec
-      alias: dataset HAR, agregação feg_avg, seleção fed_per_sec
+      alias: dataset HAR, agregação feg_avg, seleção fed_sec_per
 
   graphics:
     - type: deltaT_per_round
