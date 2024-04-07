@@ -13,14 +13,14 @@ Neste experimento, exploramos o uso do algoritmo de aprendizagem **FedSketch** c
 
 ## Resultados:
 
-Na **Figura 1** (Figura \ref{fig:fedsketch}), podemos observar os resultados de acurácia alcançados:
+Na **Figura 1**, podemos observar os resultados de acurácia alcançados:
 
 - **FedSketch**: 85%
 - **FedAvg**: 83%
 
 ![Figura 1](https://example.com/figuras/fedsketch.png)
 
-Além disso, na **Figura 2** (Figura \ref{fig:fedsketchbytes}), apresentamos a quantidade de bytes transmitida durante o processo de treinamento para os algoritmos FedAvg e FedSketch. Vale ressaltar que, diferentemente dos casos de uso anteriores, a rede neural utilizada aqui é mais complexa e possui um maior número de parâmetros. A compressão dos pesos em sketches resultou em uma significativa redução no uso de banda durante o processo.
+Além disso, na **Figura 2**, apresentamos a quantidade de bytes transmitida durante o processo de treinamento para os algoritmos FedAvg e FedSketch. Vale ressaltar que, diferentemente dos casos de uso anteriores, a rede neural utilizada aqui é mais complexa e possui um maior número de parâmetros. A compressão dos pesos em sketches resultou em uma significativa redução no uso de banda durante o processo.
 
 ![Figura 2](https://example.com/figuras/fedsketchbytes.png)
 
