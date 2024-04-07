@@ -9,10 +9,12 @@ O objetivo deste teste é avaliar o impacto da largura de banda no tempo de trei
 
 Como o **TrainerHar** é propositalmente intensivo no uso de rede, espera-se um impacto significativo no tempo de treinamento. No entanto, a curva de precisão por rodada deve ser novamente bastante semelhante.
 
-A **Figura 1** confirma as expectativas desses experimentos. Observa-se que:
+A **Figura 1** e **Figura 2** confirmam as expectativas desses experimentos. Observa-se que:
 
 - A diferença entre o tempo de finalização do experimento com **20 Mbps** e **10 Mbps** é pouco mais de **100 segundos**.
 - A diferença entre o experimento com **10 Mbps** e o de **5 Mbps** é de cerca de **300 segundos**, demonstrando o caráter não linear da redução da largura de banda.
 - O experimento heterogêneo fica entre o com **20 Mbps** e o com **10 Mbps** em termos de tempo de conclusão.
 
-![Figura 1](https://example.com/figuras/rede_heterogenea.png)
+![Figura 1](https://github.com/lprm-ufes/MininetFed/blob/main/casos_de_uso/figuras/caso2fig1.png)
+
+![Figura 1](https://github.com/lprm-ufes/MininetFed/blob/main/casos_de_uso/figuras/caso2fig2.png)

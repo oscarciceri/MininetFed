@@ -22,6 +22,6 @@ datasets_analysis:
   mode: client
   graphics:
     - type: class_distribution
-    - type: histogram
-    - type: boxplot
-    - type: correlation_matrix
+    # - type: histogram
+    # - type: boxplot
+    # - type: correlation_matrix

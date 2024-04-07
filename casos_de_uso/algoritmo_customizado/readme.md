@@ -18,10 +18,10 @@ Na **Figura 1**, podemos observar os resultados de acurácia alcançados:
 - **FedSketch**: 85%
 - **FedAvg**: 83%
 
-![Figura 1](https://example.com/figuras/fedsketch.png)
+![Figura 1](https://github.com/lprm-ufes/MininetFed/blob/main/casos_de_uso/figuras/caso3fig1.png)
 
 Além disso, na **Figura 2**, apresentamos a quantidade de bytes transmitida durante o processo de treinamento para os algoritmos FedAvg e FedSketch. Vale ressaltar que, diferentemente dos casos de uso anteriores, a rede neural utilizada aqui é mais complexa e possui um maior número de parâmetros. A compressão dos pesos em sketches resultou em uma significativa redução no uso de banda durante o processo.
 
-![Figura 2](https://example.com/figuras/fedsketchbytes.png)
+![Figura 1](https://github.com/lprm-ufes/MininetFed/blob/main/casos_de_uso/figuras/caso3fig2.png)
 
 Concluímos que a ferramenta foi capaz de executar o processo de treinamento mesmo com um algoritmo de aprendizagem customizado, demonstrando sua flexibilidade e eficácia.
