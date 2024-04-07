@@ -1,0 +1,19 @@
+experiments_folder: experimentos_artigo/variacao_do_bandwidth
+
+experiments_analysis:
+  save_csv: true
+
+  from:
+    - experiment: bandwidth_10_20mbps_2
+      alias: 1 cliente 10Mbps + 5 clientes 20Mbps
+    - experiment: bandwidth_5mbps
+      alias: 6 clientes 5Mbps
+    - experiment: bandwidth_10mbps
+      alias: 6 clientes 10Mbps
+    - experiment: bandwidth_20mbps
+      alias: 6 clientes 20Mbps
+
+  graphics:
+    - type: mean_acc
+
+    - type: network_consumption

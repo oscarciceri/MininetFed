@@ -1,6 +1,13 @@
-from containernet.cli import CLI
-from containernet.net import Containernet
-from containernet.term import makeTerm
+try:
+    from containernet.net import Containernet
+    from containernet.term import makeTerm
+    from containernet.cli import CLI
+    from containernet.link import TCLink
+except:
+    from mininet.net import Containernet
+    from mininet.term import makeTerm
+    from mininet.cli import CLI
+    from mininet.link import TCLink
 from mininet.log import info, setLogLevel
 from mininet.node import Controller
 
@@ -14,7 +21,7 @@ from .experiment import Experiment
 
 
 
-BROKER_ADDR = "172.17.0.2"
+BROKER_ADDR = "10.0.0.1"
 # MIN_TRAINERS = 3
 # NUM_ROUNDS = 10
 # STOP_ACC = 1.0
@@ -80,18 +87,18 @@ class FedNetwork:
     def insert_broker_container(self):
         info('*** Adicionando Container do Broker\n')
         # broker container
-        self.broker = self.net.addDocker('brk1', dimage=self.broker_image, volumes=self.docker_volume)
+        self.broker = self.net.addDocker('brk1', ip='10.0.0.1',dimage=self.broker_image, volumes=self.docker_volume)
         self.net.addLink(self.broker, self.switchs[self.server["connection"] - 1])
     
     
     def insert_monitor_container(self):
         info('*** Adicionando Container do monitor\n')
-        self.mnt1 = self.net.addDocker('mnt1', dimage=self.network_monitor_image, volumes=self.docker_volume)
+        self.mnt1 = self.net.addDocker('mnt1', ip='10.0.0.2',dimage=self.network_monitor_image, volumes=self.docker_volume)
         self.net.addLink(self.mnt1, self.switchs[self.server["connection"] - 1])
     
     def insert_server_container(self):
         info('*** Adicionando Container do Server\n')
-        self.srv1 = self.net.addDocker('srv1', dimage=self.server_images, volumes=self.docker_volume,
+        self.srv1 = self.net.addDocker('srv1', ip='10.0.0.3',dimage=self.server_images, volumes=self.docker_volume,
                      mem_limit=self.server["memory"], cpu_quota=self.server_quota)
         self.net.addLink(self.srv1, self.switchs[self.server["connection"] - 1])
         
@@ -105,14 +112,17 @@ class FedNetwork:
                 volumes = self.docker_volume
                 qtdDevice += 1
                 client_quota = client_type["vCPU_percent"] * self.n_cpu*1000
-                d = self.net.addDocker(f'sta{client_type["name"]}{x}', cpu_quota=client_quota,
+                d = self.net.addDocker(f'sta{client_type["name"]}{x}', ip=f'10.0.0.{qtdDevice+3}',cpu_quota=client_quota,
                                     dimage=client_type["image"], volumes=volumes,  mem_limit=client_type["memory"])
                 self.net.addLink(d, self.switchs[client_type['connection'] - 1],
-                                loss=client_type["loss"], bw=client_type["bw"])
+                                cls=TCLink, delay=client_type.get("delay"), loss=client_type.get("loss"), bw=client_type.get("bw"))
                 self.clientes.append(d)
               
     def start(self):
         info('*** Configurando Links\n')
+        
+        stop = self.net.addDocker('stop', dimage=self.network_monitor_image, volumes=self.docker_volume)
+        self.net.addLink(stop, self.switchs[self.server["connection"] - 1]) 
         
         self.net.start()
       
@@ -124,7 +134,8 @@ class FedNetwork:
         self.start_clientes()
         
         info('*** Rodando CLI\n')
-        CLI(self.net)
+        stop.cmd(f'bash -c "cd {self.volume} && . env/bin/activate && python3 stop.py {BROKER_ADDR}"', verbose=True)
+        # CLI(self.net)
         info('*** Parando MININET')
         self.net.stop()
         

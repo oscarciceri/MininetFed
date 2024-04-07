@@ -12,15 +12,19 @@ if __name__ == '__main__':
     n = len(sys.argv)
 
     #  check args
-    if (n < 3):
-        print("correct use: sudo python3 analysis.py <experiments_folder> <graphics.yaml>")
+    if (n < 2):
+        # print("correct use: sudo python3 analysis.py <experiments_folder> <graphics.yaml>")
+        print("alternative: correct use: sudo python3 analysis.py <graphics.yaml>")
         exit()
 
-    FOLDER = sys.argv[1]
-    config = Config(sys.argv[2])
+    
+    # FOLDER = sys.argv[1]
+    config = Config(sys.argv[1])
+    
     
     
     experiments_analysis = config.get("experiments_analysis")
+    FOLDER = config.get("experiments_folder")
     if experiments_analysis != None:
         
         csv =  experiments_analysis.get("save_csv")
@@ -31,25 +35,45 @@ if __name__ == '__main__':
         for experiment in experiments_analysis["from"]:
             exp_files =  experiment.get("files")
             experiment_name = experiment["experiment"]
+            alias = experiment.get("alias")
             if exp_files != None:
-                for fileName in exp_files:
-                    name = fileName.split(".")[0]
-                    f = File(f"{FOLDER}/{experiment_name}/{name}")
+                for idx, fileName in exp_files:
+                    name = None
+                    filepath = f"{experiment_name}/{fileName.split('.')[0]}"
+                    if idx == 0:
+                        name = alias
+                    elif alias is not None:
+                        name = f"{alias} ({idx})"
+                    else:
+                        name = filepath
+                        
+                    f = File(f"{FOLDER}/{filepath}")
                     df = f.get_dataframe()
                     netdf = f.get_net_dataframe()
                     if csv:
                         f.save_to_csv()
-                    dfs.append({'name':f"{experiment_name}/{name}" ,'df':df,'netdf':netdf})
+                    dfs.append({'name':name ,'df':df,'netdf':netdf})
             else:
+                idx = 0
                 for fileName in os.listdir(f"{FOLDER}/{experiment_name}"):
                     if fileName.endswith(".log"):
-                        name = fileName.split(".")[0]
-                        f = File(f"{FOLDER}/{experiment_name}/{name}")
+                        name = None
+                        filepath = f"{experiment_name}/{fileName.split('.')[0]}"
+                        if idx == 0:
+                            name = alias
+                        elif alias is not None:
+                            name = f"{alias} ({idx})"
+                        else:
+                            name = filepath
+                            
+                        f = File(f"{FOLDER}/{filepath}")
                         df = f.get_dataframe()
                         netdf = f.get_net_dataframe()
                         if csv:
                             f.save_to_csv()
-                        dfs.append({'name':f"{experiment_name}/{name}" ,'df':df, 'netdf':netdf})
+                        dfs.append({'name':name ,'df':df,'netdf':netdf})
+                        idx += 1
+                        
         
         plot = Graphics(dfs,experiments_analysis.get("save_graphics"),FOLDER)
         

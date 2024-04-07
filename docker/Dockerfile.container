@@ -1,30 +1,38 @@
-FROM ubuntu:22.04
+FROM ubuntu:focal
 
 VOLUME /flw
 
-# install required packages
-RUN apt-get clean
-
-RUN apt-get update && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository -y ppa:deadsnakes/ppa && \
-    apt-get update && \
-    apt install -y python3.10
-
-RUN apt-get update \
-    && apt-get install -y net-tools \
-    curl \
-    iptables \
+RUN apt-get update
+RUN apt-get install -y \
+    net-tools \
     iputils-ping \
-    sudo \
-    python3-pip -y \
-    python3-venv -y 
+    iproute2
 
-# Ports used by Mosquitto host:
+# Atualize a lista de pacotes
+RUN apt-get update
+
+# Instale as dependências necessárias
+RUN apt-get install -y software-properties-common
+
+# Adicione o repositório deadsnakes
+RUN add-apt-repository ppa:deadsnakes/ppa
+
+# Instale o Python 3.10
+RUN apt-get install -y python3.10
+
+# Crie um link simbólico para python3 apontar para python3.10
+RUN ln -sf /usr/bin/python3.10 /usr/bin/python3
+
+# Instale o pip para Python 3.10
+RUN apt-get install -y \
+    curl \
+    python3.10-distutils
+RUN curl https://bootstrap.pypa.io/get-pip.py | python3
+
+# Instale o venv para Python 3.10
+RUN apt-get install -y python3.10-venv
+
 EXPOSE 1883
 EXPOSE 8883
 
-ENV CONTAINERNET_NESTED 1
-
-
-
+CMD /bin/bash

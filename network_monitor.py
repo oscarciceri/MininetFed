@@ -1,13 +1,13 @@
 import paho.mqtt.client as mqtt
 import sys
 import os
+import logging
 
 os.umask(0o000)
 
 n = len(sys.argv)
 if (n != 3):
     print("correct use: python network_monitor.py <broker_address> <output.net>.")
-
 
 class color:
     BLUE = '\033[94m'
@@ -22,9 +22,19 @@ class color:
 BROKER_ADDR = sys.argv[1]
 FILE_NAME  = sys.argv[2]
 
+FORMAT = "%(asctime)s - %(infotype)-6s - %(levelname)s - %(message)s"
 
-# Callback quando o cliente recebe uma resposta CONNACK do servidor.
+logging.basicConfig(level=logging.INFO, filename=FILE_NAME,
+                        format=FORMAT, filemode="w")
+metricType = {"infotype": "METRIC"}
+executionType = {"infotype": "EXECUT"}
+logger = logging.getLogger(__name__)
+
+logger.info('start', extra=metricType)
+
+# Callback quando o cliente recebe uma resposta CONNECT do servidor.
 def on_connect(client, userdata, flags, rc):
+    logger.info("Conectado com o código de resultado "+str(rc), extra=executionType)
     print("Conectado com o código de resultado "+str(rc))
     client.subscribe("$SYS/broker/bytes/#")
     client.subscribe('minifed/stopQueue')
@@ -37,11 +47,14 @@ def on_message(client, userdata, msg):
     else:
         tipo = "recived:"
     
-    with open(FILE_NAME, 'a') as f:
-        f.write(f'{tipo} {str(msg.payload.decode("utf-8"))}\n')
+    logger.info(f'{tipo} {str(msg.payload.decode("utf-8"))}', extra=metricType)
+    
+    # with open(FILE_NAME, 'a') as f:
+    #     f.write(f'{tipo} {str(msg.payload.decode("utf-8"))}\n')
 
 
 def on_message_stop(client, userdata, message):
+    logger.info(f'received message to stop!', extra=executionType)
     print(color.RED + f'received message to stop!')
     exit()
 

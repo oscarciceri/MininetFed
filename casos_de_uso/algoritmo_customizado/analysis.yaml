@@ -1,0 +1,15 @@
+experiments_folder: experimentos_artigo/fed_sketch
+
+experiments_analysis:
+  save_csv: true
+
+  from:
+    - experiment: fed_sketch
+      alias: fed_sketch
+    - experiment: fed_avg
+      alias: fed_avg
+
+  graphics:
+    - type: mean_acc
+
+    - type: network_consumption

@@ -1,10 +1,15 @@
-from containernet.net import Containernet
+try:
+    from containernet.net import Containernet
+    from containernet.term import makeTerm
+    from containernet.cli import CLI
+except:
+    from mininet.net import Containernet
+    from mininet.term import makeTerm
+    from mininet.cli import CLI
 from mininet.node import Controller
 from mininet.log import info, setLogLevel
-from containernet.term import makeTerm
 from pathlib import Path
 import sys
-from containernet.cli import CLI
 
 # total args
 n = len(sys.argv)

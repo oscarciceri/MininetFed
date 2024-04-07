@@ -1,22 +1,20 @@
-FROM ubuntu:22.04
+FROM ubuntu:focal
 
 VOLUME /flw
 
-RUN apt-get clean
+RUN apt-get update
+RUN apt-get install -y \
+    net-tools \
+    iputils-ping \
+    iproute2
 
-RUN apt-get update \
-  && apt-get install -y net-tools \
-  curl \
-  iptables \
-  iputils-ping \
-  mosquitto \
-  sudo 
+RUN apt-get update
+RUN apt-get install -y \
+    mosquitto \
+    sudo 
 
-# Ports used by Mosquitto host:
+
 EXPOSE 1883
 EXPOSE 8883
 
-ENV CONTAINERNET_NESTED 1
-
-
-
+CMD /bin/bash

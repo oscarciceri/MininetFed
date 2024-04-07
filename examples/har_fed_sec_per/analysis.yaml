@@ -1,0 +1,27 @@
+experiments_folder: experiments
+
+experiments_analysis:
+  save_csv: true
+  save_graphics: true # não implementado
+
+  from:
+    - experiment: example_har_fed_per_sec
+      alias: dataset HAR, agregação feg_avg, seleção fed_sec_per
+
+  graphics:
+    - type: deltaT_per_round
+
+    - type: mean_acc
+
+    - type: n_clients_absolute
+
+    - type: network_consumption
+
+datasets_analysis:
+  id: 0
+  mode: client
+  graphics:
+    - type: class_distribution
+    # - type: histogram
+    # - type: boxplot
+    # - type: correlation_matrix

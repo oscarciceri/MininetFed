@@ -17,7 +17,6 @@ class TrainerHar:
         # TrainerHar.ID = TrainerHar.ID + 1
         self.id = int(ext_id) + 1
         self.nc = self.id
-        self.dividir = True
         self.idColumn = "user_name"
         self.x_train, self.y_train, self.x_test, self.y_test = self.split_data()
         input_shape = self.x_train.shape[1:]
@@ -26,6 +25,9 @@ class TrainerHar:
         self.model = self.define_model(input_shape, n_classes)
         self.stop_flag = False
         self.args = None
+        
+        # print(f"id:{self.id}")
+        # print(f"mode:{self.mode}")
 
     def set_args(self,args):
         self.args = args
@@ -44,7 +46,7 @@ class TrainerHar:
         model.add(Dense(256, activation='relu'))
         model.add(Dense(n_classes, activation='softmax'))
 
-        opt = SGD(learning_rate=0.01)
+        opt = SGD(learning_rate=0.005)
         model.compile(optimizer=opt, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
         return model
@@ -65,6 +67,9 @@ class TrainerHar:
     def all_metrics(self):
         metrics_names = self.model.metrics_names
         values = self.model.evaluate(x=self.x_test, y=self.y_test, verbose=False)
+        # dicio = dict(zip(metrics_names, values))
+        # print(f'loss:{dicio["loss"]}')
+        # return dicio
         return dict(zip(metrics_names, values))
 
     
@@ -72,6 +77,7 @@ class TrainerHar:
         return self.model.get_weights()
     
     def update_weights(self, weights):
+        # print(weights)
         self.model.set_weights(weights)
     
     def set_stop_true(self):
