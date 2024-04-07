@@ -1,37 +1,27 @@
 ---
-# # Criar versão comentada desse arquivo para colocar na documentação da ferramenta
-# # Output metrics
-# metrics:
-#   - mean
-#   - accuracy
-
 # General settings
 general:
   n_available_cpu: 6
   broker_image: mininetfed:broker
   experiments_folder: experiments
 
+# Experiment settings
 experiment:
   new_experiment: True
-  experiment_name: poc_favg_har
+  experiment_name: experimento_video
   trainer_mode: client
   max_n_rounds: 50
-  stop_accuracy: 0.97
+  stop_accuracy: 0.93
   min_trainers: 3
-  # client_args: # Funciona com ou sem essa chave
-  #   arg1: teste
-  #   valor2: 2
 
+# Network settings
 network:
   network_monitor_script: network_monitor.py
   network_monitor_image: mininetfed:client
   network_components: 1
-
-  # Não implementado
   connections:
     - connection1: 1
       connection2: 2
-      type: (corrigir) # procurar endender melhor os tipos de conexões para implementar isso
       loss: 0
       delay: 0ms
       bw: 10
@@ -49,7 +39,6 @@ client_types:
   - amount: 5
     name: tipo1
     memory: 480m
-    # memory: 2048m
     vCPU_percent: 15
     image: mininetfed:client
     script: client/client.py
@@ -61,11 +50,10 @@ client_types:
   - amount: 1
     name: tipo2
     memory: 480m
-    # memory: 2048m
     vCPU_percent: 15
     image: mininetfed:client
     script: client/client.py
     connection: 1
     loss: 0
     delay: 0ms
-    bw: 10
+    bw: 20

@@ -2,17 +2,8 @@ experiments_folder: experiments
 
 experiments_analysis:
   save_csv: true
-  save_graphics: true # não implementado
 
   from:
-    # - experiment: 04_02_2024fed_sec_per_har
-    #   files:
-    #     - 20h29m32sfed_sec_per_har.log
-
-    # - experiment: 05_02_2024fed_sec_per_har #implicitly get all .log files from the folder
-    # - experiment: 06_02_2024fed_sec_per_har
-    # - experiment: 06_02_2024fed_sec_per_mnist
-    # - experiment: 2024_02_26_poc_favg_har
     - experiment: 2024_02_27_poc_favg_har
 
   graphics:
@@ -20,14 +11,9 @@ experiments_analysis:
 
     - type: mean_acc
 
-    # - type: n_clients_absolute
-
-    # - type: n_clients_relative
-    #   relative_to:
-    #     experiment: 04_02_2024fed_sec_per_har
-    #     file: 20h29m32sfed_sec_per_har.log
-
     - type: network_consumption
+
+    - type: n_clients_absolute
 # datasets_analysis:
 #   id: 0
 #   mode: client
