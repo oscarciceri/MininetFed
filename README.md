@@ -13,4 +13,4 @@ A suas principais funcionalidades incluem:
 # Primeiros passos com o MiniNetFED
 
 Acesse a wiki para saber mais
-https://github.com/jjakob10/MininetFed/wiki
+[https://github.com/jjakob10/MininetFed/wiki](https://github.com/lprm-ufes/MininetFed/wiki)
