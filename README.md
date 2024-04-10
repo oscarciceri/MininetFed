@@ -1,6 +1,6 @@
 # MiniNetFED
 
-<img align="left" src="https://github.com/lprm-ufes/MininetFed/blob/main/FED.svg" alt="logo" width="200"/>
+<img align="left" src="https://github.com/lprm-ufes/MininetFed/blob/main/FED.svg" alt="logo" width="225"/>
 O miniNetFED é uma ferramenta de emulação de ambientes de aprendizado federado.
 
 A suas principais funcionalidades incluem:
