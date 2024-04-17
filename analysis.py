@@ -5,6 +5,8 @@ from analysis.dataset_analysis_graphics import DatasetAnalysisGraphics
 # from .federated.experiment import Experiment
 from client import Trainer
 
+
+from collections import OrderedDict
 import sys
 import os
 
@@ -97,26 +99,30 @@ if __name__ == '__main__':
     # import seaborn as sns
     datasets_analysis = config.get("datasets_analysis")
     if datasets_analysis != None:
+        trainers = OrderedDict()
         for id in datasets_analysis["id"]:
-            trainer = Trainer(id,datasets_analysis["mode"])
-            plot = DatasetAnalysisGraphics(id,trainer)
+            trainers[id] = Trainer(id,datasets_analysis["mode"])
+        plot = DatasetAnalysisGraphics(trainers)
             
-            for graphic in datasets_analysis["graphics"]:
-                # Distribuição de classes
-                if 'class_distribution' == graphic["type"]:
-                    plot.class_distribution(graphic.get("y_labels"))
+        for graphic in datasets_analysis["graphics"]:
+            # Distribuição de classes
+            if 'class_distribution_per_client' == graphic["type"]:
+                plot.class_distribution(graphic.get("y_labels"))
+                
+            if 'class_distribution_complete' == graphic["type"]:
+                plot.class_distribution_all(graphic.get("y_labels"))
 
-                # Histograma
-                if 'histogram' == graphic["type"]:
-                    plot.histogram()
+            # Histograma
+            if 'histogram' == graphic["type"]:
+                plot.histogram()
 
-                # Boxplot
-                if 'boxplot'  == graphic["type"]:
-                    plot.boxplot()
+            # Boxplot
+            if 'boxplot'  == graphic["type"]:
+                plot.boxplot()
 
-                # Matriz de correlação
-                if 'correlation_matrix' == graphic["type"]:
-                    plot.correlation_matrix()
+            # Matriz de correlação
+            if 'correlation_matrix' == graphic["type"]:
+                plot.correlation_matrix()
         # # Distribuição de classes
         # if 'class_distribution' in datasets_analysis["graphics"]:
         #     plt.figure(figsize=(10, 6))
