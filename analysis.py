@@ -1,6 +1,7 @@
 from analysis.config import Config
 from analysis.process_log import File
 from analysis.generate_graphics import Graphics
+from analysis.dataset_analysis_graphics import DatasetAnalysisGraphics
 # from .federated.experiment import Experiment
 from client import Trainer
 
@@ -96,38 +97,26 @@ if __name__ == '__main__':
     # import seaborn as sns
     datasets_analysis = config.get("datasets_analysis")
     if datasets_analysis != None:
-        trainer = Trainer(datasets_analysis["id"],datasets_analysis["mode"])
-        
-        for graphic in datasets_analysis["graphics"]:
-            # Distribuição de classes
-            if 'class_distribution' == graphic["type"]:
-                plt.figure(figsize=(10, 6))
-                plt.hist(trainer.y_train, bins=30)
-                plt.title('Distribuição de Classes')
-                plt.show()
+        for id in datasets_analysis["id"]:
+            trainer = Trainer(id,datasets_analysis["mode"])
+            plot = DatasetAnalysisGraphics(id,trainer)
+            
+            for graphic in datasets_analysis["graphics"]:
+                # Distribuição de classes
+                if 'class_distribution' == graphic["type"]:
+                    plot.class_distribution(graphic.get("y_labels"))
 
-            # Histograma
-            if 'histogram' == graphic["type"]:
-                plt.figure(figsize=(15,10))
-                plt.hist(trainer.x_train, bins=30)
-                plt.title('Histograma')
-                plt.show()
+                # Histograma
+                if 'histogram' == graphic["type"]:
+                    plot.histogram()
 
-            # Boxplot
-            if 'boxplot'  == graphic["type"]:
-                plt.figure(figsize=(10, 6))
-                plt.boxplot(trainer.x_train)
-                plt.title('Boxplot')
-                plt.show()
+                # Boxplot
+                if 'boxplot'  == graphic["type"]:
+                    plot.boxplot()
 
-            # Matriz de correlação
-            if 'correlation_matrix' == graphic["type"]:
-                df = pd.DataFrame(trainer.x_train)
-                corr = df.corr()
-                cax = plt.matshow(corr, cmap='coolwarm')
-                plt.colorbar(cax)
-                plt.title('Matriz de Correlação')
-                plt.show()
+                # Matriz de correlação
+                if 'correlation_matrix' == graphic["type"]:
+                    plot.correlation_matrix()
         # # Distribuição de classes
         # if 'class_distribution' in datasets_analysis["graphics"]:
         #     plt.figure(figsize=(10, 6))
