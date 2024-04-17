@@ -14,3 +14,11 @@ A suas principais funcionalidades incluem:
 
 Acesse a wiki para saber mais
 [Link](https://github.com/lprm-ufes/MininetFed/wiki)
+
+
+## Vídeo de instalação
+
+[Link](youtu.be/G8hIIM3Xmr4)
+
+## Vídeo de demonstração da utilização:
+[Link](youtu.be/ZyunOvp50IQ)
