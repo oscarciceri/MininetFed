@@ -44,7 +44,7 @@ class DatasetAnalysisGraphics:
         plt.show()
 
   def class_distribution_all(self, y_labels=None):
-    classes, counts = np.unique(self.trainers[0].y_train, return_counts=True)
+    classes, counts = np.unique(self.trainers[0].y_train, return_counts=True) # ESSA LINNA DÁ PROBLEMA CASO O TRAINER 0 NÃO TENHA TODAS AS CLASSES
     data = np.zeros((len(self.trainers),len(classes)))
     
     for id, trainer in self.trainers.items():
@@ -52,7 +52,7 @@ class DatasetAnalysisGraphics:
         data[id][classes] = counts
 
     plt.figure(figsize=(10, 6))
-    if y_labels is not None:
+    if y_labels is not None: # TEM ALGUM PROBLEMA COM AS LABELS
         plt.xticks(classes, y_labels)
 
     plt.xlabel('Classe', fontsize=18)

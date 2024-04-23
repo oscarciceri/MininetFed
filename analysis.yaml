@@ -16,13 +16,13 @@ experiments_folder: experiments
 #     - type: n_clients_absolute
 
 datasets_analysis:
-  id: [0, 1, 2]
+  id: [0, 1, 2, 3, 4, 5]
   mode: client
   graphics:
     # - type: class_distribution_per_client
     # y_labels: [A, B, C, D, E]
     - type: class_distribution_complete
-      y_labels: [A, B, C, D, E]
+      # y_labels: [A, B, C, D, E]
     # - type: histogram
     # - type: boxplot
     # - type: correlation_matrix

@@ -12,6 +12,7 @@ from sklearn import preprocessing
 class TrainerHar:
     # ID = 0
     def __init__(self,ext_id, mode) -> None:
+        self.clients = 6
         self.external_id = ext_id
         self.mode = mode # client
         # TrainerHar.ID = TrainerHar.ID + 1
@@ -21,6 +22,7 @@ class TrainerHar:
         self.x_train, self.y_train, self.x_test, self.y_test = self.split_data()
         input_shape = self.x_train.shape[1:]
         self.num_samples = self.x_train.shape[0]
+        self.num_tests = self.x_test.shape[0]
         n_classes = len(np.unique(self.y_train))
         self.model = self.define_model(input_shape, n_classes)
         self.stop_flag = False
@@ -112,21 +114,27 @@ class TrainerHar:
         if self.mode=="client":
             newDf[self.idColumn] = df[self.idColumn]
             idslist = newDf[self.idColumn].unique()
+            self.idslist = idslist
             newDf = newDf[newDf[self.idColumn] == idslist[int(self.id%len(idslist))-1]].drop(columns=[self.idColumn])  
+            x_train, x_test, y_train, y_test = train_test_split(newDf.drop(columns=["classe"]).values, newDf["classe"].values,test_size=0.20, random_state=42)
+            return x_train, y_train, x_test, y_test
+        
+        # if self.mode == "random":
+        #     num_train_samples = int(self.num_samples / self.n_clients)
+        #     num_test_samples = int(self.num_tests / self.n_clients)
+
+        #     x_train = newDf.drop(columns=["classe"]).sample(n=num_train_samples).values
+        #     y_train = newDf.loc[x_train.index, "classe"].values
+
+        #     remaining_samples = newDf.drop(x_train.index)
+
+        #     x_test = remaining_samples.drop(columns=["classe"]).sample(n=num_test_samples).values
+        #     y_test = remaining_samples.loc[x_test.index, "classe"].values
+        #     return x_train, y_train, x_test, y_test
+
         
         x_train, x_test, y_train, y_test = train_test_split(newDf.drop(columns=["classe"]).values, newDf["classe"].values,test_size=0.20, random_state=42)
-    
-        # if not self.dividir:
-        #     return self.partition(x_train,y_train,self.id,self.nc), self.partition(x_test,y_test,self.id,self.nc)
-
         return x_train, y_train, x_test, y_test
-
-    # def partition(X: np.ndarray, y: np.ndarray, id, nc):
-    #     if len(X[0]) == 41:
-    #         X = X[:,:-1]
-    
-    #     return np.array_split(X, int(nc))[id], np.array_split(y, int(nc))[id]
-
 
         
 
@@ -136,6 +144,9 @@ if __name__ == '__main__':
     trainer.train_model()
     y_predict = trainer.model.predict(x_test)
     
+    # Informações do dataset
+    print("N clientes distintos na divisão client: ",len(trainer.idslist))
+    
     # Convertendo os arrays numpy para DataFrames
     x_train_df = pd.DataFrame(x_train)
     y_train_df = pd.DataFrame(y_train)
@@ -143,9 +154,7 @@ if __name__ == '__main__':
     y_test_df = pd.DataFrame(y_test)
     y_predict_df = pd.DataFrame(y_predict)
 
-    # Salvando os DataFrames como arquivos CSV
-   
-    
+    # Salvando os DataFrames como arquivos CSV  
     x_train_df.to_csv('x_train.csv', index=False)
     y_train_df.to_csv('y_train.csv', index=False)
     x_test_df.to_csv('x_test.csv', index=False)
