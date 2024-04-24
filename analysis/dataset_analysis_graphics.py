@@ -44,8 +44,12 @@ class DatasetAnalysisGraphics:
         plt.show()
 
   def class_distribution_all(self, y_labels=None):
-    classes, counts = np.unique(self.trainers[0].y_train, return_counts=True) # ESSA LINNA DÁ PROBLEMA CASO O TRAINER 0 NÃO TENHA TODAS AS CLASSES
-    data = np.zeros((len(self.trainers),len(classes)))
+    all_classes = set()
+    for id, trainer in self.trainers.items():
+      classes, _ = np.unique(trainer.y_train, return_counts=True)
+      all_classes.update(classes) 
+      
+    data = np.zeros((len(self.trainers),len(all_classes)))
     
     for id, trainer in self.trainers.items():
         classes, counts = np.unique(trainer.y_train, return_counts=True)
