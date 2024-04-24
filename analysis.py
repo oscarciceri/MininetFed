@@ -10,16 +10,8 @@ from collections import OrderedDict
 import sys
 import os
 
-if __name__ == '__main__':
-    # total args
-    n = len(sys.argv)
 
-    #  check args
-    if (n < 2):
-        # print("correct use: sudo python3 analysis.py <experiments_folder> <graphics.yaml>")
-        print("alternative: correct use: sudo python3 analysis.py <graphics.yaml>")
-        exit()
-
+def analysis(analysis_yaml_path):
     
     # FOLDER = sys.argv[1]
     config = Config(sys.argv[1])
@@ -149,4 +141,17 @@ if __name__ == '__main__':
         #     sns.heatmap(trainer.x_train.corr(), annot=True, fmt=".2f")
         #     plt.title('Matriz de Correlação')
         #     plt.show()
+    
+if __name__ == '__main__':
+    # total args
+    n = len(sys.argv)
+
+    #  check args
+    if (n < 2):
+        # print("correct use: sudo python3 analysis.py <experiments_folder> <graphics.yaml>")
+        print("alternative: correct use: sudo python3 analysis.py <graphics.yaml> ...")
+        exit()
+
+    for analysis_yaml_path in sys.argv[1:]:
+        analysis(analysis_yaml_path)
     
