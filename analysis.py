@@ -14,7 +14,7 @@ import os
 def analysis(analysis_yaml_path):
     
     # FOLDER = sys.argv[1]
-    config = Config(sys.argv[1])
+    config = Config(analysis_yaml_path)
     
     
     
