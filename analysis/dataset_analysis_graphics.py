@@ -50,19 +50,21 @@ class DatasetAnalysisGraphics:
       all_classes.update(classes) 
       
     data = np.zeros((len(self.trainers),len(all_classes)))
+    all_classes = np.asarray(list(all_classes))
     
     for id, trainer in self.trainers.items():
         classes, counts = np.unique(trainer.y_train, return_counts=True)
         data[id][classes] = counts
 
     plt.figure(figsize=(10, 6))
-    if y_labels is not None: # TEM ALGUM PROBLEMA COM AS LABELS
-        plt.xticks(classes, y_labels)
 
     plt.xlabel('Classe', fontsize=18)
     plt.ylabel('Quantidade de Casos', fontsize=18)
     plt.title(f'Distribuiçãoo dos casos de Treino por classe em todos os clientes', fontsize=16)
     plt.boxplot(data)
+    
+    if y_labels is not None:
+        plt.xticks(all_classes+1, y_labels)
 
     plt.show()
 
@@ -74,13 +76,13 @@ class DatasetAnalysisGraphics:
         data[id][classes] = counts
 
     plt.figure(figsize=(10, 6))
-    if y_labels is not None:
-        plt.xticks(classes, y_labels)
         
     plt.xlabel('Classe', fontsize=18)
     plt.ylabel('Quantidade de Casos', fontsize=18)
     plt.title(f'Distribuiçãoo dos casos de Teste por classe em todos os clientes', fontsize=16)
     plt.boxplot(data)
+    if y_labels is not None:
+        plt.xticks(all_classes+1, y_labels)
 
     plt.show()
 

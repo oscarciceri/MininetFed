@@ -20,9 +20,9 @@ datasets_analysis:
   mode: client
   graphics:
     # - type: class_distribution_per_client
-    # y_labels: [A, B, C, D, E]
+    #   y_labels: [A, B, C, D, E]
     - type: class_distribution_complete
-      # y_labels: [A, B, C, D, E]
+      y_labels: [A, B, C, D, E]
     # - type: histogram
     # - type: boxplot
     # - type: correlation_matrix
