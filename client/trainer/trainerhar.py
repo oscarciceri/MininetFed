@@ -110,27 +110,28 @@ class TrainerHar:
         le.fit(df["classe"])
         newDf["classe"] = le.transform(df["classe"])
 
+
+        newDf[self.idColumn] = df[self.idColumn]
+        idslist = newDf[self.idColumn].unique()
+        self.idslist = idslist
       
         if self.mode=="client":
-            newDf[self.idColumn] = df[self.idColumn]
-            idslist = newDf[self.idColumn].unique()
-            self.idslist = idslist
+            
             newDf = newDf[newDf[self.idColumn] == idslist[int(self.id%len(idslist))-1]].drop(columns=[self.idColumn])  
             x_train, x_test, y_train, y_test = train_test_split(newDf.drop(columns=["classe"]).values, newDf["classe"].values,test_size=0.20, random_state=42)
             return x_train, y_train, x_test, y_test
         
-        # if self.mode == "random":
-        #     num_train_samples = int(self.num_samples / self.n_clients)
-        #     num_test_samples = int(self.num_tests / self.n_clients)
 
-        #     x_train = newDf.drop(columns=["classe"]).sample(n=num_train_samples).values
-        #     y_train = newDf.loc[x_train.index, "classe"].values
 
-        #     remaining_samples = newDf.drop(x_train.index)
-
-        #     x_test = remaining_samples.drop(columns=["classe"]).sample(n=num_test_samples).values
-        #     y_test = remaining_samples.loc[x_test.index, "classe"].values
-        #     return x_train, y_train, x_test, y_test
+        if self.mode=="random":
+            np.random.seed(self.id)
+            newDf[self.idColumn] = df[self.idColumn]
+            total_cases = len(newDf)
+            cases_per_client = total_cases //  len(self.idslist)
+            chosen_cases = np.random.choice(total_cases, cases_per_client, replace=False)
+            newDf = newDf.iloc[chosen_cases].drop(columns=[self.idColumn])
+            x_train, x_test, y_train, y_test = train_test_split(newDf.drop(columns=["classe"]).values, newDf["classe"].values, test_size=0.20, random_state=42)
+            return x_train, y_train, x_test, y_test
 
         
         x_train, x_test, y_train, y_test = train_test_split(newDf.drop(columns=["classe"]).values, newDf["classe"].values,test_size=0.20, random_state=42)

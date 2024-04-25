@@ -94,7 +94,7 @@ def analysis(analysis_yaml_path):
         trainers = OrderedDict()
         for id in datasets_analysis["id"]:
             trainers[id] = Trainer(id,datasets_analysis["mode"])
-        plot = DatasetAnalysisGraphics(trainers)
+        plot = DatasetAnalysisGraphics(trainers, datasets_analysis["mode"])
             
         for graphic in datasets_analysis["graphics"]:
             # Distribuição de classes

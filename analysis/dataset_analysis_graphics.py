@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class DatasetAnalysisGraphics:
-  def __init__(self, trainers) -> None:
+  def __init__(self, trainers, mode) -> None:
     self.trainers = trainers
+    self.mode = mode
 
     
   def class_distribution(self, y_labels=None):
@@ -58,15 +59,17 @@ class DatasetAnalysisGraphics:
 
     plt.figure(figsize=(10, 6))
 
-    plt.xlabel('Classe', fontsize=18)
-    plt.ylabel('Quantidade de Casos', fontsize=18)
-    plt.title(f'Distribuiçãoo dos casos de Treino por classe em todos os clientes', fontsize=16)
+    plt.xlabel('Classes', fontsize=18)
+    plt.ylabel('Number of Cases', fontsize=18)
+    plt.title(f'Distribution of Training Cases by Class Across All Clients (mode "{self.mode}")', fontsize=16)
+
     plt.boxplot(data)
     
     if y_labels is not None:
         plt.xticks(all_classes+1, y_labels)
 
-    plt.show()
+    plt.savefig(f"images_english/{self.mode}_treino.pdf")
+    # plt.show()
 
     classes, counts = np.unique(self.trainers[0].y_test, return_counts=True)
     data = np.zeros((len(self.trainers),len(classes)))
@@ -77,14 +80,15 @@ class DatasetAnalysisGraphics:
 
     plt.figure(figsize=(10, 6))
         
-    plt.xlabel('Classe', fontsize=18)
-    plt.ylabel('Quantidade de Casos', fontsize=18)
-    plt.title(f'Distribuiçãoo dos casos de Teste por classe em todos os clientes', fontsize=16)
+    plt.xlabel('Classes', fontsize=18)
+    plt.ylabel('Number of Cases', fontsize=18)
+    plt.title(f'Distribution of Testing Cases by Class Across All Clients (mode "{self.mode}")', fontsize=16)
     plt.boxplot(data)
     if y_labels is not None:
         plt.xticks(all_classes+1, y_labels)
 
-    plt.show()
+    # plt.show()
+    plt.savefig(f"images_english/{self.mode}_teste.pdf")
 
 
 
