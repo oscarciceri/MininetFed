@@ -18,7 +18,7 @@ Acesse a wiki para saber mais
 
 ## Vídeo de instalação
 
-[Link](youtu.be/G8hIIM3Xmr4)
+[Link](https://youtu.be/G8hIIM3Xmr4)
 
 ## Vídeo de demonstração da utilização:
-[Link](youtu.be/ZyunOvp50IQ)
+[Link](https://youtu.be/ZyunOvp50IQ)
