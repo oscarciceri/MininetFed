@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
+# from imblearn.under_sampling import RandomUnderSampler
+from imblearn.over_sampling import RandomOverSampler
 
 class TrainerHar:
     # ID = 0
@@ -114,7 +116,8 @@ class TrainerHar:
         newDf[self.idColumn] = df[self.idColumn]
         idslist = newDf[self.idColumn].unique()
         self.idslist = idslist
-      
+       
+        
         if self.mode=="client":
             
             newDf = newDf[newDf[self.idColumn] == idslist[int(self.id%len(idslist))-1]].drop(columns=[self.idColumn])  
@@ -130,6 +133,56 @@ class TrainerHar:
             cases_per_client = total_cases //  len(self.idslist)
             chosen_cases = np.random.choice(total_cases, cases_per_client, replace=False)
             newDf = newDf.iloc[chosen_cases].drop(columns=[self.idColumn])
+            x_train, x_test, y_train, y_test = train_test_split(newDf.drop(columns=["classe"]).values, newDf["classe"].values, test_size=0.20, random_state=42)
+            return x_train, y_train, x_test, y_test
+
+
+        
+
+        if self.mode=="client-balanced":
+            rus = RandomOverSampler(random_state=42)
+            newDf = newDf[newDf[self.idColumn] == idslist[int(self.id%len(idslist))-1]].drop(columns=[self.idColumn])  
+            X = newDf.drop(columns=["classe"]).values
+            y = newDf["classe"].values
+            # Aplica o under-sampling
+            X_res, y_res = rus.fit_resample(X, y)
+            x_train, x_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.20, random_state=42)
+            return x_train, y_train, x_test, y_test
+
+        if self.mode=="random-balanced":
+            rus = RandomOverSampler(random_state=42)
+            np.random.seed(self.id)
+            newDf[self.idColumn] = df[self.idColumn]
+            total_cases = len(newDf)
+            cases_per_client = total_cases //  len(self.idslist)
+            chosen_cases = np.random.choice(total_cases, cases_per_client, replace=False)
+            newDf = newDf.iloc[chosen_cases].drop(columns=[self.idColumn])
+            X = newDf.drop(columns=["classe"]).values
+            y = newDf["classe"].values
+            # Aplica o under-sampling
+            X_res, y_res = rus.fit_resample(X, y)
+            x_train, x_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.20, random_state=42)
+            return x_train, y_train, x_test, y_test
+
+
+        if self.mode=="client-disbalanced":
+            newDf = newDf[newDf[self.idColumn] == idslist[int(self.id%len(idslist))-1]].drop(columns=[self.idColumn])
+            n_classes = len(np.unique(newDf["classe"]))  
+            print(int((self.id-1)%n_classes))
+            newDf = newDf[newDf["classe"] != int((self.id-1)%n_classes)]  # Remove the class that matches self.id
+            x_train, x_test, y_train, y_test = train_test_split(newDf.drop(columns=["classe"]).values, newDf["classe"].values,test_size=0.20, random_state=42)
+            return x_train, y_train, x_test, y_test
+
+        if self.mode=="random-disbalanced":
+            np.random.seed(self.id)
+            newDf[self.idColumn] = df[self.idColumn]
+            total_cases = len(newDf)
+            cases_per_client = total_cases //  len(self.idslist)
+            chosen_cases = np.random.choice(total_cases, cases_per_client, replace=False)
+            newDf = newDf.iloc[chosen_cases].drop(columns=[self.idColumn])
+            n_classes = len(np.unique(newDf["classe"]))  
+            print(int((self.id-1)%n_classes))
+            newDf = newDf[newDf["classe"] != int((self.id-1)%n_classes)]  # Remove the class that matches self.id
             x_train, x_test, y_train, y_test = train_test_split(newDf.drop(columns=["classe"]).values, newDf["classe"].values, test_size=0.20, random_state=42)
             return x_train, y_train, x_test, y_test
 

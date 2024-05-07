@@ -121,8 +121,8 @@ class Graphics:
             df = item['df']
             plt.plot(df['round'], df['mean_accuracy'], label=item['name'])
             
-        plt.xlabel('round', fontsize=18)
-        plt.ylabel('Acurácia', fontsize=18)
+        plt.xlabel('Round', fontsize=18)
+        plt.ylabel('Accuracy', fontsize=18)
         plt.legend(fontsize=16)
         plt.tick_params(labelsize=16)
         plt.show()
