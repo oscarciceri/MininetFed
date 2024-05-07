@@ -5,7 +5,7 @@ experiments_analysis:
 
   from:
     - experiment: client_balanced
-      alias: ola
+      # alias: ola
 
   graphics:
     - type: deltaT_per_round

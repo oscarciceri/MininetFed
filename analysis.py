@@ -54,10 +54,12 @@ def analysis(analysis_yaml_path):
                     if fileName.endswith(".log"):
                         name = None
                         filepath = f"{experiment_name}/{fileName.split('.')[0]}"
-                        if idx == 0:
-                            name = alias
-                        elif alias is not None:
-                            name = f"{alias} ({idx})"
+                        
+                        if alias is not None:
+                            if idx == 0:
+                                name = alias
+                            else:
+                                name = f"{alias} ({idx})"
                         else:
                             name = filepath
                             
@@ -86,9 +88,6 @@ def analysis(analysis_yaml_path):
                 plot.network_consumption()
     
         
-    import matplotlib.pyplot as plt
-    import pandas as pd
-    # import seaborn as sns
     datasets_analysis = config.get("datasets_analysis")
     if datasets_analysis != None:
         trainers = OrderedDict()
