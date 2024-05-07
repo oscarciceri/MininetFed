@@ -1,23 +1,23 @@
-experiments_folder: experiments/balancing
+experiments_folder: experiments
 
-experiments_analysis:
-  #   save_csv: true
+# experiments_analysis:
+#   save_csv: true
 
-  from:
-    - experiment: client_balanced
-      # alias: ola
+#   from:
+#     - experiment: 2024_02_27_poc_favg_har
 
-  graphics:
-    - type: deltaT_per_round
+#   graphics:
+#     - type: deltaT_per_round
 
-    - type: mean_acc
-    - type: network_consumption
+#     - type: mean_acc
 
-    - type: n_clients_absolute
+#     - type: network_consumption
+
+#     - type: n_clients_absolute
 
 datasets_analysis:
   id: [0, 1, 2, 3, 4, 5]
-  mode: client
+  mode: all
   graphics:
     # - type: class_distribution_per_client
     #   y_labels: [A, B, C, D, E]

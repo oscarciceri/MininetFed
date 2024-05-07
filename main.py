@@ -6,7 +6,7 @@ def run():
   
   n = len(sys.argv)
   if (n < 2):
-      print("correct use: sudo python3 run.py <config.yaml> ...")
+      print("correct use: sudo python3 main.py <config.yaml> ...")
       exit()
 
   for CONFIGYAML in sys.argv[1:]:

@@ -5,3 +5,5 @@ __pycache__/
 localenv/
 analysis/env2
 env_analysis
+experiments/
+images_english/

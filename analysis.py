@@ -1,25 +1,20 @@
 from analysis.config import Config
 from analysis.process_log import File
 from analysis.generate_graphics import Graphics
+from analysis.dataset_analysis_graphics import DatasetAnalysisGraphics
 # from .federated.experiment import Experiment
 from client import Trainer
 
+
+from collections import OrderedDict
 import sys
 import os
 
-if __name__ == '__main__':
-    # total args
-    n = len(sys.argv)
 
-    #  check args
-    if (n < 2):
-        # print("correct use: sudo python3 analysis.py <experiments_folder> <graphics.yaml>")
-        print("alternative: correct use: sudo python3 analysis.py <graphics.yaml>")
-        exit()
-
+def analysis(analysis_yaml_path):
     
     # FOLDER = sys.argv[1]
-    config = Config(sys.argv[1])
+    config = Config(analysis_yaml_path)
     
     
     
@@ -59,10 +54,12 @@ if __name__ == '__main__':
                     if fileName.endswith(".log"):
                         name = None
                         filepath = f"{experiment_name}/{fileName.split('.')[0]}"
-                        if idx == 0:
-                            name = alias
-                        elif alias is not None:
-                            name = f"{alias} ({idx})"
+                        
+                        if alias is not None:
+                            if idx == 0:
+                                name = alias
+                            else:
+                                name = f"{alias} ({idx})"
                         else:
                             name = filepath
                             
@@ -91,43 +88,32 @@ if __name__ == '__main__':
                 plot.network_consumption()
     
         
-    import matplotlib.pyplot as plt
-    import pandas as pd
-    # import seaborn as sns
     datasets_analysis = config.get("datasets_analysis")
     if datasets_analysis != None:
-        trainer = Trainer(datasets_analysis["id"],datasets_analysis["mode"])
-        
+        trainers = OrderedDict()
+        for id in datasets_analysis["id"]:
+            trainers[id] = Trainer(id,datasets_analysis["mode"])
+        plot = DatasetAnalysisGraphics(trainers, datasets_analysis["mode"])
+            
         for graphic in datasets_analysis["graphics"]:
             # Distribuição de classes
-            if 'class_distribution' == graphic["type"]:
-                plt.figure(figsize=(10, 6))
-                plt.hist(trainer.y_train, bins=30)
-                plt.title('Distribuição de Classes')
-                plt.show()
+            if 'class_distribution_per_client' == graphic["type"]:
+                plot.class_distribution(graphic.get("y_labels"))
+                
+            if 'class_distribution_complete' == graphic["type"]:
+                plot.class_distribution_all(graphic.get("y_labels"))
 
             # Histograma
             if 'histogram' == graphic["type"]:
-                plt.figure(figsize=(15,10))
-                plt.hist(trainer.x_train, bins=30)
-                plt.title('Histograma')
-                plt.show()
+                plot.histogram()
 
             # Boxplot
             if 'boxplot'  == graphic["type"]:
-                plt.figure(figsize=(10, 6))
-                plt.boxplot(trainer.x_train)
-                plt.title('Boxplot')
-                plt.show()
+                plot.boxplot()
 
             # Matriz de correlação
             if 'correlation_matrix' == graphic["type"]:
-                df = pd.DataFrame(trainer.x_train)
-                corr = df.corr()
-                cax = plt.matshow(corr, cmap='coolwarm')
-                plt.colorbar(cax)
-                plt.title('Matriz de Correlação')
-                plt.show()
+                plot.correlation_matrix()
         # # Distribuição de classes
         # if 'class_distribution' in datasets_analysis["graphics"]:
         #     plt.figure(figsize=(10, 6))
@@ -154,4 +140,17 @@ if __name__ == '__main__':
         #     sns.heatmap(trainer.x_train.corr(), annot=True, fmt=".2f")
         #     plt.title('Matriz de Correlação')
         #     plt.show()
+    
+if __name__ == '__main__':
+    # total args
+    n = len(sys.argv)
+
+    #  check args
+    if (n < 2):
+        # print("correct use: sudo python3 analysis.py <experiments_folder> <graphics.yaml>")
+        print("alternative: correct use: sudo python3 analysis.py <graphics.yaml> ...")
+        exit()
+
+    for analysis_yaml_path in sys.argv[1:]:
+        analysis(analysis_yaml_path)
     
