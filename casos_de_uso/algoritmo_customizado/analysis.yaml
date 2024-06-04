@@ -1,4 +1,4 @@
-experiments_folder: experimentos_artigo/fed_sketch
+experiments_folder: casos_de_uso/algoritmo_customizado
 
 experiments_analysis:
   save_csv: true
