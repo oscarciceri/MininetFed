@@ -26,10 +26,38 @@ BROKER_ADDR = "10.0.0.1"
 # NUM_ROUNDS = 10
 # STOP_ACC = 1.0
 # CSV_LOG="logs/novo.log"
-      
+
+
+class IpGen:
+    def __init__(self,start_ip4) -> None:
+        self.ip1 = 10
+        self.ip2 = 0
+        self.ip3 = 0
+        self.ip4 = start_ip4
+
+    def next_ip(self) -> str:
+        ip = f"{self.ip1}.{self.ip2}.{self.ip3}.{self.ip4}"
+        
+        self.ip4 += 1
+        if self.ip4 > 254:
+            self.ip4 = 1
+            self.ip3 += 1
+            if self.ip3 > 255:
+                self.ip3 = 0
+                self.ip2+=1
+                if self.ip2 > 255:
+                    self.ip2 = 0
+                    raise Exception("Error: Ip limit reached!")
+    
+    
+        return ip
+    
+          
 
 class FedNetwork:
     def __init__(self, filename):
+        
+        self.ip_gen = IpGen(3)
         self.switchs = list()
         self.clientes = list()
         
@@ -101,7 +129,7 @@ class FedNetwork:
     
     def insert_server_container(self):
         info('*** Adicionando Container do Server\n')
-        self.srv1 = self.net.addDocker('srv1', ip='10.0.0.3',dimage=self.server_images, volumes=self.docker_volume,
+        self.srv1 = self.net.addDocker('srv1', ip=self.ip_gen.next_ip(),dimage=self.server_images, volumes=self.docker_volume,
                      mem_limit=self.server["memory"], cpu_quota=self.server_quota)
         self.net.addLink(self.srv1, self.switchs[self.server["connection"] - 1])
         
@@ -115,7 +143,7 @@ class FedNetwork:
                 volumes = self.docker_volume
                 qtdDevice += 1
                 client_quota = client_type["vCPU_percent"] * self.n_cpu*1000
-                d = self.net.addDocker(f'sta{client_type["name"]}{x}', ip=f'10.0.0.{qtdDevice+3}',cpu_quota=client_quota,
+                d = self.net.addDocker(f'sta{client_type["name"]}{x}', ip=self.ip_gen.next_ip(),cpu_quota=client_quota,
                                     dimage=client_type["image"], volumes=volumes,  mem_limit=client_type["memory"])
                 self.net.addLink(d, self.switchs[client_type['connection'] - 1],
                                 cls=TCLink, delay=client_type.get("delay"), loss=client_type.get("loss"), bw=client_type.get("bw"))
