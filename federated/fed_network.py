@@ -76,6 +76,9 @@ class FedNetwork:
         self.experiment = Experiment(self.general["experiments_folder"],self.exp_conf["experiment_name"],create_new=self.exp_conf["new_experiment"])
         self.experiment.copyFileToExperimentFolder(filename)
 
+    def interrupt_execution(self):
+        self.net.stop()
+
     def insert_switch(self, qtd):
         info('*** Adicionando SWITCHS\n')
         self.insert_switch

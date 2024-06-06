@@ -8,7 +8,7 @@ import torch.optim as optim
 from torchvision.datasets import MNIST
 import torchvision.transforms as transforms
 import numpy as np
-# from Pyfhel import Pyfhel
+from Pyfhel import Pyfhel
 
 
 def get_params(model):
@@ -81,11 +81,12 @@ class TrainerCkksfed():
         self.stop_flag = False
         self.args = None
         
-        # self.HE_f = Pyfhel() # Empty creation
-        # self.HE_f.load_context(dir_path + "/context")
-        # self.HE_f.load_public_key(dir_path + "/pub.key")
-        # self.HE_f.load_secret_key(dir_path + "/sec.key")
-        # self.HE_f.load_relin_key(dir_path + "/relin.key")
+        self.HE_f = Pyfhel() # Empty creation
+        self.HE_f.load_context(dir_path + "/context")
+        self.HE_f.load_public_key(dir_path + "/pub.key")
+        self.HE_f.load_secret_key(dir_path + "/sec.key")
+        self.HE_f.load_relin_key(dir_path + "/relin.key")
+        # self.HE_f.rotateKeyGen()
         # self.HE_f.load_rotate_key(dir_path + "/rotate.key")
         
     
