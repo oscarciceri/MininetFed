@@ -7,3 +7,6 @@ analysis/env2
 env_analysis
 experiments/
 images_english/
+env_key_gen/
+data/
+temp/ckksfed_fhe/pasta

@@ -40,10 +40,15 @@ net.addLink(srv1,s1)
    
 net.start()
 info('*** Criando env')
-srv1.cmd(f"bash -c 'cd flw && python3 -m venv env' ;", verbose=True)
+# srv1.cmd(f"bash -c 'cd flw && python3 -m venv env' ;", verbose=True)
 
 info('*** Iniciando instalação')
-srv1.cmd(f"bash -c 'cd flw && . env/bin/activate && pip install -r {REQUIREMENTS}' ;",verbose=True)
-# CLI(net)
+# srv1.cmd(f"bash -c ' \
+# apt-get update && \
+# apt-get install gcc g++ -y &&  \
+# update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++ 90 && \
+# update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc 90' ;",verbose=True)
+# srv1.cmd(f"bash -c 'cd flw && . env/bin/activate && pip install -r {REQUIREMENTS}' ;",verbose=True)
+CLI(net)
 info('*** Parando MININET')
 net.stop()
