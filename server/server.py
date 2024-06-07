@@ -89,11 +89,19 @@ def server():
 
     def on_message_agg(client, userdata, message):
         m = json.loads(message.payload.decode("utf-8"))
+        print(f"checkpoint 1 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
+        client_training_response = {} 
         weights = [np.asarray(w, dtype=np.float32) for w in m['weights']]
+        client_training_response["weights"] = weights
+        print(f"checkpoint 2 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
+        if 'training_args' in m:
+            training_args = [np.asarray(w, dtype=np.float32) for w in m['training_args']]
+            client_training_response["training_args"] = training_args
         num_samples = m['num_samples']
-        controller.add_weight(weights)  # add weight to list of weights
-        # add num samples to list of num_samples
-        controller.add_num_samples(num_samples)
+        client_training_response["num_samples"] = num_samples
+        print(f"checkpoint 3 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
+        controller.add_client_training_response(m['id'],client_training_response)  
+        print(f"checkpoint 4 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
         controller.update_num_responses()
         logger.info(
             f'received weights from trainer {m["id"]}!', extra=executionType)

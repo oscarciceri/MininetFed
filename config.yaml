@@ -43,9 +43,9 @@ client_types:
     image: mininetfed:client
     script: client/client.py
     connection: 1
-    loss: 0
-    delay: 0ms
-    bw: 20
+    loss:
+    delay:
+    bw:
 
   # - amount: 1
   #   name: tipo2

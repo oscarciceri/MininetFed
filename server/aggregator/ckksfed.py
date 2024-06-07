@@ -47,12 +47,13 @@ def cka(X, Y, XTX, YTY , HE = None, crypt=False):
 
 #servidor
 # Rodar função teste no Cliente antes de enviar o seu modelo e mandar os resultados para a função de agregação
-distance_matrix = []
-for i in range(len(encrypted_vectors)):
-  client_distance = []
-  for j in range(len(encrypted_vectors_transposed)):
-    client_distance.append(cka(encrypted_vectors[i], encrypted_vectors_transposed[j], VTVS[i], VTVS[j], HE , crypt=True))
-  distance_matrix.append(client_distance)
+def get_distance_matrix(encrypted_vectors,encrypted_vectors_transposed, VTVS, HE):
+  distance_matrix = []
+  for i in range(len(encrypted_vectors)):
+    client_distance = []
+    for j in range(len(encrypted_vectors_transposed)):
+      client_distance.append(cka(encrypted_vectors[i], encrypted_vectors_transposed[j], VTVS[i], VTVS[j], HE , crypt=True))
+    distance_matrix.append(client_distance)
   
 # Para cada cliente, mandar junto com o modelo agregado a sua linha correspondente da matriz de distâncias: distance_matrix[i]
 # O cliente vai desemcriptar a sua linha de distâncias, identificar quais clientes fazem parte de seu cluster dependendo da distância
@@ -61,25 +62,15 @@ for i in range(len(encrypted_vectors)):
 
 import numpy as np
 
-class FedAvg:
+from .fed_avg import FedAvg
+
+class Ckksfed:
       
     def __init__(self):
       pass
     
-    def aggregate(self, all_trainer_samples, all_weights):
-        scaling_factor = list(np.array(all_trainer_samples) / np.array(all_trainer_samples).sum())
-        
-        # scale weights
-        for scaling, weights in zip(scaling_factor, all_weights):
-            for i in range(0, len(weights)):
-                weights[i] = weights[i] * scaling
-        
-        # agg weights
-        agg_weights = []
-        for layer in range(0, len(all_weights[0])):
-            var = []
-            for model in range(0, len(all_weights)):
-                var.append(all_weights[model][layer])
-            agg_weights.append(sum(var))
-
-        return agg_weights
+    def aggregate(self,client_training_response):
+        for client in client_training_response:
+          print(client_training_response[client]["training_args"])
+        fed_avg = FedAvg()
+        return fed_avg.aggregate(client_training_response)

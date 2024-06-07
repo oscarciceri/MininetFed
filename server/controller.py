@@ -13,7 +13,7 @@ class Controller:
         self.current_round = 0
         self.num_rounds = num_rounds # total number of rounds
         self.num_responses = 0 # number of responses received on aggWeights and metrics
-        self.weights = [] # save weights for agg
+        self.client_training_response = {} # save weights and other info for aggregation
         self.trainer_samples = [] # save num_samples scale for agg
         self.acc_list = []
         self.mean_acc_per_round = []
@@ -58,11 +58,8 @@ class Controller:
     def add_trainer(self, trainer_id):
         self.trainer_list.append(trainer_id)
 
-    def add_weight(self, weights):
-        self.weights.append(weights)
-    
-    def add_num_samples(self, num_samples):
-        self.trainer_samples.append(num_samples)
+    def add_client_training_response(self, id,response):
+        self.client_training_response[id] = response
     
     def add_accuracy(self, acc):
         self.acc_list.append(acc)
@@ -74,11 +71,10 @@ class Controller:
 
     
     def agg_weights(self):
-        agg_weights= self.aggregator.aggregate(self.trainer_samples, self.weights)
+        agg_weights= self.aggregator.aggregate(self.client_training_response)
 
         # reset weights and samples for next round
-        self.weights = []
-        self.trainer_samples = []
+        self.client_training_response.clear()
 
         return agg_weights
 

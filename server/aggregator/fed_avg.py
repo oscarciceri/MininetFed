@@ -1,11 +1,18 @@
 import numpy as np
-
+import sys
 class FedAvg:
       
     def __init__(self):
       pass
     
-    def aggregate(self, all_trainer_samples, all_weights):
+    def aggregate(self,client_training_response):
+        all_trainer_samples = []
+        all_weights = []
+        for client_id in client_training_response:
+            all_trainer_samples.append(client_training_response[client_id]["num_samples"])
+            all_weights.append(client_training_response[client_id]["weights"])
+        
+        
         scaling_factor = list(np.array(all_trainer_samples) / np.array(all_trainer_samples).sum())
         
         # scale weights

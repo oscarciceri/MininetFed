@@ -56,8 +56,19 @@ def on_message_selection(client, userdata, message):
             print(
                 f'trainer was selected for training this round and will start training!')
             trainer.train_model()
-            response = json.dumps({'id': CLIENT_ID, 'weights': [w.tolist(
+            response =""
+            try:
+                training_args = trainer.get_training_args()
+                response = json.dumps({'id': CLIENT_ID, 'training_args': [w.tolist(
+            ) for w in training_args],'weights': [w.tolist(
             ) for w in trainer.get_weights()], 'num_samples': trainer.get_num_samples()})
+            except:
+                response = json.dumps({'id': CLIENT_ID, 'weights': [w.tolist(
+            ) for w in trainer.get_weights()], 'num_samples': trainer.get_num_samples()})
+                
+                
+            
+            
             client.publish('minifed/preAggQueue', response)
             print(f'finished training and sent weights!')
         else:

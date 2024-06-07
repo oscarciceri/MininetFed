@@ -189,6 +189,28 @@ class TrainerCkksfed():
             # return 100 * correct / total, actv
             return correct / total
     
+    def get_training_args(self):
+        model = self.model
+        test_loader = self.dataloader_test
+        actv_last = []
+        with torch.no_grad():
+            correct = 0
+            total = 0
+            for images, labels in test_loader:
+                images = images.to(self.device)
+                labels = labels.to(self.device)
+                outputs = model(images)
+                actv_last.append(outputs.detach().clone().flatten())
+                _, predicted = torch.max(outputs.data, 1)
+                total += labels.size(0)
+                correct += (predicted == labels).sum().item()
+
+            concat_actv = np.array(torch.cat(actv_last, axis=0))
+            concat_actv -= np.mean(concat_actv)
+            actv = [concat_actv, concat_actv.T,1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum())]
+            return actv
+        
+    
     def all_metrics(self):
         acc = self.eval_model()
         return dict(zip(self.metric_names, [acc]))
