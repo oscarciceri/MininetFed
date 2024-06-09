@@ -165,8 +165,10 @@ class FedNetwork:
         self.start_clientes()
         
         info('*** Rodando CLI\n')
-        stop.cmd(f'bash -c "cd {self.volume} && . env/bin/activate && python3 stop.py {BROKER_ADDR}"', verbose=True)
-        # CLI(self.net)
+        if((self.general.get("stop") is not None) and self.general.get("stop") == 'cli'):
+            CLI(self.net)
+        else:
+            stop.cmd(f'bash -c "cd {self.volume} && . env/bin/activate && python3 stop.py {BROKER_ADDR}"', verbose=True)
         info('*** Parando MININET')
         self.net.stop()
         

@@ -70,46 +70,27 @@ class Controller:
         return self.clientSelection.select_trainers_for_round(self.trainer_list, self.metrics)
 
     
-    def agg_weights(self):
+    def agg_weights(self) -> dict:
+        # Aggregate the models recived from clients
         agg_weights= self.aggregator.aggregate(self.client_training_response)
-
+        agg_weights_dict = {}
+        
+        # The aggregator can return a list of weights or a dictionary mapping the id of each clients to their weights
+        # The numpy arrays need to be converted to lists before return to be able to turn into json
+        if isinstance(agg_weights,dict):
+            # for r in agg_weights:
+            for r in self.trainer_list:
+                try:
+                    agg_weights_dict[r] = [w.tolist() for w in agg_weights[r]] # Tem que mandar para todos os trainers, mesmo os que não treinaram
+                except:
+                    raise Exception(f"Error: O agregador não retornou os weights do trainer {r}!")
+        else:
+            # for r in self.client_training_response:
+            for r in self.trainer_list:
+                agg_weights_dict[r] = [w.tolist() for w in agg_weights]
+           
+                
         # reset weights and samples for next round
         self.client_training_response.clear()
-
-        return agg_weights
-
-    # # output
-    # def arrays_to_csv(self,arrays, headers, filename):
-    #     try:
-    #         # Verifica se o número de arrays corresponde ao número de cabeçalhos
-    #         if len(arrays) != len(headers):
-    #             raise ValueError("O número de arrays deve ser igual ao número de cabeçalhos")
-
-    #         # Cria um dicionário onde a chave é o cabeçalho e o valor é o array correspondente
-    #         data = {headers[i]: arrays[i] for i in range(len(headers))}
-
-    #         # Cria um DataFrame pandas a partir do dicionário
-    #         df = pd.DataFrame(data)
-
-    #         # Escreve o DataFrame em um arquivo CSV
-    #         df.to_csv(filename, sep=';', index=False)
-    #     except Exception as e:
-    #         print(f"Ocorreu uma exceção: {e}")  
-    #         input()
-
-
-
-
-    # def save_training_metrics(self, CSV_PATH):
-    #     # Exemplo de uso da função
-    #     arrays = [np.array([1, 2, 3]), np.array([4, 5, 6]), np.array([7, 8, 9])]
-    #     headers = ['Média', 'Tempo', 'Cliente']
-    #     self.arrays_to_csv(arrays, headers, CSV_PATH)
-
-
-                   
-    # def saveFile():
-    #     pass
-    #     # implementar o save file -> self.mean_acc_per_round 
-
+        return agg_weights_dict
 

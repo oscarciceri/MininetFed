@@ -180,7 +180,8 @@ def server():
 
         # aggregate and send
         agg_weights = controller.agg_weights()
-        response = json.dumps({'weights': [w.tolist() for w in agg_weights]})
+        # response = json.dumps({'weights': [w.tolist() for w in agg_weights]})
+        response = json.dumps({'weights': agg_weights})
         client.publish('minifed/posAggQueue', response)
         logger.info(f'sent aggregated weights to trainers!', extra=executionType)
         print(f'sent aggregated weights to trainers!')

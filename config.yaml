@@ -4,6 +4,7 @@ general:
   n_available_cpu: 6
   broker_image: mininetfed:broker
   experiments_folder: experiments
+  stop: auto # auto, cli, (None -> auto)
 
 # Experiment settings
 experiment:
@@ -28,7 +29,7 @@ network:
 
 # Server settings
 server:
-  memory: 256m
+  memory: 1024m
   vCPU_percent: 20
   image: mininetfed:client
   connection: 1
@@ -36,7 +37,7 @@ server:
 
 # Clients settings list
 client_types:
-  - amount: 2
+  - amount: 4
     name: tipo1
     memory: 512m
     vCPU_percent: 100

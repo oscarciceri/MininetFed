@@ -1,4 +1,11 @@
-#servidor
+import sys
+import numpy as np
+
+from .fed_avg import FedAvg
+
+import torch #Precisa importar isso para o Pyfhel funcional
+from Pyfhel import Pyfhel
+
 def cka_unecrypted(X,Y,XTX,YTY):
   # Implements linear CKA as in Kornblith et al. (2019)
   X = X.copy()
@@ -57,20 +64,37 @@ def get_distance_matrix(encrypted_vectors,encrypted_vectors_transposed, VTVS, HE
   
 # Para cada cliente, mandar junto com o modelo agregado a sua linha correspondente da matriz de distâncias: distance_matrix[i]
 # O cliente vai desemcriptar a sua linha de distâncias, identificar quais clientes fazem parte de seu cluster dependendo da distância
-  
+ 
+
   
 
-import numpy as np
-
-from .fed_avg import FedAvg
 
 class Ckksfed:
       
     def __init__(self):
-      pass
+        dir_path = "temp/ckksfed_fhe/pasta"
+        self.HE_f = Pyfhel() # Empty creation
+        self.HE_f.load_context(dir_path + "/context")
+        self.HE_f.load_public_key(dir_path + "/pub.key")
+        # self.HE_f.load_secret_key(dir_path + "/sec.key")
+        self.HE_f.load_relin_key(dir_path + "/relin.key")
+        self.HE_f.rotateKeyGen()
+        # self.HE_f.load_rotate_key(dir_path + "/rotate.key")
+        
+    def get_distance_matrix(self, client_training_response):
+      self.distance_matrix = []
+      for client_i in client_training_response:
+        client_distance = []
+        for client_j in client_training_response:
+          client_distance.append(cka(client_training_response[client_i]["training_args"][0],
+                                    client_training_response[client_j]["training_args"][1], 
+                                    client_training_response[client_i]["training_args"][2], 
+                                    client_training_response[client_j]["training_args"][2], 
+                                    self.HE_f , crypt=True))
+        self.distance_matrix.append(client_distance)  
     
     def aggregate(self,client_training_response):
-        for client in client_training_response:
-          print(client_training_response[client]["training_args"])
+        self.get_distance_matrix(client_training_response)
+        print(self.distance_matrix,file=sys.stderr)
         fed_avg = FedAvg()
         return fed_avg.aggregate(client_training_response)
