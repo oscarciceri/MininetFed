@@ -90,7 +90,7 @@ class Ckksfed:
                                     client_training_response[client_j]["training_args"][1], 
                                     client_training_response[client_i]["training_args"][2], 
                                     client_training_response[client_j]["training_args"][2], 
-                                    self.HE_f , crypt=True))
+                                    self.HE_f , crypt=False))
         self.distance_matrix.append(client_distance)  
     
     def aggregate(self,client_training_response):
