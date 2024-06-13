@@ -57,16 +57,15 @@ def on_message_selection(client, userdata, message):
                 f'trainer was selected for training this round and will start training!')
             trainer.train_model()
             response =""
-            try:
-                training_args = trainer.get_training_args()
-                response = json.dumps({'id': CLIENT_ID, 'training_args': [w.tolist(
-            ) for w in training_args],'weights': [w.tolist(
+            # try:
+            training_args = trainer.get_training_args()
+            response = json.dumps({'id': CLIENT_ID, 'training_args': training_args,'weights': [w.tolist(
             ) for w in trainer.get_weights()], 'num_samples': trainer.get_num_samples()})
-            except:
-                response = json.dumps({'id': CLIENT_ID, 'weights': [w.tolist(
-            ) for w in trainer.get_weights()], 'num_samples': trainer.get_num_samples()})
-                
-                
+            # except:
+            #     response = json.dumps({'id': CLIENT_ID, 'weights': [w.tolist(
+            # ) for w in trainer.get_weights()], 'num_samples': trainer.get_num_samples()})
+            # print(len(training_args))
+            # print(response)
             
             
             client.publish('minifed/preAggQueue', response)
@@ -83,10 +82,14 @@ def on_message_agg(client, userdata, message):
     msg = json.loads(message.payload.decode("utf-8"))
     # agg_weights = [np.asarray(w, dtype=np.float32) for w in msg["weights"]]
     # agg_weights = [msg["weights"][CLIENT_ID]]
-    agg_weights = [np.asarray(w, dtype=np.float32) for w in msg["weights"][CLIENT_ID]]
+    agg_weights = [np.asarray(w, dtype=np.float32) for w in msg["agg_response"][CLIENT_ID]["weights"]]    
     results = trainer.all_metrics()
     response = json.dumps({'id': CLIENT_ID, 'accuracy': results["accuracy"], "metrics": results})
-    trainer.update_weights(agg_weights)    
+    trainer.update_weights(agg_weights) 
+    # try:
+    trainer.agg_response_extra_info(msg["agg_response"][CLIENT_ID]) 
+    # except:
+    #     pass  
     print(f'sending eval metrics!\n')
     client.publish('minifed/metricsQueue', response)
 

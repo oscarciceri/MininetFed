@@ -54,13 +54,13 @@ def cka(X, Y, XTX, YTY , HE = None, crypt=False):
 
 #servidor
 # Rodar função teste no Cliente antes de enviar o seu modelo e mandar os resultados para a função de agregação
-def get_distance_matrix(encrypted_vectors,encrypted_vectors_transposed, VTVS, HE):
-  distance_matrix = []
-  for i in range(len(encrypted_vectors)):
-    client_distance = []
-    for j in range(len(encrypted_vectors_transposed)):
-      client_distance.append(cka(encrypted_vectors[i], encrypted_vectors_transposed[j], VTVS[i], VTVS[j], HE , crypt=True))
-    distance_matrix.append(client_distance)
+# def get_distance_matrix(encrypted_vectors,encrypted_vectors_transposed, VTVS, HE):
+#   distance_matrix = []
+#   for i in range(len(encrypted_vectors)):
+#     client_distance = []
+#     for j in range(len(encrypted_vectors_transposed)):
+#       client_distance.append(cka(encrypted_vectors[i], encrypted_vectors_transposed[j], VTVS[i], VTVS[j], HE , crypt=True))
+#     distance_matrix.append(client_distance)
   
 # Para cada cliente, mandar junto com o modelo agregado a sua linha correspondente da matriz de distâncias: distance_matrix[i]
 # O cliente vai desemcriptar a sua linha de distâncias, identificar quais clientes fazem parte de seu cluster dependendo da distância
@@ -81,20 +81,37 @@ class Ckksfed:
         self.HE_f.rotateKeyGen()
         # self.HE_f.load_rotate_key(dir_path + "/rotate.key")
         
-    def get_distance_matrix(self, client_training_response):
-      self.distance_matrix = []
-      for client_i in client_training_response:
-        client_distance = []
-        for client_j in client_training_response:
-          client_distance.append(cka(client_training_response[client_i]["training_args"][0],
-                                    client_training_response[client_j]["training_args"][1], 
-                                    client_training_response[client_i]["training_args"][2], 
-                                    client_training_response[client_j]["training_args"][2], 
-                                    self.HE_f , crypt=False))
-        self.distance_matrix.append(client_distance)  
+    def get_distance_matrix(self, client_training_responses):
+      self.distance_matrix = {}
+      for client_i in client_training_responses:
+        client_distance = {}
+        for client_j in client_training_responses:
+          client_distance[client_j] = cka(client_training_responses[client_i]["training_args"][0],
+                                    client_training_responses[client_j]["training_args"][1], 
+                                    client_training_responses[client_i]["training_args"][2], 
+                                    client_training_responses[client_j]["training_args"][2], 
+                                    self.HE_f , crypt=False)
+        self.distance_matrix[client_i] = client_distance  
     
-    def aggregate(self,client_training_response):
-        self.get_distance_matrix(client_training_response)
-        print(self.distance_matrix,file=sys.stderr)
+    def aggregate(self,client_training_responses, trainers_list):
+        # print(self.distance_matrix,file=sys.stderr)
+        for client_i in client_training_responses:
+          client_training_responses[client_i]["training_args"][0] = np.asarray(client_training_responses[client_i]["training_args"][0], dtype=np.float32)
+          client_training_responses[client_i]["training_args"][1] = np.asarray(client_training_responses[client_i]["training_args"][1], dtype=np.float32)
+          client_training_responses[client_i]["training_args"][2] = np.asarray(client_training_responses[client_i]["training_args"][2], dtype=np.float32)
+        
+        self.get_distance_matrix(client_training_responses)
+        
+        print( client_training_responses[client_i]["training_args"][3])
         fed_avg = FedAvg()
-        return fed_avg.aggregate(client_training_response)
+        weights = fed_avg.aggregate(client_training_responses)
+        agg_response = {}
+        
+        i = 0
+        for client in trainers_list:
+            agg_response[client] = {"weights": weights, "distances": self.distance_matrix[client], "clients": trainers_list}
+            i+=1
+            
+        # for client in client_training_responses:
+        #   agg_response[client] = {"weights": weights[client], "distances": self.distance_matrix[client]}
+        return agg_response

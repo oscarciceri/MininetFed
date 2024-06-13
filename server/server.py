@@ -89,19 +89,19 @@ def server():
 
     def on_message_agg(client, userdata, message):
         m = json.loads(message.payload.decode("utf-8"))
-        print(f"checkpoint 1 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
+        # print(f"checkpoint 1 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
         client_training_response = {} 
         weights = [np.asarray(w, dtype=np.float32) for w in m['weights']]
         client_training_response["weights"] = weights
-        print(f"checkpoint 2 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
+        # print(f"checkpoint 2 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
         if 'training_args' in m:
-            training_args = [np.asarray(w, dtype=np.float32) for w in m['training_args']]
-            client_training_response["training_args"] = training_args
+            # training_args = [np.asarray(w, dtype=np.float32) for w in m['training_args']]
+            client_training_response["training_args"] = m['training_args']
         num_samples = m['num_samples']
         client_training_response["num_samples"] = num_samples
-        print(f"checkpoint 3 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
+        # print(f"checkpoint 3 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
         controller.add_client_training_response(m['id'],client_training_response)  
-        print(f"checkpoint 4 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
+        # print(f"checkpoint 4 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
         controller.update_num_responses()
         logger.info(
             f'received weights from trainer {m["id"]}!', extra=executionType)
@@ -179,9 +179,9 @@ def server():
         controller.reset_num_responses()  # reset num_responses for next round
 
         # aggregate and send
-        agg_weights = controller.agg_weights()
+        agg_response = controller.agg_weights()
         # response = json.dumps({'weights': [w.tolist() for w in agg_weights]})
-        response = json.dumps({'weights': agg_weights})
+        response = json.dumps({'agg_response': agg_response })
         client.publish('minifed/posAggQueue', response)
         logger.info(f'sent aggregated weights to trainers!', extra=executionType)
         print(f'sent aggregated weights to trainers!')

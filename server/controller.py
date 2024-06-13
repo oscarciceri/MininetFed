@@ -72,25 +72,29 @@ class Controller:
     
     def agg_weights(self) -> dict:
         # Aggregate the models recived from clients
-        agg_weights= self.aggregator.aggregate(self.client_training_response)
-        agg_weights_dict = {}
+        agg_response= self.aggregator.aggregate(self.client_training_response, self.trainer_list)
+        agg_response_dict = {}
         
         # The aggregator can return a list of weights or a dictionary mapping the id of each clients to their weights
         # The numpy arrays need to be converted to lists before return to be able to turn into json
-        if isinstance(agg_weights,dict):
-            # for r in agg_weights:
+        if isinstance(agg_response,dict):
             for r in self.trainer_list:
                 try:
-                    agg_weights_dict[r] = [w.tolist() for w in agg_weights[r]] # Tem que mandar para todos os trainers, mesmo os que não treinaram
+                    agg_response[r]["weights"] = [w.tolist() for w in agg_response[r]["weights"]] # Tem que mandar para todos os trainers, mesmo os que não treinaram
                 except:
                     raise Exception(f"Error: O agregador não retornou os weights do trainer {r}!")
+            agg_response_dict = agg_response
         else:
             # for r in self.client_training_response:
             for r in self.trainer_list:
-                agg_weights_dict[r] = [w.tolist() for w in agg_weights]
+                client_dict = {}
+                client_dict["weights"] = [w.tolist() for w in agg_response]
+                agg_response_dict[r] = client_dict
            
                 
         # reset weights and samples for next round
         self.client_training_response.clear()
-        return agg_weights_dict
+        
+        # agg_response_dict -> {client_id: {"weights": [], ...}}
+        return agg_response_dict
 

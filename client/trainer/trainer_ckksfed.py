@@ -59,6 +59,9 @@ class LeNet5(nn.Module):
 class TrainerCkksfed():
     # ID = 0
     def __init__(self,ext_id, mode) -> None:
+        self.cluster_distance_threshold = 0.8
+        self.cluster = []
+        
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         dir_path = "temp/ckksfed_fhe/pasta"
         self.num_samples = 500
@@ -111,6 +114,30 @@ class TrainerCkksfed():
         #random_sampler = torch.utils.data.RandomSampler(dataset, num_samples=num_samples)
         dataloader = torch.utils.data.DataLoader(sample, batch_size=batch_size,shuffle=True,num_workers=2)
         return dataloader
+    
+    # def sample_random_dataloader(self, dataset, num_samples, batch_size, unbalanced=False):
+    #     # Se o modo for 'unbalanced', altere a distribuição das classes
+    #     if unbalanced:
+    #         targets = np.array(dataset.targets)
+    #         classes, class_counts = np.unique(targets, return_counts=True)
+    #         num_classes = 10
+    #         # Gere uma distribuição desbalanceada sem exceder o número de amostras por classe
+    #         unbalanced_counts = [np.random.randint(1, count+1) for count in class_counts]
+    #         indices = []
+    #         for i in range(num_classes):
+    #             class_indices = np.where(targets == classes[i])[0]
+    #             class_subset = np.random.choice(class_indices, unbalanced_counts[i], replace=False)
+    #             indices.extend(class_subset)
+    #         np.random.shuffle(indices)
+    #     else:
+    #         # Se não for 'unbalanced', apenas selecione aleatoriamente
+    #         indices = np.random.choice(len(dataset), num_samples, replace=False)
+
+    #     # Crie um Subset com os índices selecionados
+    #     subset = torch.utils.data.Subset(dataset, indices)
+    #     # Crie o DataLoader com o Subset
+    #     return torch.utils.data.DataLoader(subset, batch_size=batch_size, shuffle=True)
+
         
     def split_data(self):
         #cliente
@@ -208,11 +235,16 @@ class TrainerCkksfed():
             concat_actv = np.array(torch.cat(actv_last, axis=0))
             concat_actv -= np.mean(concat_actv)
             actv = [concat_actv, concat_actv.T,1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum())]
+            actv = [w.tolist() for w in actv]
+            actv.append(self.cluster)
             return actv
         
     
     def all_metrics(self):
         acc = self.eval_model()
+        # metrics = dict(zip(self.metric_names, [acc]))
+        # if len(self.cluster) != 0:
+        #     metrics["cluster"] = self.cluster
         return dict(zip(self.metric_names, [acc]))
 
     
@@ -222,6 +254,28 @@ class TrainerCkksfed():
     def update_weights(self, weights):
         w = [torch.from_numpy(x) for x in weights]
         set_params_fedsketch(self.model, dict(zip(self.model_keys,w)))
+    
+    
+    def agg_response_extra_info(self, agg_response):
+        self.n_clients_per_cluster = 2
+        # self.cluster = []
+        # acc = 0
+        # for client in agg_response["distances"]:
+        #     if client != self.id:
+        #         acc += agg_response["distances"][client]
+        # acc/= len(agg_response["distances"]) - 1
+        
+        # for client in agg_response["distances"]:
+        #     if agg_response["distances"][client] > acc:
+        #         self.cluster.append(client)
+        # print(agg_response["distances"])        
+        # self.cluster = dict(sorted(agg_response["distances"].items(), key = lambda x: x[1], reverse = True)[:self.n_clients_per_cluster])
+        if self.id <= 2:
+            self.cluster = ["statipo11", "statipo12"]
+        else:
+            self.cluster = ["statipo13", "statipo14"]
+        print(self.cluster)
+        
     
     def set_stop_true(self):
         self.stop_flag = True
