@@ -94,15 +94,12 @@ class Ckksfed:
         self.distance_matrix[client_i] = client_distance  
     
     def aggregate(self,client_training_responses, trainers_list):
-        # print(self.distance_matrix,file=sys.stderr)
-        for client_i in client_training_responses:
-          client_training_responses[client_i]["training_args"][0] = np.asarray(client_training_responses[client_i]["training_args"][0], dtype=np.float32)
-          client_training_responses[client_i]["training_args"][1] = np.asarray(client_training_responses[client_i]["training_args"][1], dtype=np.float32)
-          client_training_responses[client_i]["training_args"][2] = np.asarray(client_training_responses[client_i]["training_args"][2], dtype=np.float32)
         
         self.get_distance_matrix(client_training_responses)
         
-        print( client_training_responses[client_i]["training_args"][3])
+        for client_i in client_training_responses:
+          print( client_training_responses[client_i]["training_args"][3])
+          
         fed_avg = FedAvg()
         weights = fed_avg.aggregate(client_training_responses)
         agg_response = {}

@@ -94,10 +94,25 @@ def server():
         weights = [np.asarray(w, dtype=np.float32) for w in m['weights']]
         client_training_response["weights"] = weights
         # print(f"checkpoint 2 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
+        
+        
         if 'training_args' in m:
-            # training_args = [np.asarray(w, dtype=np.float32) for w in m['training_args']]
-            client_training_response["training_args"] = m['training_args']
-        num_samples = m['num_samples']
+            training_args = [np.asarray(w) for w in m['training_args']]
+            training_args = []
+            for w in m['training_args']:
+                try:
+                    # Tenta converter para float32
+                    training_arg = np.asarray(w, dtype=np.float32)
+                except ValueError:
+                    # Se falhar, converte para um array numpy normal
+                    training_arg = np.asarray(w)
+                training_args.append(training_arg)
+
+            client_training_response["training_args"] = training_args
+     
+     
+     
+        num_samples = m['num_samples']   
         client_training_response["num_samples"] = num_samples
         # print(f"checkpoint 3 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
         controller.add_client_training_response(m['id'],client_training_response)  
@@ -107,13 +122,13 @@ def server():
             f'received weights from trainer {m["id"]}!', extra=executionType)
         print(f'received weights from trainer {m["id"]}!')
 
-    # callback for metricsQueue: get accuracy of every trainer and compute the mean
 
 
     def create_string_from_json(data):
         return " - ".join(f"{name}: {value}" for name, value in data.items())
 
 
+    # callback for metricsQueue: get accuracy of every trainer and compute the mean
     def on_message_metrics(client, userdata, message):
         m = json.loads(message.payload.decode("utf-8"))
         controller.add_accuracy(m['accuracy'])

@@ -234,9 +234,9 @@ class TrainerCkksfed():
 
             concat_actv = np.array(torch.cat(actv_last, axis=0))
             concat_actv -= np.mean(concat_actv)
-            actv = [concat_actv, concat_actv.T,1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum())]
-            actv = [w.tolist() for w in actv]
-            actv.append(self.cluster)
+            actv = [concat_actv, concat_actv.T,1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum()),self.cluster]
+            # actv = [w.tolist() for w in actv]
+            # actv.append()
             return actv
         
     
