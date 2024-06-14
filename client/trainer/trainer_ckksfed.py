@@ -171,7 +171,7 @@ class TrainerCkksfed():
         optimizer = optim.SGD(model.parameters(), lr=self.learning_rate)
         total_step = len(train_loader)
         actv_last = []
-        print(total_step)
+        # print(total_step)
         for epoch in range(num_epochs):
             for i, (images, labels) in enumerate(train_loader):
                 images = images.to(self.device)
@@ -274,7 +274,7 @@ class TrainerCkksfed():
             self.cluster = ["statipo11", "statipo12"]
         else:
             self.cluster = ["statipo13", "statipo14"]
-        print(self.cluster)
+        # print(self.cluster)
         
     
     def set_stop_true(self):

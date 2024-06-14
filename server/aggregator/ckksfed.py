@@ -97,17 +97,30 @@ class Ckksfed:
         
         self.get_distance_matrix(client_training_responses)
         
-        for client_i in client_training_responses:
-          print( client_training_responses[client_i]["training_args"][3])
-          
-        fed_avg = FedAvg()
-        weights = fed_avg.aggregate(client_training_responses)
-        agg_response = {}
+        # for client_i in client_training_responses:
+        #   print( client_training_responses[client_i]["training_args"][3])
         
-        i = 0
+        weights_dict = {}
+        if len(client_training_responses[trainers_list[0]]["training_args"][3]) == 0:  
+          fed_avg = FedAvg()
+          weights = fed_avg.aggregate(client_training_responses)
+          weights_dict = {c: weights for c in trainers_list}
+        else:
+          aggregated_clusters = set()
+          for client_i in trainers_list:
+            cluster = client_training_responses[client_i]["training_args"][3].tolist()
+              
+            if tuple(cluster) in aggregated_clusters:
+              continue
+            
+            aggregated_clusters.add(tuple(cluster))
+            fed_avg = FedAvg()
+            weights = fed_avg.aggregate({c: client_training_responses[c] for c in cluster})
+            weights_dict = weights_dict | {c: weights for c in cluster}
+        
+        agg_response = {}
         for client in trainers_list:
-            agg_response[client] = {"weights": weights, "distances": self.distance_matrix[client], "clients": trainers_list}
-            i+=1
+            agg_response[client] = {"weights": weights_dict[client], "distances": self.distance_matrix[client], "clients": trainers_list}
             
         # for client in client_training_responses:
         #   agg_response[client] = {"weights": weights[client], "distances": self.distance_matrix[client]}
