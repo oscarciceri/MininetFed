@@ -112,9 +112,15 @@ def on_message_stop(client, userdata, message):
     trainer.set_stop_true()
     exit()
 
+def get_trainer():
+    try:
+        return Trainer(CLIENT_NUMBER, MODE, CLIENT_ID)
+    except:
+        return Trainer(CLIENT_NUMBER, MODE)
+
 
 # connect on queue and send register
-trainer = Trainer(CLIENT_NUMBER, MODE)
+trainer = get_trainer()
 client = mqtt.Client(str(CLIENT_ID))
 client.connect(BROKER_ADDR, keepalive=0)
 client.on_connect = on_connect

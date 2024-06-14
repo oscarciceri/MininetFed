@@ -120,7 +120,7 @@ class Ckksfed:
         
         agg_response = {}
         for client in trainers_list:
-            agg_response[client] = {"weights": weights_dict[client], "distances": self.distance_matrix[client], "clients": trainers_list}
+            agg_response[client] = {"weights": weights_dict[client], "distances": self.distance_matrix, "clients": trainers_list}
             
         # for client in client_training_responses:
         #   agg_response[client] = {"weights": weights[client], "distances": self.distance_matrix[client]}

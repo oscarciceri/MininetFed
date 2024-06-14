@@ -11,6 +11,8 @@ import numpy as np
 from Pyfhel import Pyfhel
 
 
+from sklearn.cluster import AgglomerativeClustering
+
 def get_params(model):
   param_dict = {}
   for name, param in model.named_parameters():
@@ -58,7 +60,8 @@ class LeNet5(nn.Module):
 
 class TrainerCkksfed():
     # ID = 0
-    def __init__(self,ext_id, mode) -> None:
+    def __init__(self,ext_id, mode, id_name) -> None:
+        self.id_name = id_name
         self.cluster_distance_threshold = 0.8
         self.cluster = []
         
@@ -257,25 +260,54 @@ class TrainerCkksfed():
     
     
     def agg_response_extra_info(self, agg_response):
-        self.n_clients_per_cluster = 2
-        # self.cluster = []
-        # acc = 0
-        # for client in agg_response["distances"]:
-        #     if client != self.id:
-        #         acc += agg_response["distances"][client]
-        # acc/= len(agg_response["distances"]) - 1
+        # self.n_clients_per_cluster = 2
+        # # self.cluster = []
+        # # acc = 0
+        # # for client in agg_response["distances"]:
+        # #     if client != self.id:
+        # #         acc += agg_response["distances"][client]
+        # # acc/= len(agg_response["distances"]) - 1
         
-        # for client in agg_response["distances"]:
-        #     if agg_response["distances"][client] > acc:
-        #         self.cluster.append(client)
-        # print(agg_response["distances"])        
-        # self.cluster = dict(sorted(agg_response["distances"].items(), key = lambda x: x[1], reverse = True)[:self.n_clients_per_cluster])
-        if self.id <= 2:
-            self.cluster = ["statipo11", "statipo12"]
-        else:
-            self.cluster = ["statipo13", "statipo14"]
-        # print(self.cluster)
+        # # for client in agg_response["distances"]:
+        # #     if agg_response["distances"][client] > acc:
+        # #         self.cluster.append(client)
+        # # print(agg_response["distances"])        
+        # # self.cluster = dict(sorted(agg_response["distances"].items(), key = lambda x: x[1], reverse = True)[:self.n_clients_per_cluster])
+        # if self.id <= 2:
+        #     self.cluster = ["statipo11", "statipo12"]
+        # else:
+        #     self.cluster = ["statipo13", "statipo14"]
+        # # print(self.cluster)
         
+        
+        data_matrix = []  # [[0, 0.8, 0.9], [0.8, 0, 0.2], [0.9, 0.2, 0]]
+
+        name_dict = {}
+        pos_dict = {}
+        for idx ,i in enumerate(agg_response["distances"]):
+            name_dict[idx] = i
+            pos_dict[i] = idx
+            line = []
+            for j in agg_response["distances"][i]:
+                line.append(agg_response["distances"][i][j])
+            data_matrix.append(line)
+
+        data_matrix = np.array(data_matrix) - 1
+        data_matrix = abs(data_matrix)
+        
+        print(data_matrix)
+        model = AgglomerativeClustering(
+            metric='precomputed', n_clusters=2, linkage='complete').fit(data_matrix)
+        # print(model.labels_)
+
+        self.cluster.clear()
+        my_cluster_num = model.labels_[pos_dict[self.id_name]]
+        for idx, cluster_num in enumerate(model.labels_):
+            if cluster_num == my_cluster_num:
+                self.cluster.append(name_dict[idx])
+            
+        print(self.cluster)
+                
     
     def set_stop_true(self):
         self.stop_flag = True
