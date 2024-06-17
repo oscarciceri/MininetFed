@@ -25,6 +25,8 @@ def set_params_fedsketch(model, data):
         param.data = data[name]
 
 
+
+
 class LeNet5(nn.Module):
     def __init__(self, num_classes, num_channels):
         super(LeNet5, self).__init__()
@@ -61,6 +63,16 @@ class LeNet5(nn.Module):
 class TrainerCkksfed():
     # ID = 0
     def __init__(self,ext_id, mode, id_name) -> None:
+        
+        CASE_SELECTOR = 1          # 1 or 2
+
+        case_params = {
+            1: {'l': 256},         # small l
+            2: {'l': 65536},       # large l
+        }[CASE_SELECTOR]
+        self.l = case_params['l']
+                
+        
         self.id_name = id_name
         self.cluster_distance_threshold = 0.8
         self.cluster = []
@@ -96,6 +108,22 @@ class TrainerCkksfed():
         # self.HE_f.load_rotate_key(dir_path + "/rotate.key")
         
     
+    def encrypt_array(self, array):
+        return [self.HE_f.encrypt(array[j:j+self.HE_f.get_nSlots()]) for j in range(0,self.l,self.HE_f.get_nSlots())]
+    
+    def encrypt_value(self, value):
+       return self.HE_f.encrypt(value)
+
+    def decrypt_value(self, value):
+       return self.HE_f.decrypt(value)
+
+    def decrypt_array(self, encrypted_array):
+        out = np.array()
+        for element in encrypted_array:
+            decrypted_part = self.HE_f.decryptFrac(element)
+            out = np.concatenate((out, decrypted_part))
+        
+        return out
     
     def set_args(self,args):
         self.args = args
@@ -173,7 +201,6 @@ class TrainerCkksfed():
         cost = self.cost
         optimizer = optim.SGD(model.parameters(), lr=self.learning_rate)
         total_step = len(train_loader)
-        actv_last = []
         # print(total_step)
         for epoch in range(num_epochs):
             for i, (images, labels) in enumerate(train_loader):
@@ -237,9 +264,18 @@ class TrainerCkksfed():
 
             concat_actv = np.array(torch.cat(actv_last, axis=0))
             concat_actv -= np.mean(concat_actv)
-            actv = [concat_actv, concat_actv.T,1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum()),self.cluster]
-            # actv = [w.tolist() for w in actv]
-            # actv.append()
+            
+            # #Encriptando os vetores
+            # XTX = self.encrypt_array(1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum()))
+            # concat_actv_T = self.encrypt_array(concat_actv.T)
+            # concat_actv = self.encrypt_array(concat_actv)
+            
+            #Valores não encriptados
+            XTX = 1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum())
+            concat_actv_T = concat_actv.T                
+            
+            actv = [concat_actv, concat_actv_T,XTX,self.cluster]
+
             return actv
         
     
@@ -259,28 +295,8 @@ class TrainerCkksfed():
         set_params_fedsketch(self.model, dict(zip(self.model_keys,w)))
     
     
-    def agg_response_extra_info(self, agg_response):
-        # self.n_clients_per_cluster = 2
-        # # self.cluster = []
-        # # acc = 0
-        # # for client in agg_response["distances"]:
-        # #     if client != self.id:
-        # #         acc += agg_response["distances"][client]
-        # # acc/= len(agg_response["distances"]) - 1
-        
-        # # for client in agg_response["distances"]:
-        # #     if agg_response["distances"][client] > acc:
-        # #         self.cluster.append(client)
-        # # print(agg_response["distances"])        
-        # # self.cluster = dict(sorted(agg_response["distances"].items(), key = lambda x: x[1], reverse = True)[:self.n_clients_per_cluster])
-        # if self.id <= 2:
-        #     self.cluster = ["statipo11", "statipo12"]
-        # else:
-        #     self.cluster = ["statipo13", "statipo14"]
-        # # print(self.cluster)
-        
-        
-        data_matrix = []  # [[0, 0.8, 0.9], [0.8, 0, 0.2], [0.9, 0.2, 0]]
+    def agg_response_extra_info(self, agg_response):   
+        data_matrix = []
 
         name_dict = {}
         pos_dict = {}
@@ -289,16 +305,19 @@ class TrainerCkksfed():
             pos_dict[i] = idx
             line = []
             for j in agg_response["distances"][i]:
+                
+                # Valor encriptado
+                # line.append(self.decrypt_value(agg_response["distances"][i][j]))
+                
+                # Valor não encriptado
                 line.append(agg_response["distances"][i][j])
             data_matrix.append(line)
 
         data_matrix = np.array(data_matrix) - 1
         data_matrix = abs(data_matrix)
         
-        print(data_matrix)
         model = AgglomerativeClustering(
             metric='precomputed', n_clusters=2, linkage='complete').fit(data_matrix)
-        # print(model.labels_)
 
         self.cluster.clear()
         my_cluster_num = model.labels_[pos_dict[self.id_name]]
@@ -306,7 +325,6 @@ class TrainerCkksfed():
             if cluster_num == my_cluster_num:
                 self.cluster.append(name_dict[idx])
             
-        print(self.cluster)
                 
     
     def set_stop_true(self):
