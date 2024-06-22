@@ -105,7 +105,7 @@ def on_message_agg(client, userdata, message):
     response = json.dumps({'id': CLIENT_ID, 'accuracy': results["accuracy"], "metrics": results}, default=default)
     trainer.update_weights(agg_weights) 
     # try:
-    trainer.agg_response_extra_info(msg["agg_response"][CLIENT_ID]) 
+    trainer.agg_response_extra_info(msg["agg_response"][CLIENT_ID] | msg["agg_response"]["all"]) 
     # except:
     #     pass  
     print(f'sending eval metrics!\n')

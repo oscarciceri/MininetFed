@@ -40,7 +40,7 @@ server:
 client_types:
   - amount: 4
     name: tipo1
-    memory: 512m
+    memory: 2048m
     vCPU_percent: 100
     image: mininetfed:client
     script: client/client.py
