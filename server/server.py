@@ -7,6 +7,24 @@ import sys
 import logging
 import os
 
+def default(obj):
+    if type(obj).__module__ == np.__name__:
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        else:
+            return obj.item()
+    # elif type(obj).__module__ == torch.__name__:
+    #     if isinstance(obj, torch.Tensor):
+    #         return obj.tolist()
+    else:
+        try:
+            from Pyfhel import PyCtxt
+            if isinstance(obj, PyCtxt):
+                return obj.to_bytes().decode('cp437')
+        except:
+            pass
+    raise TypeError('Tipo não pode ser serializado:', type(obj))
+
 def server():
     # total args
     os.umask(0o000)
@@ -97,18 +115,18 @@ def server():
         
         
         if 'training_args' in m:
-            training_args = [np.asarray(w) for w in m['training_args']]
-            training_args = []
-            for w in m['training_args']:
-                try:
-                    # Tenta converter para float32
-                    training_arg = np.asarray(w, dtype=np.float32)
-                except ValueError:
-                    # Se falhar, converte para um array numpy normal
-                    training_arg = np.asarray(w)
-                training_args.append(training_arg)
+            # training_args = [np.asarray(w) for w in m['training_args']]
+            # training_args = []
+            # for w in m['training_args']:
+            #     try:
+            #         # Tenta converter para float32
+            #         training_arg = np.asarray(w, dtype=np.float32)
+            #     except ValueError:
+            #         # Se falhar, converte para um array numpy normal
+            #         training_arg = np.asarray(w)
+            #     training_args.append(training_arg)
 
-            client_training_response["training_args"] = training_args
+            client_training_response["training_args"] =  m['training_args']
      
      
      
@@ -196,7 +214,7 @@ def server():
         # aggregate and send
         agg_response = controller.agg_weights()
         # response = json.dumps({'weights': [w.tolist() for w in agg_weights]})
-        response = json.dumps({'agg_response': agg_response })
+        response = json.dumps({'agg_response': agg_response }, default=default)
         client.publish('minifed/posAggQueue', response)
         logger.info(f'sent aggregated weights to trainers!', extra=executionType)
         print(f'sent aggregated weights to trainers!')

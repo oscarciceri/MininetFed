@@ -30,7 +30,7 @@ network:
 
 # Server settings
 server:
-  memory: 1024m
+  memory: 2048m
   vCPU_percent: 20
   image: mininetfed:client
   connection: 1

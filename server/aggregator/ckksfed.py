@@ -4,7 +4,10 @@ import numpy as np
 from .fed_avg import FedAvg
 
 import torch #Precisa importar isso para o Pyfhel funcional
-from Pyfhel import Pyfhel
+from Pyfhel import Pyfhel, PyCtxt
+import time
+
+ENCRYPT = True
 
 def cka_unecrypted(X,Y,XTX,YTY):
   # Implements linear CKA as in Kornblith et al. (2019)
@@ -27,13 +30,28 @@ def cka_encrypted(X,Y,XTX,YTY,HE):
     YTX = HE.cumul_add(YTX[0])
 
   bottom = XTX * YTY
-
+  # [0 0 0] [1 0 0] [0 1 0] [1 1 0] [0 0 1] 
   HE.relinearize(bottom)
-  HE.rescale_to_next(bottom)
+  HE.rescale_to_next(bottom)  #
   square = YTX * YTX
   HE.relinearize(square)
   top = HE.cumul_add(square,False,1)
   HE.relinearize(top)
+  
+  # HE.rescale_to_next(top)  #
+  # top, bottom = HE.align_mod_n_scale(bottom,top) #
+  
+  # print(bottom, file=sys.stderr)
+  # print("AAAAAAAAAAAAAAAAAAAAAa", file=sys.stderr)
+  # HE.relinearize(bottom)
+  # print(bottom,file=sys.stderr)
+  # print("AAAAAAAAAAAAAAAAAAAAAa", file=sys.stderr)
+  # print(top,file=sys.stderr)
+  # HE.relinearize(top)
+  # print("AAAAAAAAAAAAAAAAAAAAAa", file=sys.stderr)
+  # print(top,file=sys.stderr)
+  # print("AAAAAAAAAAAAAAAAAAAAAa", file=sys.stderr)
+  # time.sleep(1)
   result = bottom * top
   HE.relinearize(result)
   return result
@@ -42,9 +60,33 @@ def cka_encrypted(X,Y,XTX,YTY,HE):
 #X: ativação
 #Y: ativação transposta de outro participante
 
+def decode_value(HE,value):
+   
+   return PyCtxt(pyfhel=HE, bytestring=value.encode('cp437'))
+
+
+def decode_array(HE, encrypted_array):
+    out = []
+    # print(len(encrypted_array), file=sys.stderr)
+    # print(encrypted_array, file=sys.stderr)
+    for element in encrypted_array:
+        # print(type(element), file=sys.stderr)
+        b = element.encode('cp437')
+        # print(type(b), file=sys.stderr)
+        # print(b, file=sys.stderr)
+        c_res = PyCtxt(pyfhel=HE, bytestring=b)
+        out.append(c_res)
+    return out
+    
+  
+
 def cka(X, Y, XTX, YTY , HE = None, crypt=False): 
   if crypt:
-    res = cka_encrypted(X,Y, XTX, YTY, HE)
+    X = decode_array(HE,X)
+    Y = decode_array(HE,Y)
+    XTX = decode_value(HE,XTX)
+    YTY = decode_value(HE,YTY)
+    res = cka_encrypted(X,Y, XTX, YTY,HE)
   else:
     res = cka_unecrypted(X,Y, XTX, YTY)
   return res
@@ -90,7 +132,7 @@ class Ckksfed:
                                     client_training_responses[client_j]["training_args"][1], 
                                     client_training_responses[client_i]["training_args"][2], 
                                     client_training_responses[client_j]["training_args"][2], 
-                                    self.HE_f , crypt=False)
+                                    self.HE_f , crypt=ENCRYPT)
         self.distance_matrix[client_i] = client_distance  
     
     def aggregate(self,client_training_responses, trainers_list):
@@ -124,4 +166,5 @@ class Ckksfed:
             
         # for client in client_training_responses:
         #   agg_response[client] = {"weights": weights[client], "distances": self.distance_matrix[client]}
+        print(sys.getsizeof(agg_response), file=sys.stderr)
         return agg_response

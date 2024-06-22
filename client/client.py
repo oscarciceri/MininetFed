@@ -33,6 +33,13 @@ def default(obj):
     elif type(obj).__module__ == torch.__name__:
         if isinstance(obj, torch.Tensor):
             return obj.tolist()
+    else:
+        try:
+            from Pyfhel import PyCtxt
+            if isinstance(obj, PyCtxt):
+                return obj.to_bytes().decode('cp437')
+        except:
+            pass
     raise TypeError('Tipo não pode ser serializado:', type(obj))
 
 def has_method(o, name):

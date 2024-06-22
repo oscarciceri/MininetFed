@@ -8,7 +8,7 @@ import torch.optim as optim
 from torchvision.datasets import MNIST
 import torchvision.transforms as transforms
 import numpy as np
-from Pyfhel import Pyfhel
+from Pyfhel import Pyfhel, PyCtxt
 
 
 from sklearn.cluster import AgglomerativeClustering
@@ -63,7 +63,7 @@ class LeNet5(nn.Module):
 class TrainerCkksfed():
     # ID = 0
     def __init__(self,ext_id, mode, id_name) -> None:
-        
+        self.encrypted = True
         CASE_SELECTOR = 1          # 1 or 2
 
         case_params = {
@@ -265,18 +265,20 @@ class TrainerCkksfed():
             concat_actv = np.array(torch.cat(actv_last, axis=0))
             concat_actv -= np.mean(concat_actv)
             
-            # #Encriptando os vetores
-            # XTX = self.encrypt_array(1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum()))
-            # concat_actv_T = self.encrypt_array(concat_actv.T)
-            # concat_actv = self.encrypt_array(concat_actv)
-            
-            #Valores não encriptados
-            XTX = 1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum())
-            concat_actv_T = concat_actv.T                
-            
-            actv = [concat_actv, concat_actv_T,XTX,self.cluster]
+            if self.encrypted:
+                XTX = self.encrypt_value(1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum()))
+                concat_actv_T = self.encrypt_array(concat_actv.T)
+                concat_actv = self.encrypt_array(concat_actv)
+                actv = [concat_actv, concat_actv_T,XTX,self.cluster]
+                return actv
+            else:    
+                XTX = 1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum())
+                concat_actv_T = concat_actv.T                
+                actv = [concat_actv, concat_actv_T,XTX,self.cluster]
+                actv = [concat_actv, concat_actv_T,XTX,self.cluster]
+                return actv
 
-            return actv
+            
         
     
     def all_metrics(self):
@@ -305,12 +307,11 @@ class TrainerCkksfed():
             pos_dict[i] = idx
             line = []
             for j in agg_response["distances"][i]:
-                
-                # Valor encriptado
-                # line.append(self.decrypt_value(agg_response["distances"][i][j]))
-                
-                # Valor não encriptado
-                line.append(agg_response["distances"][i][j])
+                if self.encrypted:
+                    c_res = PyCtxt(pyfhel=self.HE_f, bytestring=agg_response["distances"][i][j].encode('cp437'))
+                    line.append(self.decrypt_value(c_res))
+                else:
+                    line.append(agg_response["distances"][i][j])
             data_matrix.append(line)
 
         data_matrix = np.array(data_matrix) - 1
