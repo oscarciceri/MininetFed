@@ -167,5 +167,5 @@ class Ckksfed:
             
         # for client in client_training_responses:
         #   agg_response[client] = {"weights": weights[client], "distances": self.distance_matrix[client]}
-        print(sys.getsizeof(agg_response), file=sys.stderr)
+        # print(sys.getsizeof(agg_response), file=sys.stderr)
         return agg_response

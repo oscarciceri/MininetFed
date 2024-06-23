@@ -44,7 +44,8 @@ def get_CKKS_context_scalar_prod(
         Pyfhel: context to perform homomorphic encryption
     """
     #> OPTIMAL n
-    n_min =  2**14
+    n_min = 2**14
+    # n_min = 2**15
     if use_n_min:           n = n_min    # use n_min regardless of l
     elif 2*l < n_min:       n = n_min    # Smallest
     elif 2*l > 2**15:       n = 2**15    # Largest
@@ -55,6 +56,7 @@ def get_CKKS_context_scalar_prod(
         'n': n,          # Poly modulus degree. BFV ptxt is a n//2 by 2 matrix.
         'sec': sec,      # Security level.
         'scale': 2**30,
+        # 'qi_sizes': [60] + 11 * [30] + [60],   # Max number of multiplications = 1
         'qi_sizes': [60] + 10 * [30] + [60],   # Max number of multiplications = 1
     }
     HE = Pyfhel(context_params)

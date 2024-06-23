@@ -316,7 +316,8 @@ class TrainerCkksfed():
 
         data_matrix = np.array(data_matrix) - 1
         data_matrix = abs(data_matrix)
-        
+        print(data_matrix)
+        print(data_matrix.shape)
         model = AgglomerativeClustering(
             metric='precomputed', n_clusters=2, linkage='complete').fit(data_matrix)
 
