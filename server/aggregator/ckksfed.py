@@ -30,35 +30,18 @@ def cka_encrypted(X,Y,XTX,YTY,HE):
     YTX = HE.cumul_add(YTX[0])
 
   bottom = XTX * YTY
-  # [0 0 0] [1 0 0] [0 1 0] [1 1 0] [0 0 1] 
+
   HE.relinearize(bottom)
-  HE.rescale_to_next(bottom)  #
+  HE.rescale_to_next(bottom)  
   square = YTX * YTX
   HE.relinearize(square)
   top = HE.cumul_add(square,False,1)
   HE.relinearize(top)
   
-  # HE.rescale_to_next(top)  #
-  # top, bottom = HE.align_mod_n_scale(bottom,top) #
-  
-  # print(bottom, file=sys.stderr)
-  # print("AAAAAAAAAAAAAAAAAAAAAa", file=sys.stderr)
-  # HE.relinearize(bottom)
-  # print(bottom,file=sys.stderr)
-  # print("AAAAAAAAAAAAAAAAAAAAAa", file=sys.stderr)
-  # print(top,file=sys.stderr)
-  # HE.relinearize(top)
-  # print("AAAAAAAAAAAAAAAAAAAAAa", file=sys.stderr)
-  # print(top,file=sys.stderr)
-  # print("AAAAAAAAAAAAAAAAAAAAAa", file=sys.stderr)
-  # time.sleep(1)
-  result = bottom * top
+  result =  top  *bottom
   HE.relinearize(result)
   return result
 
-
-#X: ativação
-#Y: ativação transposta de outro participante
 
 def decode_value(HE,value):
    
@@ -78,15 +61,38 @@ def decode_array(HE, encrypted_array):
         out.append(c_res)
     return out
     
-  
+
+def encrypt_array(HE_f, array):
+    CASE_SELECTOR = 1          # 1 or 2
+
+    case_params = {
+        1: {'l': 256},         # small l
+        2: {'l': 65536},       # large l
+    }[CASE_SELECTOR]
+    l = case_params['l']
+                
+    return [HE_f.encrypt(array[j:j+HE_f.get_nSlots()]) for j in range(0,l,HE_f.get_nSlots())]
+
+def encrypt_value(HE_f, value):
+    return HE_f.encrypt(value)  
 
 def cka(X, Y, XTX, YTY , HE = None, crypt=False): 
   if crypt:
+    # res = cka_unecrypted(np.array(X),np.array(Y), XTX, YTY)
+    # print(f"valor:{res}", file=sys.stderr)
+    # XTX = encrypt_value(HE,XTX)
+    # YTY = encrypt_value(HE,YTY)
+    # X = encrypt_array(HE,X)
+    # Y = encrypt_array(HE,Y)
+
     X = decode_array(HE,X)
     Y = decode_array(HE,Y)
     XTX = decode_value(HE,XTX)
     YTY = decode_value(HE,YTY)
     res = cka_encrypted(X,Y, XTX, YTY,HE)
+    # res = HE.decrypt(res)
+    
+    # print(f"Encriptado:{res}", file=sys.stderr)
   else:
     res = cka_unecrypted(X,Y, XTX, YTY)
   return res
@@ -118,10 +124,10 @@ class Ckksfed:
         self.HE_f = Pyfhel() # Empty creation
         self.HE_f.load_context(dir_path + "/context")
         self.HE_f.load_public_key(dir_path + "/pub.key")
-        # self.HE_f.load_secret_key(dir_path + "/sec.key")
+        # self.HE_f.load_secret_key(dir_path + "/sec.key") ## REMOVER DEPOIS DE TESTAR ---------------------------------------------------
         self.HE_f.load_relin_key(dir_path + "/relin.key")
         self.HE_f.rotateKeyGen()
-        # self.HE_f.load_rotate_key(dir_path + "/rotate.key")
+        self.HE_f.load_rotate_key(dir_path + "/rotate.key")
         
     def get_distance_matrix(self, client_training_responses):
       self.distance_matrix = {}
@@ -150,7 +156,7 @@ class Ckksfed:
         else:
           aggregated_clusters = set()
           for client_i in trainers_list:
-            cluster = client_training_responses[client_i]["training_args"][3].tolist()
+            cluster = client_training_responses[client_i]["training_args"][3]
               
             if tuple(cluster) in aggregated_clusters:
               continue

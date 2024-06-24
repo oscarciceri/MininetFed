@@ -30,7 +30,7 @@ network:
 
 # Server settings
 server:
-  memory: 3000m
+  memory: 4000m
   vCPU_percent: 20
   image: mininetfed:client
   connection: 1
@@ -40,7 +40,7 @@ server:
 client_types:
   - amount: 4
     name: tipo1
-    memory: 3000m
+    memory: 2048m
     vCPU_percent: 100
     image: mininetfed:client
     script: client/client.py

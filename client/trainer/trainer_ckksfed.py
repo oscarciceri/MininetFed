@@ -64,6 +64,7 @@ class TrainerCkksfed():
     # ID = 0
     def __init__(self,ext_id, mode, id_name) -> None:
         self.encrypted = True
+        self.N_CLUSTERS = 2
         CASE_SELECTOR = 1          # 1 or 2
 
         case_params = {
@@ -275,7 +276,6 @@ class TrainerCkksfed():
                 XTX = 1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum())
                 concat_actv_T = concat_actv.T                
                 actv = [concat_actv, concat_actv_T,XTX,self.cluster]
-                actv = [concat_actv, concat_actv_T,XTX,self.cluster]
                 return actv
 
             
@@ -309,7 +309,7 @@ class TrainerCkksfed():
             for j in agg_response["distances"][i]:
                 if self.encrypted:
                     c_res = PyCtxt(pyfhel=self.HE_f, bytestring=agg_response["distances"][i][j].encode('cp437'))
-                    line.append(self.decrypt_value(c_res))
+                    line.append(self.decrypt_value(c_res)[0])
                 else:
                     line.append(agg_response["distances"][i][j])
             data_matrix.append(line)
@@ -319,7 +319,7 @@ class TrainerCkksfed():
         print(data_matrix)
         print(data_matrix.shape)
         model = AgglomerativeClustering(
-            metric='precomputed', n_clusters=2, linkage='complete').fit(data_matrix)
+            metric='precomputed', n_clusters=self.N_CLUSTERS, linkage='complete').fit(data_matrix)
 
         self.cluster.clear()
         my_cluster_num = model.labels_[pos_dict[self.id_name]]
