@@ -1,28 +1,29 @@
-experiments_folder: experiments/balancing
+experiments_folder: experiments
 
 experiments_analysis:
   #   save_csv: true
 
   from:
-    - experiment: client_balanced
-      # alias: ola
+    - experiment: 2024_06_23_teste_do_trainer_ckksfed
+      alias: encriptado
+    - experiment: 2024_06_24_teste_do_trainer_ckksfed
+      alias: não encriptado
 
   graphics:
     - type: deltaT_per_round
 
     - type: mean_acc
-    - type: network_consumption
+    # - type: network_consumption
 
-    - type: n_clients_absolute
-
-datasets_analysis:
-  id: [0, 1, 2, 3, 4, 5]
-  mode: client
-  graphics:
-    # - type: class_distribution_per_client
-    #   y_labels: [A, B, C, D, E]
-    - type: class_distribution_complete
-      y_labels: [A, B, C, D, E]
-    # - type: histogram
-    # - type: boxplot
-    # - type: correlation_matrix
+    # - type: n_clients_absolute
+# datasets_analysis:
+#   id: [0, 1, 2, 3, 4, 5]
+#   mode: client
+#   graphics:
+#     # - type: class_distribution_per_client
+#     #   y_labels: [A, B, C, D, E]
+#     - type: class_distribution_complete
+#       y_labels: [A, B, C, D, E]
+#     # - type: histogram
+#     # - type: boxplot
+#     # - type: correlation_matrix

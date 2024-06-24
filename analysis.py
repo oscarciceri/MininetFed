@@ -3,8 +3,17 @@ from analysis.process_log import File
 from analysis.generate_graphics import Graphics
 from analysis.dataset_analysis_graphics import DatasetAnalysisGraphics
 # from .federated.experiment import Experiment
-from client import Trainer
 
+DATASET_ANALYSIS = True
+try:
+    from client import Trainer
+except Exception as inst:
+    print("Não foi possível importar o Trainer. Gráficos de análise de dataset (datasets_analysis) estão desabilitados")
+    print(type(inst))
+    print(inst.args)   
+    print(inst)
+    DATASET_ANALYSIS = False
+            
 
 from collections import OrderedDict
 import sys
@@ -89,7 +98,7 @@ def analysis(analysis_yaml_path):
     
         
     datasets_analysis = config.get("datasets_analysis")
-    if datasets_analysis != None:
+    if datasets_analysis != None and DATASET_ANALYSIS:
         trainers = OrderedDict()
         for id in datasets_analysis["id"]:
             trainers[id] = Trainer(id,datasets_analysis["mode"])

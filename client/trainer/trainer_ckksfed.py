@@ -63,7 +63,7 @@ class LeNet5(nn.Module):
 class TrainerCkksfed():
     # ID = 0
     def __init__(self,ext_id, mode, id_name) -> None:
-        self.encrypted = True
+        self.encrypted = False
         self.N_CLUSTERS = 2
         CASE_SELECTOR = 1          # 1 or 2
 
