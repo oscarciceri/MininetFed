@@ -7,7 +7,7 @@ import torch #Precisa importar isso para o Pyfhel funcional
 from Pyfhel import Pyfhel, PyCtxt
 import time
 
-ENCRYPT = False
+ENCRYPT = True
 
 def cka_unecrypted(X,Y,XTX,YTY):
   # Implements linear CKA as in Kornblith et al. (2019)

@@ -36,7 +36,7 @@ volumes = [f"{Path.cwd()}:/flw"]
 s1 = net.addSwitch('s1')
 
 info('*** Adicionando Containers\n')
-srv1 = net.addDocker('srv1',dimage=images, volumes=volumes, mem_limit="2048m")
+srv1 = net.addDocker('srv1',dimage=images, volumes=volumes, mem_limit="4096m")
 net.addLink(srv1,s1)
    
 net.start()
