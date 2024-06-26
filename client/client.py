@@ -92,28 +92,39 @@ def on_message_selection(client, userdata, message):
             print(color.BOLD_START + 'new round starting' + color.BOLD_END)
             print(f'trainer was not selected for training this round')
 
-# callback for posAggQueue: gets aggregated weights and publish validation results on the metricsQueue
 
 
+# # callback for posAggQueue: gets aggregated weights and publish validation results on the metricsQueue (versão original)
+# def on_message_agg(client, userdata, message):
+#     print(f'received aggregated weights!')
+#     msg = json.loads(message.payload.decode("utf-8"))
+#     agg_weights = [np.asarray(w, dtype=np.float32) for w in msg["agg_response"][CLIENT_ID]["weights"]]    
+#     results = trainer.all_metrics()
+#     response = json.dumps({'id': CLIENT_ID, 'accuracy': results["accuracy"], "metrics": results}, default=default)
+#     trainer.update_weights(agg_weights) 
+#     trainer.agg_response_extra_info(msg["agg_response"][CLIENT_ID] | msg["agg_response"]["all"]) 
+#     print(f'sending eval metrics!\n')
+#     client.publish('minifed/metricsQueue', response)
+    
+    
+# callback for posAggQueue: gets aggregated weights and publish validation results on the metricsQueue (versão TEMP: pega all de arquivo pois matriz não cabe na mensagem mqtt)
 def on_message_agg(client, userdata, message):
     print(f'received aggregated weights!')
     msg = json.loads(message.payload.decode("utf-8"))
-    # agg_weights = [np.asarray(w, dtype=np.float32) for w in msg["weights"]]
-    # agg_weights = [msg["weights"][CLIENT_ID]]
     agg_weights = [np.asarray(w, dtype=np.float32) for w in msg["agg_response"][CLIENT_ID]["weights"]]    
     results = trainer.all_metrics()
     response = json.dumps({'id': CLIENT_ID, 'accuracy': results["accuracy"], "metrics": results}, default=default)
     trainer.update_weights(agg_weights) 
-    # try:
-    trainer.agg_response_extra_info(msg["agg_response"][CLIENT_ID] | msg["agg_response"]["all"]) 
-    # except:
-    #     pass  
+    
+    
+    with open('data_temp/data.json') as json_data:
+        all = json.load(json_data)
+        trainer.agg_response_extra_info(msg["agg_response"][CLIENT_ID] |all) 
+        
     print(f'sending eval metrics!\n')
     client.publish('minifed/metricsQueue', response)
 
 # callback for stopQueue: if conditions are met, stop training and exit process
-
-
 def on_message_stop(client, userdata, message):
     print(color.RED + f'received message to stop!')
     trainer.set_stop_true()

@@ -13,7 +13,7 @@ experiment:
   trainer_mode: unbalanced
   max_n_rounds: 50
   stop_accuracy: 0.93
-  min_trainers: 8
+  min_trainers: 20
   # client_args:
 
 # Network settings
@@ -38,7 +38,7 @@ server:
 
 # Clients settings list
 client_types:
-  - amount: 8
+  - amount: 20
     name: tipo1
     memory: 2048m
     vCPU_percent: 100

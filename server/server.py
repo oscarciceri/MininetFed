@@ -211,9 +211,19 @@ def server():
             time.sleep(1)
         controller.reset_num_responses()  # reset num_responses for next round
 
-        # aggregate and send
+        # # aggregate and send
+        # agg_response = controller.agg_weights()
+        # response = json.dumps({'agg_response': agg_response }, default=default)
+        # client.publish('minifed/posAggQueue', response)
+        # logger.info(f'sent aggregated weights to trainers!', extra=executionType)
+        # print(f'sent aggregated weights to trainers!')
+        
+        # aggregate and send TEMP (salvar em arquivo o 'all' pois ele não passa no mqtt)---------------------------------------------------
         agg_response = controller.agg_weights()
-        # response = json.dumps({'weights': [w.tolist() for w in agg_weights]})
+        with open('data_temp/data.json', 'w') as f:
+            json.dump(agg_response['all'], f,default=default)
+            del agg_response['all']
+            
         response = json.dumps({'agg_response': agg_response }, default=default)
         client.publish('minifed/posAggQueue', response)
         logger.info(f'sent aggregated weights to trainers!', extra=executionType)

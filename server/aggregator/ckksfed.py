@@ -9,6 +9,11 @@ import time
 
 ENCRYPT = True
 
+
+  # HE.rescale_to_next(YTX)
+  # HE.mod_switch_to_next(YTX)
+  # YTX.set_scale(2 ** 30)
+  
 def cka_unecrypted(X,Y,XTX,YTY):
   # Implements linear CKA as in Kornblith et al. (2019)
   X = X.copy()
@@ -38,7 +43,7 @@ def cka_encrypted(X,Y,XTX,YTY,HE):
   top = HE.cumul_add(square,False,1)
   HE.relinearize(top)
   
-  result =  top  *bottom
+  result =  top * bottom
   HE.relinearize(result)
   return result
 
@@ -128,6 +133,7 @@ class Ckksfed:
         self.HE_f.load_relin_key(dir_path + "/relin.key")
         self.HE_f.rotateKeyGen()
         self.HE_f.load_rotate_key(dir_path + "/rotate.key")
+        # self.HE_f.relinKeyGen()
         
     def get_distance_matrix(self, client_training_responses):
       self.distance_matrix = {}
@@ -140,6 +146,59 @@ class Ckksfed:
                                     client_training_responses[client_j]["training_args"][2], 
                                     self.HE_f , crypt=ENCRYPT)
         self.distance_matrix[client_i] = client_distance  
+        
+    # def get_distance_matrix(self, client_training_responses):  # versão com múltiplos valores por linha (problema: mismatch)
+    #   n_cli = len(client_training_responses)
+    #   mask = np.zeros(n_cli*2)
+    #   mask[n_cli] = 1
+    #   mask_keep = np.zeros(n_cli*2)
+    #   mask_keep[:(n_cli - 1)] = 1
+      
+    #   mask = self.HE_f.encodeFrac(mask)
+    #   mask = self.HE_f.encryptPtxt(mask)
+    #   mask_keep = self.HE_f.encodeFrac(mask_keep)
+    #   mask_keep = self.HE_f.encryptPtxt(mask_keep)
+      
+
+    #   self.distance_matrix = {}
+    #   self.distance_matrix["index"] = {}
+    #   pos = 0
+    #   for client_i in client_training_responses:
+    #     i = n_cli
+        
+    #     # relação entre o nome do cliente e a posição na linha de distâncias que ele vai ficar
+    #     self.distance_matrix["index"][client_i] = pos
+    #     pos += 1
+        
+        
+    #     for client_j in client_training_responses:
+          
+    #       client_distance = cka(client_training_responses[client_i]["training_args"][0],
+    #                                 client_training_responses[client_j]["training_args"][1], 
+    #                                 client_training_responses[client_i]["training_args"][2], 
+    #                                 client_training_responses[client_j]["training_args"][2], 
+    #                                 self.HE_f , crypt=ENCRYPT)
+          
+    #       if client_i in self.distance_matrix:
+    #         print("DIST antes",self.distance_matrix[client_i], file=sys.stderr)
+    #         print("MASK antes",mask_keep << i, file=sys.stderr)
+           
+    #         (mask_keep,self.distance_matrix[client_i]) = self.HE_f.align_mod_n_scale(mask_keep,self.distance_matrix[client_i])
+    #         # (self.distance_matrix[client_i], mask_keep) = self.HE_f.align_mod_n_scale(self.distance_matrix[client_i],mask_keep)
+    #         print("DIST",self.distance_matrix[client_i], file=sys.stderr)
+    #         print("MASK",mask_keep << i, file=sys.stderr)
+            
+    #         self.distance_matrix[client_i] = (mask_keep << i) *  self.distance_matrix[client_i]
+    #         print("2",self.distance_matrix[client_i],file=sys.stderr)
+    #         self.distance_matrix[client_i] = ~(self.distance_matrix[client_i])
+    #         next_val = (client_distance >> (i - n_cli)) * (mask << i)
+    #         next_val = ~(next_val)
+    #         self.distance_matrix[client_i] += next_val
+    #         print("3",self.distance_matrix[client_i],file=sys.stderr)
+    #       else:
+    #         self.distance_matrix[client_i] = client_distance
+    #       i-= 1
+          
     
     def aggregate(self,client_training_responses, trainers_list):
         

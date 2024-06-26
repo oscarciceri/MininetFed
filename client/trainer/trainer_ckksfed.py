@@ -326,6 +326,41 @@ class TrainerCkksfed():
         for idx, cluster_num in enumerate(model.labels_):
             if cluster_num == my_cluster_num:
                 self.cluster.append(name_dict[idx])
+                
+                
+    # def agg_response_extra_info(self, agg_response):   # versão com múltiplos valores por linha 
+    #     data_matrix = []
+
+    #     name_dict = {}
+    #     pos_dict = {}
+    #     for idx ,i in enumerate(agg_response["distances"]):
+    #         name_dict[idx] = i
+    #         pos_dict[i] = idx
+    #         line = []
+    #         if self.encrypted:
+    #             c_res = PyCtxt(pyfhel=self.HE_f, bytestring=agg_response["distances"][i].encode('cp437'))
+    #             unnorded_line = self.decrypt_value(c_res)
+    #             for i in agg_response["distances"]["index"]:
+    #                 line.append(unnorded_line[agg_response["distances"]["index"][i]])
+    #                 print(unnorded_line)
+    #                 print(line)
+    #         else:
+    #             for j in agg_response["distances"][i]:
+    #                 line.append(agg_response["distances"][i][j])
+    #         data_matrix.append(line)
+
+    #     data_matrix = np.array(data_matrix) - 1
+    #     data_matrix = abs(data_matrix)
+    #     print(data_matrix)
+    #     print(data_matrix.shape)
+    #     model = AgglomerativeClustering(
+    #         metric='precomputed', n_clusters=self.N_CLUSTERS, linkage='complete').fit(data_matrix)
+
+    #     self.cluster.clear()
+    #     my_cluster_num = model.labels_[pos_dict[self.id_name]]
+    #     for idx, cluster_num in enumerate(model.labels_):
+    #         if cluster_num == my_cluster_num:
+    #             self.cluster.append(name_dict[idx])
             
                 
     
