@@ -56,8 +56,8 @@ def get_CKKS_context_scalar_prod(
         'n': n,          # Poly modulus degree. BFV ptxt is a n//2 by 2 matrix.
         'sec': sec,      # Security level.
         'scale': 2**30,
-        # 'qi_sizes': [60] + 11 * [30] + [60],   # Max number of multiplications = 1
-        'qi_sizes': [60] + 10 * [30] + [60],   # Max number of multiplications = 1
+        # 'qi_sizes': [60] + 10 * [30] + [60],   # Max number of multiplications = 1
+        'qi_sizes': [60] + 5 * [30] + [60],   # Max number of multiplications = 1
     }
     HE = Pyfhel(context_params)
     return HE
