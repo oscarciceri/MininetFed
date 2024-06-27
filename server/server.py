@@ -7,6 +7,55 @@ import sys
 import logging
 import os
 
+
+def salvar_matriz_binaria(matriz, nome_arquivo):
+  """
+  Salva a matriz binária em um arquivo especificado, incluindo as chaves de linha, coluna e valor e considerando tamanhos variáveis de valores.
+
+  Argumentos:
+    matriz: A matriz a ser salva (dicionário de dicionários).
+    nome_arquivo: O nome do arquivo binário para salvar a matriz.
+  """
+  with open(nome_arquivo, 'wb') as f:
+
+    # Percorrer cada elemento da matriz
+    for linha1 in matriz:
+      # Converter a chave linha1 em bytes
+      bytes_linha1 = linha1.encode('utf-8')
+
+
+      for coluna1 in matriz[linha1]:
+          
+        # Converter a chave linha1 em bytes
+        bytes_coluna1 = coluna1.encode('utf-8')
+
+        # Escrever o tamanho da chave linha1 e os bytes da chave no arquivo
+        f.write(len(bytes_linha1).to_bytes(4, 'big'))
+        f.write(bytes_linha1)
+        # Escrever o tamanho da chave linha1 e os bytes da chave no arquivo
+        f.write(len(bytes_coluna1).to_bytes(4, 'big'))
+        f.write(bytes_coluna1)
+          
+          
+        # Obter o valor (PyCtxt)
+        valor_pyctxt = matriz[linha1][coluna1]
+        # print(matriz, file=sys.stderr)
+        bytes_pyctxt = valor_pyctxt.to_bytes()
+
+        # Converter o tamanho do valor em bytes
+        tamanho_valor = len(bytes_pyctxt).to_bytes(4, 'big')
+
+        # Escrever o tamanho do valor no arquivo
+        f.write(tamanho_valor)
+
+        # escrever no arquivo
+        f.write(bytes_pyctxt)
+    f.close()
+
+
+
+
+
 def default(obj):
     if type(obj).__module__ == np.__name__:
         if isinstance(obj, np.ndarray):
@@ -220,9 +269,9 @@ def server():
         
         # aggregate and send TEMP (salvar em arquivo o 'all' pois ele não passa no mqtt)---------------------------------------------------
         agg_response = controller.agg_weights()
-        with open('data_temp/data.json', 'w') as f:
-            json.dump(agg_response['all'], f,default=default)
-            del agg_response['all']
+        
+        salvar_matriz_binaria(agg_response['all']['distances'],'data_temp/data.bin')
+        del agg_response['all']['distances']
             
         response = json.dumps({'agg_response': agg_response }, default=default)
         client.publish('minifed/posAggQueue', response)

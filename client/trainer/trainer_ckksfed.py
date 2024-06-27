@@ -10,8 +10,77 @@ import torchvision.transforms as transforms
 import numpy as np
 from Pyfhel import Pyfhel, PyCtxt
 
+import sys
+
 
 from sklearn.cluster import AgglomerativeClustering
+
+
+def recuperar_matriz_binaria(nome_arquivo, HE):
+  """
+  Recupera a matriz binária de um arquivo especificado, incluindo as chaves de linha, coluna e valor e considerando tamanhos variáveis de valores.
+
+  Argumento:
+    nome_arquivo: O nome do arquivo binário contendo a matriz.
+
+  Retorna:
+    A matriz binária recuperada (dicionário de dicionários).
+  """
+  matriz = {}
+
+  with open(nome_arquivo, 'rb') as f:
+    i = 0
+
+    # Ler os bytes da matriz
+    bytes_matriz = f.read()
+    print(bytes_matriz[:100], file=sys.stderr)
+
+    # Descodificar os bytes em elementos da matriz
+    offset = 0
+    while offset < len(bytes_matriz):
+      print("it: i", i,file=sys.stdout)
+      i += 1
+      print("off:", offset, " len bytes:",len(bytes_matriz), file=sys.stdout)
+      
+      # Ler o tamanho da chave linha1
+      tamanho_chave_linha1 = int.from_bytes(bytes_matriz[offset:offset + 4],'big')
+      offset += 4
+      # Ler os bytes da chave linha1
+      bytes_chave_linha1 = bytes_matriz[offset:offset + tamanho_chave_linha1]
+      offset += tamanho_chave_linha1
+      # Decodificar a chave linha1 em string
+      linha1 = bytes_chave_linha1.decode('utf-8')
+      print("linha: ", linha1,file=sys.stdout)
+      # Ler o tamanho da chave coluna1
+      tamanho_chave_coluna1 = int.from_bytes(bytes_matriz[offset:offset + 4],'big')
+      offset += 4
+      # Ler os bytes da chave coluna1
+      bytes_chave_coluna1 = bytes_matriz[offset:offset + tamanho_chave_coluna1]
+      offset += tamanho_chave_coluna1
+      # Decodificar a chave coluna1 em string
+      coluna1 = bytes_chave_coluna1.decode('utf-8')
+      print("linha: ", coluna1,file=sys.stdout)
+      
+      # Ler o tamanho do valor
+      tamanho_valor = int.from_bytes(bytes_matriz[offset:offset + 4],'big')
+      offset += 4
+      print("tam val", tamanho_valor,file=sys.stdout)
+
+      # Ler os bytes do valor
+      bytes_valor = bytes_matriz[offset:offset + tamanho_valor]
+      offset += tamanho_valor
+
+      # Converter os bytes em PyCtxt e adicionar à matriz
+      pyctxt_elemento = PyCtxt(pyfhel=HE, bytestring=bytes_valor)
+
+      print(f"matriz[{linha1}][{coluna1}] = {pyctxt_elemento}",file=sys.stdout)
+      # Inserir o elemento na matriz usando as duas chaves
+      matriz.setdefault(linha1, {})[coluna1] = pyctxt_elemento
+  f.close()
+  return matriz
+
+
+
 
 def get_params(model):
   param_dict = {}
@@ -297,7 +366,9 @@ class TrainerCkksfed():
         set_params_fedsketch(self.model, dict(zip(self.model_keys,w)))
     
     
-    def agg_response_extra_info(self, agg_response):   
+    def agg_response_extra_info(self, agg_response): 
+
+        agg_response["distances"] = recuperar_matriz_binaria('data_temp/data.bin',self.HE_f)
         data_matrix = []
 
         name_dict = {}
@@ -308,8 +379,7 @@ class TrainerCkksfed():
             line = []
             for j in agg_response["distances"][i]:
                 if self.encrypted:
-                    c_res = PyCtxt(pyfhel=self.HE_f, bytestring=agg_response["distances"][i][j].encode('cp437'))
-                    line.append(self.decrypt_value(c_res)[0])
+                    line.append(self.decrypt_value(agg_response["distances"][i][j])[0])
                 else:
                     line.append(agg_response["distances"][i][j])
             data_matrix.append(line)

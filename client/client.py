@@ -117,9 +117,9 @@ def on_message_agg(client, userdata, message):
     trainer.update_weights(agg_weights) 
     
     
-    with open('data_temp/data.json') as json_data:
-        all = json.load(json_data)
-        trainer.agg_response_extra_info(msg["agg_response"][CLIENT_ID] |all) 
+    # with open('data_temp/data.json') as json_data:
+    #     # all = json.load(json_data)
+    trainer.agg_response_extra_info(msg["agg_response"][CLIENT_ID] | msg["agg_response"]['all']) 
         
     print(f'sending eval metrics!\n')
     client.publish('minifed/metricsQueue', response)
