@@ -20,12 +20,15 @@ case_params = {
 }[CASE_SELECTOR]
 l = case_params['l']
 
-bitsize                  = lambda x: np.ceil(np.log2(x))
-get_closest_power_of_two = lambda x: int(2**(bitsize(x)))
+
+def bitsize(x): return np.ceil(np.log2(x))
+def get_closest_power_of_two(x): return int(2**(bitsize(x)))
+
+
 def get_CKKS_context_scalar_prod(
-    l: int, sec: int=128,
-    use_n_min: bool=True
-) ->Pyfhel:
+    l: int, sec: int = 128,
+    use_n_min: bool = True
+) -> Pyfhel:
     """
     Returns the best context parameters to compute scalar product in CKKS scheme.
 
@@ -43,13 +46,17 @@ def get_CKKS_context_scalar_prod(
     Returns:
         Pyfhel: context to perform homomorphic encryption
     """
-    #> OPTIMAL n
+    # > OPTIMAL n
     n_min = 2**14
     # n_min = 2**15
-    if use_n_min:           n = n_min    # use n_min regardless of l
-    elif 2*l < n_min:       n = n_min    # Smallest
-    elif 2*l > 2**15:       n = 2**15    # Largest
-    else:                   n = get_closest_power_of_two(2*l)
+    if use_n_min:
+        n = n_min    # use n_min regardless of l
+    elif 2*l < n_min:
+        n = n_min    # Smallest
+    elif 2*l > 2**15:
+        n = 2**15    # Largest
+    else:
+        n = get_closest_power_of_two(2*l)
 
     context_params = {
         'scheme': 'CKKS',
@@ -57,20 +64,19 @@ def get_CKKS_context_scalar_prod(
         'sec': sec,      # Security level.
         'scale': 2**30,
         # 'qi_sizes': [60] + 10 * [30] + [60],   # Max number of multiplications = 1
-        'qi_sizes': [60] + 5 * [30] + [60],   # Max number of multiplications = 1
+        # Max number of multiplications = 1
+        'qi_sizes': [60] + 5 * [30] + [60],
     }
     HE = Pyfhel(context_params)
     return HE
-  
-  
-  
+
 
 HE = get_CKKS_context_scalar_prod(l, sec=128, use_n_min=True)
 HE.keyGen()
 HE.relinKeyGen()
 HE.rotateKeyGen()
 
-dir_path = "pasta"
+dir_path = "/home/johann/Documents/MininetFed/temp/ckksfed_fhe/pasta"
 
 # Now we save all objects into files
 HE.save_context(dir_path + "/context")
@@ -87,7 +93,7 @@ HE.save_rotate_key(dir_path + "/rotate.key")
 
 
 # CLIENTE:
-HE_f = Pyfhel() # Empty creation
+HE_f = Pyfhel()  # Empty creation
 HE_f.load_context(dir_path + "/context")
 HE_f.load_public_key(dir_path + "/pub.key")
 HE_f.load_secret_key(dir_path + "/sec.key")
