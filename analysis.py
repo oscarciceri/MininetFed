@@ -1,3 +1,6 @@
+import os
+import sys
+from collections import OrderedDict
 from analysis.config import Config
 from analysis.process_log import File
 from analysis.generate_graphics import Graphics
@@ -10,38 +13,29 @@ try:
 except Exception as inst:
     print("Não foi possível importar o Trainer. Gráficos de análise de dataset (datasets_analysis) estão desabilitados")
     print(type(inst))
-    print(inst.args)   
+    print(inst.args)
     print(inst)
     DATASET_ANALYSIS = False
-            
-
-from collections import OrderedDict
-import sys
-import os
 
 
 def analysis(analysis_yaml_path):
-    
+
     # FOLDER = sys.argv[1]
     config = Config(analysis_yaml_path)
-    
-    
-    
+
     experiments_analysis = config.get("experiments_analysis")
     FOLDER = config.get("experiments_folder")
     if experiments_analysis != None:
-        
-        csv =  experiments_analysis.get("save_csv")
+
+        csv = experiments_analysis.get("save_csv")
         dfs = []
-        
-            
-        
+
         for experiment in experiments_analysis["from"]:
-            exp_files =  experiment.get("files")
+            exp_files = experiment.get("files")
             experiment_name = experiment["experiment"]
             alias = experiment.get("alias")
             if exp_files != None:
-                for idx, fileName in exp_files:
+                for idx, fileName in enumerate(exp_files):
                     name = None
                     filepath = f"{experiment_name}/{fileName.split('.')[0]}"
                     if idx == 0:
@@ -50,20 +44,20 @@ def analysis(analysis_yaml_path):
                         name = f"{alias} ({idx})"
                     else:
                         name = filepath
-                        
+
                     f = File(f"{FOLDER}/{filepath}")
                     df = f.get_dataframe()
                     netdf = f.get_net_dataframe()
                     if csv:
                         f.save_to_csv()
-                    dfs.append({'name':name ,'df':df,'netdf':netdf})
+                    dfs.append({'name': name, 'df': df, 'netdf': netdf})
             else:
                 idx = 0
                 for fileName in os.listdir(f"{FOLDER}/{experiment_name}"):
                     if fileName.endswith(".log"):
                         name = None
                         filepath = f"{experiment_name}/{fileName.split('.')[0]}"
-                        
+
                         if alias is not None:
                             if idx == 0:
                                 name = alias
@@ -71,18 +65,17 @@ def analysis(analysis_yaml_path):
                                 name = f"{alias} ({idx})"
                         else:
                             name = filepath
-                            
+
                         f = File(f"{FOLDER}/{filepath}")
                         df = f.get_dataframe()
                         netdf = f.get_net_dataframe()
                         if csv:
                             f.save_to_csv()
-                        dfs.append({'name':name ,'df':df,'netdf':netdf})
+                        dfs.append({'name': name, 'df': df, 'netdf': netdf})
                         idx += 1
-                        
-        
-        plot = Graphics(dfs,experiments_analysis.get("save_graphics"),FOLDER)
-        
+
+        plot = Graphics(dfs, experiments_analysis.get("save_graphics"), FOLDER)
+
         for graphic in experiments_analysis["graphics"]:
             if graphic['type'] == 'mean_acc':
                 plot.mean_acc()
@@ -95,20 +88,19 @@ def analysis(analysis_yaml_path):
                 plot.n_clients_relative(relative_to)
             elif graphic['type'] == 'network_consumption':
                 plot.network_consumption()
-    
-        
+
     datasets_analysis = config.get("datasets_analysis")
     if datasets_analysis != None and DATASET_ANALYSIS:
         trainers = OrderedDict()
         for id in datasets_analysis["id"]:
-            trainers[id] = Trainer(id,datasets_analysis["mode"])
+            trainers[id] = Trainer(id, datasets_analysis["mode"])
         plot = DatasetAnalysisGraphics(trainers, datasets_analysis["mode"])
-            
+
         for graphic in datasets_analysis["graphics"]:
             # Distribuição de classes
             if 'class_distribution_per_client' == graphic["type"]:
                 plot.class_distribution(graphic.get("y_labels"))
-                
+
             if 'class_distribution_complete' == graphic["type"]:
                 plot.class_distribution_all(graphic.get("y_labels"))
 
@@ -117,7 +109,7 @@ def analysis(analysis_yaml_path):
                 plot.histogram()
 
             # Boxplot
-            if 'boxplot'  == graphic["type"]:
+            if 'boxplot' == graphic["type"]:
                 plot.boxplot()
 
             # Matriz de correlação
@@ -149,7 +141,8 @@ def analysis(analysis_yaml_path):
         #     sns.heatmap(trainer.x_train.corr(), annot=True, fmt=".2f")
         #     plt.title('Matriz de Correlação')
         #     plt.show()
-    
+
+
 if __name__ == '__main__':
     # total args
     n = len(sys.argv)
@@ -162,4 +155,3 @@ if __name__ == '__main__':
 
     for analysis_yaml_path in sys.argv[1:]:
         analysis(analysis_yaml_path)
-    
