@@ -9,51 +9,46 @@ import os
 
 
 def salvar_matriz_binaria(matriz, nome_arquivo):
-  """
-  Salva a matriz binária em um arquivo especificado, incluindo as chaves de linha, coluna e valor e considerando tamanhos variáveis de valores.
+    """
+    Salva a matriz binária em um arquivo especificado, incluindo as chaves de linha, coluna e valor e considerando tamanhos variáveis de valores.
 
-  Argumentos:
-    matriz: A matriz a ser salva (dicionário de dicionários).
-    nome_arquivo: O nome do arquivo binário para salvar a matriz.
-  """
-  with open(nome_arquivo, 'wb') as f:
+    Argumentos:
+      matriz: A matriz a ser salva (dicionário de dicionários).
+      nome_arquivo: O nome do arquivo binário para salvar a matriz.
+    """
+    with open(nome_arquivo, 'wb') as f:
 
-    # Percorrer cada elemento da matriz
-    for linha1 in matriz:
-      # Converter a chave linha1 em bytes
-      bytes_linha1 = linha1.encode('utf-8')
+        # Percorrer cada elemento da matriz
+        for linha1 in matriz:
+            # Converter a chave linha1 em bytes
+            bytes_linha1 = linha1.encode('utf-8')
 
+            for coluna1 in matriz[linha1]:
 
-      for coluna1 in matriz[linha1]:
-          
-        # Converter a chave linha1 em bytes
-        bytes_coluna1 = coluna1.encode('utf-8')
+                # Converter a chave linha1 em bytes
+                bytes_coluna1 = coluna1.encode('utf-8')
 
-        # Escrever o tamanho da chave linha1 e os bytes da chave no arquivo
-        f.write(len(bytes_linha1).to_bytes(4, 'big'))
-        f.write(bytes_linha1)
-        # Escrever o tamanho da chave linha1 e os bytes da chave no arquivo
-        f.write(len(bytes_coluna1).to_bytes(4, 'big'))
-        f.write(bytes_coluna1)
-          
-          
-        # Obter o valor (PyCtxt)
-        valor_pyctxt = matriz[linha1][coluna1]
-        # print(matriz, file=sys.stderr)
-        bytes_pyctxt = valor_pyctxt.to_bytes()
+                # Escrever o tamanho da chave linha1 e os bytes da chave no arquivo
+                f.write(len(bytes_linha1).to_bytes(4, 'big'))
+                f.write(bytes_linha1)
+                # Escrever o tamanho da chave linha1 e os bytes da chave no arquivo
+                f.write(len(bytes_coluna1).to_bytes(4, 'big'))
+                f.write(bytes_coluna1)
 
-        # Converter o tamanho do valor em bytes
-        tamanho_valor = len(bytes_pyctxt).to_bytes(4, 'big')
+                # Obter o valor (PyCtxt)
+                valor_pyctxt = matriz[linha1][coluna1]
+                # print(matriz, file=sys.stderr)
+                bytes_pyctxt = valor_pyctxt.to_bytes()
 
-        # Escrever o tamanho do valor no arquivo
-        f.write(tamanho_valor)
+                # Converter o tamanho do valor em bytes
+                tamanho_valor = len(bytes_pyctxt).to_bytes(4, 'big')
 
-        # escrever no arquivo
-        f.write(bytes_pyctxt)
-    f.close()
+                # Escrever o tamanho do valor no arquivo
+                f.write(tamanho_valor)
 
-
-
+                # escrever no arquivo
+                f.write(bytes_pyctxt)
+        f.close()
 
 
 def default(obj):
@@ -73,6 +68,7 @@ def default(obj):
         except:
             pass
     raise TypeError('Tipo não pode ser serializado:', type(obj))
+
 
 def server():
     # total args
@@ -102,9 +98,10 @@ def server():
     STOP_ACC = float(sys.argv[4])
     CSV_PATH = sys.argv[5]
     CLIENT_ARGS = None
+    ENCRYPTED = True
     if len(sys.argv) >= 7 and (sys.argv[6] is not None):
         CLIENT_ARGS = json.loads(sys.argv[6])
-    
+
     FORMAT = "%(asctime)s - %(infotype)-6s - %(levelname)s - %(message)s"
 
     logging.basicConfig(level=logging.INFO, filename=CSV_PATH,
@@ -114,7 +111,6 @@ def server():
     logger = logging.getLogger(__name__)
 
     # class for coloring messages on terminal
-
 
     class color:
         BLUE = '\033[94m'
@@ -126,7 +122,6 @@ def server():
         RESET = "\x1B[0m"
 
     # subscribe to queues on connection
-
 
     def on_connect(client, userdata, flags, rc):
         subscribe_queues = ['minifed/registerQueue',
@@ -142,27 +137,25 @@ def server():
 
     def on_message_register(client, userdata, message):
         m = json.loads(message.payload.decode("utf-8"))
-        controller.update_metrics(m["id"],m['metrics'])
+        controller.update_metrics(m["id"], m['metrics'])
         logger.info(
             f'trainer number {m["id"]} just joined the pool', extra=executionType)
         print(
             f'trainer number {m["id"]} just joined the pool')
-        
-        
-        client.publish('minifed/args', json.dumps({"id":m["id"],"args":CLIENT_ARGS}))
+
+        client.publish(
+            'minifed/args', json.dumps({"id": m["id"], "args": CLIENT_ARGS}))
 
     # callback for preAggQueue: get weights of trainers, aggregate and send back
-
 
     def on_message_agg(client, userdata, message):
         m = json.loads(message.payload.decode("utf-8"))
         # print(f"checkpoint 1 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
-        client_training_response = {} 
+        client_training_response = {}
         weights = [np.asarray(w, dtype=np.float32) for w in m['weights']]
         client_training_response["weights"] = weights
         # print(f"checkpoint 2 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
-        
-        
+
         if 'training_args' in m:
             # training_args = [np.asarray(w) for w in m['training_args']]
             # training_args = []
@@ -175,35 +168,31 @@ def server():
             #         training_arg = np.asarray(w)
             #     training_args.append(training_arg)
 
-            client_training_response["training_args"] =  m['training_args']
-     
-     
-     
-        num_samples = m['num_samples']   
+            client_training_response["training_args"] = m['training_args']
+
+        num_samples = m['num_samples']
         client_training_response["num_samples"] = num_samples
         # print(f"checkpoint 3 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
-        controller.add_client_training_response(m['id'],client_training_response)  
+        controller.add_client_training_response(
+            m['id'], client_training_response)
         # print(f"checkpoint 4 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
         controller.update_num_responses()
         logger.info(
             f'received weights from trainer {m["id"]}!', extra=executionType)
         print(f'received weights from trainer {m["id"]}!')
 
-
-
     def create_string_from_json(data):
         return " - ".join(f"{name}: {value}" for name, value in data.items())
 
-
     # callback for metricsQueue: get accuracy of every trainer and compute the mean
+
     def on_message_metrics(client, userdata, message):
         m = json.loads(message.payload.decode("utf-8"))
         controller.add_accuracy(m['accuracy'])
-        controller.update_metrics(m["id"],m['metrics'])
+        controller.update_metrics(m["id"], m['metrics'])
         logger.info(
             f'{m["id"]} {create_string_from_json(m["metrics"])}', extra=metricType)
         controller.update_num_responses()
-
 
     # connect on queue
     controller = Controller(min_trainers=MIN_TRAINERS,
@@ -214,12 +203,13 @@ def server():
     client.message_callback_add('minifed/registerQueue', on_message_register)
     client.message_callback_add('minifed/preAggQueue', on_message_agg)
     client.message_callback_add('minifed/metricsQueue', on_message_metrics)
-    client.message_callback_add('minifed/ready',on_message_ready)
+    client.message_callback_add('minifed/ready', on_message_ready)
 
     # start loop
     client.loop_start()
     logger.info('starting server...', extra=executionType)
     print(color.BOLD_START + 'starting server...' + color.BOLD_END)
+    client.publish('minifed/autoWaitContinue', json.dumps({'continue': True}))
 
     # wait trainers to connect
     while controller.get_num_trainers() < MIN_TRAINERS:
@@ -229,18 +219,20 @@ def server():
     selected_qtd = 0
     while controller.get_current_round() != NUM_ROUNDS:
         controller.update_current_round()
-        logger.info(f'round: {controller.get_current_round()}', extra=metricType)
+        logger.info(
+            f'round: {controller.get_current_round()}', extra=metricType)
         print(color.RESET + '\n' + color.BOLD_START +
-            f'starting round {controller.get_current_round()}' + color.BOLD_END)
+              f'starting round {controller.get_current_round()}' + color.BOLD_END)
         # select trainers for round
         trainer_list = controller.get_trainer_list()
         if not trainer_list:
             logger.critical("Client's list empty", extra=executionType)
         select_trainers = controller.select_trainers_for_round()
         selected_qtd = len(select_trainers)
-        
+
         logger.info(f"n_selected: {len(select_trainers)}", extra=metricType)
-        logger.info(f"selected_trainers: {' - '.join(select_trainers)}", extra=metricType)
+        logger.info(
+            f"selected_trainers: {' - '.join(select_trainers)}", extra=metricType)
         for t in trainer_list:
             if t in select_trainers:
                 # logger.info(
@@ -266,16 +258,18 @@ def server():
         # client.publish('minifed/posAggQueue', response)
         # logger.info(f'sent aggregated weights to trainers!', extra=executionType)
         # print(f'sent aggregated weights to trainers!')
-        
-        # aggregate and send TEMP (salvar em arquivo o 'all' pois ele não passa no mqtt)---------------------------------------------------
+
+        # aggregate and send TEMP (salvar matriz em arquivo pois ele não passa no mqtt)---------------------------------------------------
         agg_response = controller.agg_weights()
-        
-        salvar_matriz_binaria(agg_response['all']['distances'],'data_temp/data.bin')
-        del agg_response['all']['distances']
-            
-        response = json.dumps({'agg_response': agg_response }, default=default)
+        if ENCRYPTED:
+            salvar_matriz_binaria(
+                agg_response['all']['distances'], 'data_temp/data.bin')
+            del agg_response['all']['distances']
+
+        response = json.dumps({'agg_response': agg_response}, default=default)
         client.publish('minifed/posAggQueue', response)
-        logger.info(f'sent aggregated weights to trainers!', extra=executionType)
+        logger.info(f'sent aggregated weights to trainers!',
+                    extra=executionType)
         print(f'sent aggregated weights to trainers!')
 
         # wait for metrics response
@@ -286,7 +280,7 @@ def server():
         logger.info(
             f'mean_accuracy: {mean_acc}\n', extra=metricType)
         print(color.GREEN +
-            f'mean accuracy on round {controller.get_current_round()} was {mean_acc}\n' + color.RESET)
+              f'mean accuracy on round {controller.get_current_round()} was {mean_acc}\n' + color.RESET)
 
         # update stop queue or continue process
         if mean_acc >= STOP_ACC:
@@ -304,6 +298,7 @@ def server():
     # PODE DA ERRO...
     # controller.save_training_metrics(CSV_PATH)
     client.loop_stop()
+
 
 if __name__ == "__main__":
     server()

@@ -145,12 +145,17 @@ class FedNetwork:
                                  cls=TCLink, delay=client_type.get("delay"), loss=client_type.get("loss"), bw=client_type.get("bw"))
                 self.clientes.append(d)
 
+    def auto_wait(self, verbose=False):
+        self.stop.cmd(
+            f'bash -c "cd {self.volume} && . env/bin/activate && python3 stop.py {BROKER_ADDR}"', verbose=verbose)
+
     def start(self):
         info('*** Configurando Links\n')
 
-        stop = self.net.addDocker(
+        self.stop = self.net.addDocker(
             'stop', dimage=self.network_monitor_image, volumes=self.docker_volume)
-        self.net.addLink(stop, self.switchs[self.server["connection"] - 1])
+        self.net.addLink(
+            self.stop, self.switchs[self.server["connection"] - 1])
 
         self.net.start()
 
@@ -158,16 +163,17 @@ class FedNetwork:
         time.sleep(2)
         self.start_monitor()
         self.start_server()
+
         # TEMPO ALTERADO (ANTES ERA 3) (TODO: AUTOMATIZAR ISSO COM O STOP)
-        time.sleep(10)
+        # time.sleep(10)
+        self.auto_wait(verbose=True)
         self.start_clientes()
 
         info('*** Rodando CLI\n')
         if ((self.general.get("stop") is not None) and self.general.get("stop") == 'cli'):
             CLI(self.net)
         else:
-            stop.cmd(
-                f'bash -c "cd {self.volume} && . env/bin/activate && python3 stop.py {BROKER_ADDR}"', verbose=True)
+            self.auto_wait(verbose=True)
         info('*** Parando MININET')
         self.net.stop()
 
