@@ -11,3 +11,5 @@ env_key_gen/
 data/
 temp/ckksfed_fhe/pasta
 data_temp/
+experiments_out/
+client_log/
