@@ -1,99 +1,101 @@
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
-
-
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from torchvision.datasets import MNIST
-import torchvision.transforms as transforms
-import numpy as np
-from Pyfhel import Pyfhel, PyCtxt
-
-import sys
-
-
 from sklearn.cluster import AgglomerativeClustering
+import sys
+import random
+from Pyfhel import Pyfhel, PyCtxt
+import numpy as np
+from sklearn.model_selection import KFold
+import torchvision.transforms as transforms
+from torch.utils.data import ConcatDataset
+from torchvision.datasets import MNIST
+import torch.optim as optim
+import torch.nn as nn
+import torch
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
 def recuperar_matriz_binaria(nome_arquivo, HE):
-  """
-  Recupera a matriz binária de um arquivo especificado, incluindo as chaves de linha, coluna e valor e considerando tamanhos variáveis de valores.
+    """
+    Recupera a matriz binária de um arquivo especificado, incluindo as chaves de linha, coluna e valor e considerando tamanhos variáveis de valores.
 
-  Argumento:
-    nome_arquivo: O nome do arquivo binário contendo a matriz.
+    Argumento:
+      nome_arquivo: O nome do arquivo binário contendo a matriz.
 
-  Retorna:
-    A matriz binária recuperada (dicionário de dicionários).
-  """
-  matriz = {}
+    Retorna:
+      A matriz binária recuperada (dicionário de dicionários).
+    """
+    matriz = {}
 
-  with open(nome_arquivo, 'rb') as f:
-    i = 0
+    with open(nome_arquivo, 'rb') as f:
+        i = 0
 
-    # Ler os bytes da matriz
-    bytes_matriz = f.read()
-    print(bytes_matriz[:100], file=sys.stderr)
+        # Ler os bytes da matriz
+        bytes_matriz = f.read()
+        # print(bytes_matriz[:100], file=sys.stderr)
 
-    # Descodificar os bytes em elementos da matriz
-    offset = 0
-    while offset < len(bytes_matriz):
-      print("it: i", i,file=sys.stdout)
-      i += 1
-      print("off:", offset, " len bytes:",len(bytes_matriz), file=sys.stdout)
-      
-      # Ler o tamanho da chave linha1
-      tamanho_chave_linha1 = int.from_bytes(bytes_matriz[offset:offset + 4],'big')
-      offset += 4
-      # Ler os bytes da chave linha1
-      bytes_chave_linha1 = bytes_matriz[offset:offset + tamanho_chave_linha1]
-      offset += tamanho_chave_linha1
-      # Decodificar a chave linha1 em string
-      linha1 = bytes_chave_linha1.decode('utf-8')
-      print("linha: ", linha1,file=sys.stdout)
-      # Ler o tamanho da chave coluna1
-      tamanho_chave_coluna1 = int.from_bytes(bytes_matriz[offset:offset + 4],'big')
-      offset += 4
-      # Ler os bytes da chave coluna1
-      bytes_chave_coluna1 = bytes_matriz[offset:offset + tamanho_chave_coluna1]
-      offset += tamanho_chave_coluna1
-      # Decodificar a chave coluna1 em string
-      coluna1 = bytes_chave_coluna1.decode('utf-8')
-      print("linha: ", coluna1,file=sys.stdout)
-      
-      # Ler o tamanho do valor
-      tamanho_valor = int.from_bytes(bytes_matriz[offset:offset + 4],'big')
-      offset += 4
-      print("tam val", tamanho_valor,file=sys.stdout)
+        # Descodificar os bytes em elementos da matriz
+        offset = 0
+        while offset < len(bytes_matriz):
+            # print("it: i", i, file=sys.stdout)
+            i += 1
+            # print("off:", offset, " len bytes:",
+            #       len(bytes_matriz), file=sys.stdout)
 
-      # Ler os bytes do valor
-      bytes_valor = bytes_matriz[offset:offset + tamanho_valor]
-      offset += tamanho_valor
+            # Ler o tamanho da chave linha1
+            tamanho_chave_linha1 = int.from_bytes(
+                bytes_matriz[offset:offset + 4], 'big')
+            offset += 4
+            # Ler os bytes da chave linha1
+            bytes_chave_linha1 = bytes_matriz[offset:offset +
+                                              tamanho_chave_linha1]
+            offset += tamanho_chave_linha1
+            # Decodificar a chave linha1 em string
+            linha1 = bytes_chave_linha1.decode('utf-8')
+            # print("linha: ", linha1, file=sys.stdout)
+            # Ler o tamanho da chave coluna1
+            tamanho_chave_coluna1 = int.from_bytes(
+                bytes_matriz[offset:offset + 4], 'big')
+            offset += 4
+            # Ler os bytes da chave coluna1
+            bytes_chave_coluna1 = bytes_matriz[offset:offset +
+                                               tamanho_chave_coluna1]
+            offset += tamanho_chave_coluna1
+            # Decodificar a chave coluna1 em string
+            coluna1 = bytes_chave_coluna1.decode('utf-8')
+            # print("coluna: ", coluna1, file=sys.stdout)
 
-      # Converter os bytes em PyCtxt e adicionar à matriz
-      pyctxt_elemento = PyCtxt(pyfhel=HE, bytestring=bytes_valor)
+            # Ler o tamanho do valor
+            tamanho_valor = int.from_bytes(
+                bytes_matriz[offset:offset + 4], 'big')
+            offset += 4
+            # print("tam val", tamanho_valor, file=sys.stdout)
 
-      print(f"matriz[{linha1}][{coluna1}] = {pyctxt_elemento}",file=sys.stdout)
-      # Inserir o elemento na matriz usando as duas chaves
-      matriz.setdefault(linha1, {})[coluna1] = pyctxt_elemento
-  f.close()
-  return matriz
+            # Ler os bytes do valor
+            bytes_valor = bytes_matriz[offset:offset + tamanho_valor]
+            offset += tamanho_valor
 
+            # Converter os bytes em PyCtxt e adicionar à matriz
+            pyctxt_elemento = PyCtxt(pyfhel=HE, bytestring=bytes_valor)
 
+            # print(
+            #     f"matriz[{linha1}][{coluna1}] = {pyctxt_elemento}", file=sys.stdout)
+            # Inserir o elemento na matriz usando as duas chaves
+            matriz.setdefault(linha1, {})[coluna1] = pyctxt_elemento
+    f.close()
+    return matriz
 
 
 def get_params(model):
-  param_dict = {}
-  for name, param in model.named_parameters():
-    if param.requires_grad:
-        param_dict[name] = param.clone() #copy.deepcopy(param.clone())
-  return param_dict
+    param_dict = {}
+    for name, param in model.named_parameters():
+        if param.requires_grad:
+            param_dict[name] = param.clone()  # copy.deepcopy(param.clone())
+    return param_dict
+
 
 def set_params_fedsketch(model, data):
-  for name, param in model.named_parameters():
+    for name, param in model.named_parameters():
         param.data = data[name]
-
-
 
 
 class LeNet5(nn.Module):
@@ -103,12 +105,13 @@ class LeNet5(nn.Module):
             nn.Conv2d(1, 6*num_channels, kernel_size=5, stride=1, padding=0),
             nn.BatchNorm2d(6*num_channels),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size = 2, stride = 2))
+            nn.MaxPool2d(kernel_size=2, stride=2))
         self.layer2 = nn.Sequential(
-            nn.Conv2d(6*num_channels, 16*num_channels, kernel_size=5, stride=1, padding=0),
+            nn.Conv2d(6*num_channels, 16*num_channels,
+                      kernel_size=5, stride=1, padding=0),
             nn.BatchNorm2d(16*num_channels),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size = 2, stride = 2))
+            nn.MaxPool2d(kernel_size=2, stride=2))
         self.fc = nn.Linear(400*num_channels, 120*num_channels)
         self.relu = nn.ReLU()
         self.fc1 = nn.Linear(120*num_channels, 84*num_channels)
@@ -127,13 +130,13 @@ class LeNet5(nn.Module):
         return out
 
 
-
-
 class TrainerCkksfed():
     # ID = 0
-    def __init__(self,ext_id, mode, id_name) -> None:
-        self.encrypted = True
-        self.N_CLUSTERS = 2
+    def __init__(self, ext_id, mode, id_name) -> None:
+        self.args = {}
+        self.args['encrypted'] = False
+        self.args['debug'] = False
+        self.args['n_clusters'] = 1
         CASE_SELECTOR = 1          # 1 or 2
 
         case_params = {
@@ -141,13 +144,13 @@ class TrainerCkksfed():
             2: {'l': 65536},       # large l
         }[CASE_SELECTOR]
         self.l = case_params['l']
-                
-        
+
         self.id_name = id_name
         self.cluster_distance_threshold = 0.8
         self.cluster = []
-        
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+        self.device = torch.device(
+            'cuda' if torch.cuda.is_available() else 'cpu')
         dir_path = "temp/ckksfed_fhe/pasta"
         self.num_samples = 500
         self.num_tests = 250
@@ -155,68 +158,68 @@ class TrainerCkksfed():
         self.cost = nn.CrossEntropyLoss()
         self.learning_rate = 0.01
         self.metric_names = ["accuracy"]
-        
+
         self.external_id = ext_id
-        self.mode = mode # client
-        
+        self.mode = mode  # client
+
         self.id = int(ext_id) + 1
         self.nc = self.id
         self.dataloader_train, self.dataloader_test = self.split_data()
         self.model = self.define_model()
         self.model_keys = list(get_params(self.model).keys())
-        
-        
+
         self.stop_flag = False
-        self.args = None
-        
-        self.HE_f = Pyfhel() # Empty creation
+        # self.args = None
+
+        self.HE_f = Pyfhel()  # Empty creation
         self.HE_f.load_context(dir_path + "/context")
         self.HE_f.load_public_key(dir_path + "/pub.key")
         self.HE_f.load_secret_key(dir_path + "/sec.key")
         self.HE_f.load_relin_key(dir_path + "/relin.key")
         # self.HE_f.rotateKeyGen()
         # self.HE_f.load_rotate_key(dir_path + "/rotate.key")
-        
-    
+
     def encrypt_array(self, array):
-        return [self.HE_f.encrypt(array[j:j+self.HE_f.get_nSlots()]) for j in range(0,self.l,self.HE_f.get_nSlots())]
-    
+        return [self.HE_f.encrypt(array[j:j+self.HE_f.get_nSlots()]) for j in range(0, self.l, self.HE_f.get_nSlots())]
+
     def encrypt_value(self, value):
-       return self.HE_f.encrypt(value)
+        return self.HE_f.encrypt(value)
 
     def decrypt_value(self, value):
-       return self.HE_f.decrypt(value)
+        return self.HE_f.decrypt(value)
 
     def decrypt_array(self, encrypted_array):
         out = np.array()
         for element in encrypted_array:
             decrypted_part = self.HE_f.decryptFrac(element)
             out = np.concatenate((out, decrypted_part))
-        
+
         return out
-    
-    def set_args(self,args):
-        self.args = args
-    
-    def set_nc(self,clients):
-        self.nc= clients
-    
+
+    def set_args(self, args):
+        self.args.update(args)
+
+    def set_nc(self, clients):
+        self.nc = clients
+
     def get_num_samples(self):
         return self.num_samples
-    
+
     def define_model(self, n_channels=1, n_classes=10):
-        return LeNet5(n_classes,n_channels )
+        return LeNet5(n_classes, n_channels)
 
+    def sample_random_dataloader(self, dataset, num_samples, batch_size):
 
-    def sample_random_dataloader(self,dataset,num_samples, batch_size):
         indices = torch.randperm(len(dataset))[:num_samples]
-
         sample = torch.utils.data.Subset(dataset, indices)
-        #random_sampler = torch.utils.data.RandomSampler(dataset, num_samples=num_samples)
-        dataloader = torch.utils.data.DataLoader(sample, batch_size=batch_size,shuffle=True,num_workers=2)
+        # random_sampler = torch.utils.data.RandomSampler(dataset, num_samples=num_samples)
+        dataloader = torch.utils.data.DataLoader(
+            sample, batch_size=batch_size, shuffle=True, num_workers=2)
+        print(len(dataloader.dataset))
+
         return dataloader
-    
-    # def sample_random_dataloader(self, dataset, num_samples, batch_size, unbalanced=False):
+
+    # def sample_random_dataloader(self, dataset, num_samples, batch_size, unbalanced=True):
     #     # Se o modo for 'unbalanced', altere a distribuição das classes
     #     if unbalanced:
     #         targets = np.array(dataset.targets)
@@ -233,34 +236,61 @@ class TrainerCkksfed():
     #     else:
     #         # Se não for 'unbalanced', apenas selecione aleatoriamente
     #         indices = np.random.choice(len(dataset), num_samples, replace=False)
-
     #     # Crie um Subset com os índices selecionados
     #     subset = torch.utils.data.Subset(dataset, indices)
     #     # Crie o DataLoader com o Subset
     #     return torch.utils.data.DataLoader(subset, batch_size=batch_size, shuffle=True)
 
-        
     def split_data(self):
-        #cliente
-        train_dataset = MNIST(root = './data',
-                                                train = True,
-                                                transform = transforms.Compose([
-                                                        transforms.Resize((32,32)),
-                                                        transforms.ToTensor(),
-                                                        transforms.Normalize(mean = (0.1307,), std = (0.3081,))]),
-                                                download = True)
-        test_dataset = MNIST(root = './data',
-                                                train = False,
-                                                transform = transforms.Compose([
-                                                        transforms.Resize((32,32)),
-                                                        transforms.ToTensor(),
-                                                        transforms.Normalize(mean = (0.1325,), std = (0.3105,))]),
-                                                download=True)
+        # cliente
+        train_dataset = MNIST(root='./data',
+                              train=True,
+                              transform=transforms.Compose([
+                                  transforms.Resize((32, 32)),
+                                  transforms.ToTensor(),
+                                  transforms.Normalize(mean=(0.1307,), std=(0.3081,))]),
+                              download=True)
+        test_dataset = MNIST(root='./data',
+                             train=False,
+                             transform=transforms.Compose([
+                                 transforms.Resize((32, 32)),
+                                 transforms.ToTensor(),
+                                 transforms.Normalize(mean=(0.1325,), std=(0.3105,))]),
+                             download=True)
 
-        dataloader_train = self.sample_random_dataloader(train_dataset, self.num_samples, 32)
-        dataloader_test = self.sample_random_dataloader(test_dataset, self.num_tests, 32)
-        
-        
+        # # num_classes = 1
+
+        # possible_classes = [[1, 2], [3, 4], [1, 5], [7, 8]]
+        # classes = random.choice(possible_classes)
+        # self.classes = classes
+        # idx = (train_dataset.targets == classes[0]) | (
+        #     train_dataset.targets == classes[1])
+        # train_dataset.targets = train_dataset.targets[idx]
+        # train_dataset.data = train_dataset.data[idx]
+        # print(np.unique(train_dataset.targets))
+        # print(train_dataset)
+        # idx = (test_dataset.targets == classes[0]) | (
+        #     test_dataset.targets == classes[1])
+        # test_dataset.targets = test_dataset.targets[idx]
+        # test_dataset.data = test_dataset.data[idx]
+        # print(np.unique(test_dataset.targets))
+        # print(test_dataset)
+
+        # k_folds = 4
+        # dataset = ConcatDataset([train_dataset, test_dataset])
+        # kfold = KFold(n_splits=k_folds, shuffle=True, random_state=0)
+        # fold = 0
+        # fold, (train_ids, test_ids) = list(
+        #     enumerate(kfold.split(dataset)))[fold]
+        # print(fold)
+        # # random.sample(possible_classes, num_classes)
+        # train_dataset = torch.utils.data.Subset(dataset, train_ids)
+        # test_dataset = torch.utils.data.Subset(dataset, test_ids)
+
+        dataloader_train = self.sample_random_dataloader(
+            train_dataset, self.num_samples, 32)
+        dataloader_test = self.sample_random_dataloader(
+            test_dataset, self.num_tests, 128)
 
         return dataloader_train, dataloader_test
 
@@ -277,19 +307,19 @@ class TrainerCkksfed():
                 images = images.to(self.device)
                 labels = labels.to(self.device)
 
-                #Forward pass
+                # Forward pass
                 outputs = model(images)
 
                 loss = cost(outputs, labels)
-                #actv_last.append(outputs.detach().clone().flatten())
+                # actv_last.append(outputs.detach().clone().flatten())
                 # Backward and optimize
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
 
                 if (i+1) % (total_step/num_epochs) == 0:
-                    print ('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
-                                .format(epoch+1, num_epochs, i+1, total_step, loss.item()))
+                    print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
+                          .format(epoch+1, num_epochs, i+1, total_step, loss.item()))
         # return model, loss.item()
 
     def eval_model(self):
@@ -300,22 +330,27 @@ class TrainerCkksfed():
             correct = 0
             total = 0
             for images, labels in test_loader:
+
                 images = images.to(self.device)
                 labels = labels.to(self.device)
                 outputs = model(images)
                 actv_last.append(outputs.detach().clone().flatten())
                 _, predicted = torch.max(outputs.data, 1)
+                # print("Predicted",file=sys.stderr)
+                # print(predicted,file=sys.stderr)
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
 
-            print('Accuracy of the network on the 10000 test images: {} %'.format(100 * correct / total))
+            print('Accuracy of the network on the 10000 test images: {} %'.format(
+                100 * correct / total))
             print(torch.cat(actv_last, axis=0))
             concat_actv = np.array(torch.cat(actv_last, axis=0))
             concat_actv -= np.mean(concat_actv)
-            actv = [concat_actv, concat_actv.T,1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum())]
+            actv = [concat_actv, concat_actv.T, 1 /
+                    np.sqrt((concat_actv.T.dot(concat_actv)**2).sum())]
             # return 100 * correct / total, actv
             return correct / total
-    
+
     def get_training_args(self):
         model = self.model
         test_loader = self.dataloader_test
@@ -334,22 +369,22 @@ class TrainerCkksfed():
 
             concat_actv = np.array(torch.cat(actv_last, axis=0))
             concat_actv -= np.mean(concat_actv)
-            
-            if self.encrypted:
-                XTX = self.encrypt_value(1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum()))
+
+            if self.args['encrypted']:
+                XTX = self.encrypt_value(
+                    1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum()))
                 concat_actv_T = self.encrypt_array(concat_actv.T)
                 concat_actv = self.encrypt_array(concat_actv)
-                actv = [concat_actv, concat_actv_T,XTX,self.cluster]
+                actv = [concat_actv, concat_actv_T,
+                        XTX, self.cluster, self.args['encrypted']]
                 return actv
-            else:    
+            else:
                 XTX = 1/np.sqrt((concat_actv.T.dot(concat_actv)**2).sum())
-                concat_actv_T = concat_actv.T                
-                actv = [concat_actv, concat_actv_T,XTX,self.cluster]
+                concat_actv_T = concat_actv.T
+                actv = [concat_actv, concat_actv_T,
+                        XTX, self.cluster, self.args['encrypted']]
                 return actv
 
-            
-        
-    
     def all_metrics(self):
         acc = self.eval_model()
         # metrics = dict(zip(self.metric_names, [acc]))
@@ -357,48 +392,60 @@ class TrainerCkksfed():
         #     metrics["cluster"] = self.cluster
         return dict(zip(self.metric_names, [acc]))
 
-    
     def get_weights(self):
+        # print("Pesos Enviados",file=sys.stderr)
+        # print(list(get_params(self.model).values()),file=sys.stderr)
         return list(get_params(self.model).values())
-    
+
     def update_weights(self, weights):
         w = [torch.from_numpy(x) for x in weights]
-        set_params_fedsketch(self.model, dict(zip(self.model_keys,w)))
-    
-    
-    def agg_response_extra_info(self, agg_response): 
+        set_params_fedsketch(self.model, dict(zip(self.model_keys, w)))
+        # print("Pesos Atualizados",file=sys.stderr)
+        # print(list(get_params(self.model).values()),file=sys.stderr)
 
-        agg_response["distances"] = recuperar_matriz_binaria('data_temp/data.bin',self.HE_f)
+    def agg_response_extra_info(self, agg_response):
+        if self.args['encrypted']:
+            agg_response["distances"] = recuperar_matriz_binaria(
+                'data_temp/data.bin', self.HE_f)
         data_matrix = []
 
         name_dict = {}
         pos_dict = {}
-        for idx ,i in enumerate(agg_response["distances"]):
+        for idx, i in enumerate(agg_response["distances"]):
             name_dict[idx] = i
             pos_dict[i] = idx
             line = []
             for j in agg_response["distances"][i]:
-                if self.encrypted:
-                    line.append(self.decrypt_value(agg_response["distances"][i][j])[0])
+                if self.args['encrypted']:
+                    line.append(self.decrypt_value(
+                        agg_response["distances"][i][j])[0])
                 else:
                     line.append(agg_response["distances"][i][j])
             data_matrix.append(line)
-
+        # print("Matriz decriptada:", np.array(
+        #     data_matrix).shape, file=sys.stderr)
+        # print("Matriz decriptada:", data_matrix, file=sys.stderr)
         data_matrix = np.array(data_matrix) - 1
         data_matrix = abs(data_matrix)
+
+        # print("Matriz - 1:", data_matrix.shape, file=sys.stderr)
+        # print("Matriz - 1:", data_matrix, file=sys.stderr)
         print(data_matrix)
         print(data_matrix.shape)
         model = AgglomerativeClustering(
-            metric='precomputed', n_clusters=self.N_CLUSTERS, linkage='complete').fit(data_matrix)
-
+            metric='precomputed', n_clusters=self.args['n_clusters'], linkage='complete').fit(data_matrix)
+#
         self.cluster.clear()
         my_cluster_num = model.labels_[pos_dict[self.id_name]]
         for idx, cluster_num in enumerate(model.labels_):
             if cluster_num == my_cluster_num:
                 self.cluster.append(name_dict[idx])
-                
-                
-    # def agg_response_extra_info(self, agg_response):   # versão com múltiplos valores por linha 
+        print("Cluster", file=sys.stderr)
+        print(self.cluster, file=sys.stderr)
+        print("Classes")
+        print(self.classes, file=sys.stderr)
+
+    # def agg_response_extra_info(self, agg_response):   # versão com múltiplos valores por linha
     #     data_matrix = []
 
     #     name_dict = {}
@@ -407,7 +454,7 @@ class TrainerCkksfed():
     #         name_dict[idx] = i
     #         pos_dict[i] = idx
     #         line = []
-    #         if self.encrypted:
+    #         if args['encrypted']:
     #             c_res = PyCtxt(pyfhel=self.HE_f, bytestring=agg_response["distances"][i].encode('cp437'))
     #             unnorded_line = self.decrypt_value(c_res)
     #             for i in agg_response["distances"]["index"]:
@@ -424,27 +471,25 @@ class TrainerCkksfed():
     #     print(data_matrix)
     #     print(data_matrix.shape)
     #     model = AgglomerativeClustering(
-    #         metric='precomputed', n_clusters=self.N_CLUSTERS, linkage='complete').fit(data_matrix)
+    #         metric='precomputed', n_clusters=args['n_clusters'], linkage='complete').fit(data_matrix)
 
     #     self.cluster.clear()
     #     my_cluster_num = model.labels_[pos_dict[self.id_name]]
     #     for idx, cluster_num in enumerate(model.labels_):
     #         if cluster_num == my_cluster_num:
     #             self.cluster.append(name_dict[idx])
-            
-                
-    
+
     def set_stop_true(self):
         self.stop_flag = True
-    
+
     def get_stop_flag(self):
         return self.stop_flag
-    
 
-        
 
 if __name__ == '__main__':
-  pass
+    trainer = TrainerCkksfed()
 
-
-
+    for i in range(50):
+        if trainer.eval_model() > 0.97:
+            break
+        trainer.train_model()

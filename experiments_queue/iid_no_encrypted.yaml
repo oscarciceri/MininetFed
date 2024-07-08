@@ -3,13 +3,13 @@
 general:
   n_available_cpu: 20
   broker_image: mininetfed:broker
-  experiments_folder: experiments
+  experiments_folder: experiments_out
   stop: auto # auto, cli, (None -> auto)
 
 # Experiment settings
 experiment:
-  new_experiment: True
-  experiment_name: 25_clientes_1_epoch_noencrypt_ckksfed_kfold
+  new_experiment: False
+  experiment_name: 25_clientes_no_iid_encrypted
   trainer_mode: unbalanced
   max_n_rounds: 100
   stop_accuracy: 0.97
@@ -17,7 +17,7 @@ experiment:
   client_args:
     encrypted: False
     debug: False
-    n_clusters: 1
+    n_clusters: 4
 
 # Network settings
 network:
