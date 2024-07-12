@@ -71,7 +71,8 @@ def analysis(analysis_yaml_path):
                         netdf = f.get_net_dataframe()
                         if csv:
                             f.save_to_csv()
-                        dfs.append({'name': name, 'df': df, 'netdf': netdf})
+                        dfs.append(
+                            {'name': name, 'experiment': experiment_name, 'df': df, 'netdf': netdf})
                         idx += 1
 
         plot = Graphics(dfs, experiments_analysis.get("save_graphics"), FOLDER)
@@ -79,6 +80,8 @@ def analysis(analysis_yaml_path):
         for graphic in experiments_analysis["graphics"]:
             if graphic['type'] == 'mean_acc':
                 plot.mean_acc()
+            elif graphic['type'] == 'mean_acc_k_folds':
+                plot.mean_acc_k_folds()
             elif graphic['type'] == 'deltaT_per_round':
                 plot.deltaT_per_round()
             elif graphic['type'] == 'n_clients_absolute':
