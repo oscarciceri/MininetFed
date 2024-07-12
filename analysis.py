@@ -38,11 +38,15 @@ def analysis(analysis_yaml_path):
                 for idx, fileName in enumerate(exp_files):
                     name = None
                     filepath = f"{experiment_name}/{fileName.split('.')[0]}"
-                    if idx == 0:
-                        name = alias
-                    elif alias is not None:
-                        name = f"{alias} ({idx})"
+
+                    if alias is not None:
+                        exp_alias = alias
+                        if idx == 0:
+                            name = alias
+                        else:
+                            name = f"{alias} ({idx})"
                     else:
+                        exp_alias = experiment_name
                         name = filepath
 
                     f = File(f"{FOLDER}/{filepath}")
@@ -50,7 +54,8 @@ def analysis(analysis_yaml_path):
                     netdf = f.get_net_dataframe()
                     if csv:
                         f.save_to_csv()
-                    dfs.append({'name': name, 'df': df, 'netdf': netdf})
+                    dfs.append(
+                        {'name': name, 'experiment': exp_alias, 'df': df, 'netdf': netdf})
             else:
                 idx = 0
                 for fileName in os.listdir(f"{FOLDER}/{experiment_name}"):
@@ -59,11 +64,13 @@ def analysis(analysis_yaml_path):
                         filepath = f"{experiment_name}/{fileName.split('.')[0]}"
 
                         if alias is not None:
+                            exp_alias = alias
                             if idx == 0:
                                 name = alias
                             else:
                                 name = f"{alias} ({idx})"
                         else:
+                            exp_alias = experiment_name
                             name = filepath
 
                         f = File(f"{FOLDER}/{filepath}")
@@ -72,7 +79,7 @@ def analysis(analysis_yaml_path):
                         if csv:
                             f.save_to_csv()
                         dfs.append(
-                            {'name': name, 'experiment': experiment_name, 'df': df, 'netdf': netdf})
+                            {'name': name, 'experiment': exp_alias, 'df': df, 'netdf': netdf})
                         idx += 1
 
         plot = Graphics(dfs, experiments_analysis.get("save_graphics"), FOLDER)

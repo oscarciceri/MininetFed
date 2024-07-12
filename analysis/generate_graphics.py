@@ -178,7 +178,7 @@ class Graphics:
 
             plt.fill_between(range(max_tamanho), mean -
                              std_d, mean+std_d, alpha=.3)
-            plt.plot(range(max_tamanho), mean, label="Mean Accuracy")
+            plt.plot(range(max_tamanho), mean, label=f"{experiment}")
 
             plt.xlabel('Round', fontsize=18)
             plt.ylabel('Accuracy', fontsize=18)
