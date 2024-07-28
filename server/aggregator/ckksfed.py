@@ -2,10 +2,12 @@ import sys
 import numpy as np
 
 from .fed_avg import FedAvg
+from .fed_sketch import FedSketchAgg
 
 import torch  # Precisa importar isso para o Pyfhel funcional
 from Pyfhel import Pyfhel, PyCtxt
 import time
+from .sketch_utils import compress, decompress, get_params, set_params, set_params_fedsketch, differential_garantee_pytorch, delta_weights, get_random_hashfunc
 
 # ENCRYPT = True # Setado automaticamente pelo cliente
 
@@ -153,6 +155,7 @@ def cka(X, Y, XTX, YTY, HE=None, crypt=False):
 class Ckksfed:
 
     def __init__(self):
+        self.fedsketch = True
         dir_path = "temp/ckksfed_fhe/pasta"
         self.HE_f = Pyfhel()  # Empty creation
         self.HE_f.load_context(dir_path + "/context")
@@ -243,10 +246,13 @@ class Ckksfed:
 
         # for client_i in client_training_responses:
         #   print( client_training_responses[client_i]["training_args"][3])
-
+        if self.fedsketch == False:
+            fed_avg = FedAvg()
+        else:
+            fed_avg = FedSketchAgg()
         weights_dict = {}
         if len(client_training_responses[trainers_list[0]]["training_args"][3]) == 0:
-            fed_avg = FedAvg()
+
             weights = fed_avg.aggregate(client_training_responses)
             # print("Pesos Agregados",file=sys.stderr)
             # print(weights,file=sys.stderr)
@@ -260,7 +266,6 @@ class Ckksfed:
                     continue
 
                 aggregated_clusters.add(tuple(cluster))
-                fed_avg = FedAvg()
                 weights = fed_avg.aggregate(
                     {c: client_training_responses[c] for c in cluster})
                 # print("Pesos Agregados",file=sys.stderr)
@@ -272,7 +277,8 @@ class Ckksfed:
             agg_response[client] = {"weights": weights_dict[client]}
         agg_response['all'] = {
             "distances": self.distance_matrix, "clients": trainers_list}
-
+        agg_response['encrypted'] = client_training_responses[trainers_list[0]
+                                                              ]["training_args"][4]
         # for client in client_training_responses:
         #   agg_response[client] = {"weights": weights[client], "distances": self.distance_matrix[client]}
         # print(sys.getsizeof(agg_response), file=sys.stderr)
