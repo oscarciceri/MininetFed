@@ -204,11 +204,22 @@ class FedNetwork:
         info('*** Inicializando clientes\n')
         count = 0
         for client_type in self.config.get("client_types"):
+            
+            args = client_type['client_args']
+            json_str = None
+            if args is not None:
+                json_str = json.dumps(args).replace('"', '\\"')
+
+            
+            
             for x in range(1, client_type["amount"]+1):
                 info(f"*** Subindo cliente {str(count+1).zfill(2)}\n")
                 # vol = client_type["volume"]
                 vol = self.volume
-                cmd = f"bash -c 'cd {vol} && . env/bin/activate && python3 {client_type['script']} {BROKER_ADDR} {self.clientes[count].name} {count} {self.exp_conf['trainer_mode']} 2> client_log/{self.clientes[count].name}.txt' ;"
+                cmd = f"""bash -c "cd {vol} && . env/bin/activate && python3 {client_type['''script''']} {BROKER_ADDR} {self.clientes[count].name} {count} {self.exp_conf['''trainer_mode''']} 2> client_log/{self.clientes[count].name}.txt """
                 # print(cmd)
+                if json_str is not None:
+                    cmd += f"'{json_str}'"
+                cmd += '" ;'
                 makeTerm(self.clientes[count], cmd=cmd)
                 count += 1
