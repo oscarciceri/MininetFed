@@ -11,6 +11,7 @@ import torch.optim as optim
 import torch.nn as nn
 import torch
 import os
+from .sketch_utils import compress, decompress, get_params, set_params, set_params_fedsketch, differential_garantee_pytorch, delta_weights, get_random_hashfunc
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
@@ -134,9 +135,10 @@ class TrainerCkksfed():
     # ID = 0
     def __init__(self, ext_id, mode, id_name) -> None:
         self.args = {}
-        self.args['encrypted'] = False
+        self.args['encrypted'] = True
         self.args['debug'] = False
-        self.args['n_clusters'] = 1
+        self.args['n_clusters'] = 4
+        self.args['global_seed'] = 0
         CASE_SELECTOR = 1          # 1 or 2
 
         case_params = {
@@ -167,6 +169,20 @@ class TrainerCkksfed():
         self.dataloader_train, self.dataloader_test = self.split_data()
         self.model = self.define_model()
         self.model_keys = list(get_params(self.model).keys())
+        self.fedsketch = True
+        if self.fedsketch:
+
+            self.old_weights = get_params(self.model)
+            self.weights = get_params(self.model)
+            self.compression = 0.00066666666  # 75x
+            self.length = 20
+            self.desired_episilon = 1
+            self.percentile = 90
+            self.vector_length = sum(
+                p.numel() for p in self.model.parameters() if p.requires_grad)
+            self.index_hash_function = [get_random_hashfunc(
+                _max=int(self.compression*self.vector_length), seed=repr(j).encode())
+                for j in range(self.length)]
 
         self.stop_flag = False
         # self.args = None
@@ -206,7 +222,11 @@ class TrainerCkksfed():
         return self.num_samples
 
     def define_model(self, n_channels=1, n_classes=10):
-        return LeNet5(n_classes, n_channels)
+        # previous_seed = torch.initial_seed()
+        # torch.manual_seed(self.args['global_seed'])
+        model = LeNet5(n_classes, n_channels)
+        # torch.manual_seed(previous_seed)
+        return model
 
     def sample_random_dataloader(self, dataset, num_samples, batch_size):
 
@@ -276,16 +296,16 @@ class TrainerCkksfed():
         # print(np.unique(test_dataset.targets))
         # print(test_dataset)
 
-        # k_folds = 4
-        # dataset = ConcatDataset([train_dataset, test_dataset])
-        # kfold = KFold(n_splits=k_folds, shuffle=True, random_state=0)
-        # fold = 0
-        # fold, (train_ids, test_ids) = list(
-        #     enumerate(kfold.split(dataset)))[fold]
-        # print(fold)
-        # # random.sample(possible_classes, num_classes)
-        # train_dataset = torch.utils.data.Subset(dataset, train_ids)
-        # test_dataset = torch.utils.data.Subset(dataset, test_ids)
+        k_folds = 4
+        dataset = ConcatDataset([train_dataset, test_dataset])
+        kfold = KFold(n_splits=k_folds, shuffle=True, random_state=0)
+        fold = 3
+        fold, (train_ids, test_ids) = list(
+            enumerate(kfold.split(dataset)))[fold]
+        print(fold)
+        # random.sample(possible_classes, num_classes)
+        train_dataset = torch.utils.data.Subset(dataset, train_ids)
+        test_dataset = torch.utils.data.Subset(dataset, test_ids)
 
         dataloader_train = self.sample_random_dataloader(
             train_dataset, self.num_samples, 32)
@@ -301,6 +321,8 @@ class TrainerCkksfed():
         cost = self.cost
         optimizer = optim.SGD(model.parameters(), lr=self.learning_rate)
         total_step = len(train_loader)
+        if self.fedsketch:
+            self.old_weights = get_params(self.model)
         # print(total_step)
         for epoch in range(num_epochs):
             for i, (images, labels) in enumerate(train_loader):
@@ -320,6 +342,15 @@ class TrainerCkksfed():
                 if (i+1) % (total_step/num_epochs) == 0:
                     print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
                           .format(epoch+1, num_epochs, i+1, total_step, loss.item()))
+        if self.fedsketch:
+            self.weights = get_params(self.model)
+            delta = delta_weights(self.weights, self.old_weights)
+            self.sketch = compress(delta, self.compression, self.length,
+                                   self.desired_episilon, self.percentile, self.index_hash_function)
+
+            # differential_garantee_pytorch(delta,self.sketch,self.desired_episilon,self.percentile)
+            self.sketch_list = [i.tolist() if type(
+                i) != list else i for i in self.sketch]
         # return model, loss.item()
 
     def eval_model(self):
@@ -395,11 +426,26 @@ class TrainerCkksfed():
     def get_weights(self):
         # print("Pesos Enviados",file=sys.stderr)
         # print(list(get_params(self.model).values()),file=sys.stderr)
-        return list(get_params(self.model).values())
+        if self.fedsketch:
+            weights = self.sketch_list
+        else:
+            weights = list(get_params(self.model).values())
+        return weights
 
     def update_weights(self, weights):
-        w = [torch.from_numpy(x) for x in weights]
-        set_params_fedsketch(self.model, dict(zip(self.model_keys, w)))
+        if self.fedsketch:
+            sketch_global = [np.asarray(i) for i in weights]
+            self.n_weights = decompress(self.weights, sketch_global, len(
+                sketch_global), -100000, 100000, self.index_hash_function)
+            for k, v in self.n_weights.items():
+
+                self.n_weights[k] = v + self.old_weights[k]
+
+            set_params_fedsketch(self.model, self.n_weights)
+            self.model = self.model.float()
+        else:
+            w = [torch.from_numpy(x) for x in weights]
+            set_params_fedsketch(self.model, dict(zip(self.model_keys, w)))
         # print("Pesos Atualizados",file=sys.stderr)
         # print(list(get_params(self.model).values()),file=sys.stderr)
 
@@ -442,8 +488,8 @@ class TrainerCkksfed():
                 self.cluster.append(name_dict[idx])
         print("Cluster", file=sys.stderr)
         print(self.cluster, file=sys.stderr)
-        print("Classes")
-        print(self.classes, file=sys.stderr)
+        # print("Classes")
+        # print(self.classes, file=sys.stderr)
 
     # def agg_response_extra_info(self, agg_response):   # versão com múltiplos valores por linha
     #     data_matrix = []
