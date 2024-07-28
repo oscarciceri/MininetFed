@@ -14,6 +14,49 @@ import time
 # YTX.set_scale(2 ** 30)
 
 
+def salvar_matriz_binaria(matriz, nome_arquivo):
+    """
+    Salva a matriz binária em um arquivo especificado, incluindo as chaves de linha, coluna e valor e considerando tamanhos variáveis de valores.
+
+    Argumentos:
+      matriz: A matriz a ser salva (dicionário de dicionários).
+      nome_arquivo: O nome do arquivo binário para salvar a matriz.
+    """
+    with open(nome_arquivo, 'wb') as f:
+
+        # Percorrer cada elemento da matriz
+        for linha1 in matriz:
+            # Converter a chave linha1 em bytes
+            bytes_linha1 = linha1.encode('utf-8')
+
+            for coluna1 in matriz[linha1]:
+
+                # Converter a chave linha1 em bytes
+                bytes_coluna1 = coluna1.encode('utf-8')
+
+                # Escrever o tamanho da chave linha1 e os bytes da chave no arquivo
+                f.write(len(bytes_linha1).to_bytes(4, 'big'))
+                f.write(bytes_linha1)
+                # Escrever o tamanho da chave linha1 e os bytes da chave no arquivo
+                f.write(len(bytes_coluna1).to_bytes(4, 'big'))
+                f.write(bytes_coluna1)
+
+                # Obter o valor (PyCtxt)
+                valor_pyctxt = matriz[linha1][coluna1]
+                # print(matriz, file=sys.stderr)
+                bytes_pyctxt = valor_pyctxt.to_bytes()
+
+                # Converter o tamanho do valor em bytes
+                tamanho_valor = len(bytes_pyctxt).to_bytes(4, 'big')
+
+                # Escrever o tamanho do valor no arquivo
+                f.write(tamanho_valor)
+
+                # escrever no arquivo
+                f.write(bytes_pyctxt)
+        f.close()
+
+
 def cka_unecrypted(X, Y, XTX, YTY):
   # Implements linear CKA as in Kornblith et al. (2019)
     X = X.copy()
@@ -136,19 +179,6 @@ def cka(X, Y, XTX, YTY, HE=None, crypt=False):
     return res
 
 
-# servidor
-# Rodar função teste no Cliente antes de enviar o seu modelo e mandar os resultados para a função de agregação
-# def get_distance_matrix(encrypted_vectors,encrypted_vectors_transposed, VTVS, HE):
-#   distance_matrix = []
-#   for i in range(len(encrypted_vectors)):
-#     client_distance = []
-#     for j in range(len(encrypted_vectors_transposed)):
-#       client_distance.append(cka(encrypted_vectors[i], encrypted_vectors_transposed[j], VTVS[i], VTVS[j], HE , crypt=True))
-#     distance_matrix.append(client_distance)
-
-# Para cada cliente, mandar junto com o modelo agregado a sua linha correspondente da matriz de distâncias: distance_matrix[i]
-# O cliente vai desemcriptar a sua linha de distâncias, identificar quais clientes fazem parte de seu cluster dependendo da distância
-
 
 class Ckksfed:
 
@@ -157,7 +187,6 @@ class Ckksfed:
         self.HE_f = Pyfhel()  # Empty creation
         self.HE_f.load_context(dir_path + "/context")
         self.HE_f.load_public_key(dir_path + "/pub.key")
-        # REMOVER DEPOIS DE TESTAR ---------------------------------------------------
         # self.HE_f.load_secret_key(dir_path + "/sec.key")
         self.HE_f.load_relin_key(dir_path + "/relin.key")
         # self.HE_f.rotateKeyGen()
@@ -165,7 +194,7 @@ class Ckksfed:
         # self.HE_f.relinKeyGen()
 
     def get_distance_matrix(self, client_training_responses, ENCRYPT):
-        self.distance_matrix = {}
+        distance_matrix = {}
         dist_uncript = {}
         for client_i in client_training_responses:
             client_distance = {}
@@ -179,9 +208,10 @@ class Ckksfed:
                 # client_uncript[client_j] = self.HE_f.decrypt(
                 #    client_distance[client_j])[0]
 
-            self.distance_matrix[client_i] = client_distance
+            distance_matrix[client_i] = client_distance
             # dist_uncript[client_i] = client_uncript
         # print("matriz decriptada:", dist_uncript, file=sys.stderr)
+        return distance_matrix
 
     # def get_distance_matrix(self, client_training_responses):  # versão com múltiplos valores por linha (problema: mismatch)
     #   n_cli = len(client_training_responses)
@@ -235,14 +265,10 @@ class Ckksfed:
 
     def aggregate(self, client_training_responses, trainers_list):
 
-        # modificar para self.matriz = self.get_distance_matrix(client_training_responses)
-        print(client_training_responses[trainers_list[0]]["training_args"][4])
-        self.get_distance_matrix(
-            client_training_responses, client_training_responses[trainers_list[0]]["training_args"][4])
-        # print(self.distance_matrix, file=sys.stderr)
+        ENCRYPTED = client_training_responses[trainers_list[0]]["training_args"][4]
+        self.distance_matrix =  self.get_distance_matrix(
+            client_training_responses,ENCRYPT=ENCRYPTED )
 
-        # for client_i in client_training_responses:
-        #   print( client_training_responses[client_i]["training_args"][3])
 
         weights_dict = {}
         if len(client_training_responses[trainers_list[0]]["training_args"][3]) == 0:
@@ -270,9 +296,15 @@ class Ckksfed:
         agg_response = {}
         for client in trainers_list:
             agg_response[client] = {"weights": weights_dict[client]}
-        agg_response['all'] = {
-            "distances": self.distance_matrix, "clients": trainers_list}
-
+            
+            
+        
+        if ENCRYPTED:
+            salvar_matriz_binaria(
+                self.distance_matrix, 'data_temp/data.bin')
+        else:
+            agg_response['all'] = {
+                "distances": self.distance_matrix, "clients": trainers_list}
         # for client in client_training_responses:
         #   agg_response[client] = {"weights": weights[client], "distances": self.distance_matrix[client]}
         # print(sys.getsizeof(agg_response), file=sys.stderr)

@@ -8,49 +8,6 @@ import logging
 import os
 
 
-def salvar_matriz_binaria(matriz, nome_arquivo):
-    """
-    Salva a matriz binária em um arquivo especificado, incluindo as chaves de linha, coluna e valor e considerando tamanhos variáveis de valores.
-
-    Argumentos:
-      matriz: A matriz a ser salva (dicionário de dicionários).
-      nome_arquivo: O nome do arquivo binário para salvar a matriz.
-    """
-    with open(nome_arquivo, 'wb') as f:
-
-        # Percorrer cada elemento da matriz
-        for linha1 in matriz:
-            # Converter a chave linha1 em bytes
-            bytes_linha1 = linha1.encode('utf-8')
-
-            for coluna1 in matriz[linha1]:
-
-                # Converter a chave linha1 em bytes
-                bytes_coluna1 = coluna1.encode('utf-8')
-
-                # Escrever o tamanho da chave linha1 e os bytes da chave no arquivo
-                f.write(len(bytes_linha1).to_bytes(4, 'big'))
-                f.write(bytes_linha1)
-                # Escrever o tamanho da chave linha1 e os bytes da chave no arquivo
-                f.write(len(bytes_coluna1).to_bytes(4, 'big'))
-                f.write(bytes_coluna1)
-
-                # Obter o valor (PyCtxt)
-                valor_pyctxt = matriz[linha1][coluna1]
-                # print(matriz, file=sys.stderr)
-                bytes_pyctxt = valor_pyctxt.to_bytes()
-
-                # Converter o tamanho do valor em bytes
-                tamanho_valor = len(bytes_pyctxt).to_bytes(4, 'big')
-
-                # Escrever o tamanho do valor no arquivo
-                f.write(tamanho_valor)
-
-                # escrever no arquivo
-                f.write(bytes_pyctxt)
-        f.close()
-
-
 def default(obj):
     if type(obj).__module__ == np.__name__:
         if isinstance(obj, np.ndarray):
@@ -81,24 +38,12 @@ def server():
         print("correct use: python server.py <broker_address> <min_clients> <num_rounds> <accuracy_threshold> <arquivo.log> <...>.")
         exit()
 
-    # MOSQUITTO (CONTAINER)
-    # sudo service mosquitto start
-
-    # CLIENTES
-    # MIN_TRAINERS: Minimo de treinadores
-    # BROKER_ADDR: IP DO BROKEN(Server so precisa de 1)
-
-    # CONDICAO DE PARADA
-    # NUM_ROUDS 10
-    # STOP ACC -> 80% acerto
     BROKER_ADDR = sys.argv[1]
     MIN_TRAINERS = int(sys.argv[2])
-    # TRAINERS_PER_ROUND = int(10)
     NUM_ROUNDS = int(sys.argv[3])
     STOP_ACC = float(sys.argv[4])
     CSV_PATH = sys.argv[5]
     CLIENT_ARGS = None
-    ENCRYPTED = True
     if len(sys.argv) >= 7 and (sys.argv[6] is not None):
         CLIENT_ARGS = json.loads(sys.argv[6])
 
@@ -111,7 +56,6 @@ def server():
     logger = logging.getLogger(__name__)
 
     # class for coloring messages on terminal
-
     class color:
         BLUE = '\033[94m'
         GREEN = '\033[92m'
@@ -122,7 +66,6 @@ def server():
         RESET = "\x1B[0m"
 
     # subscribe to queues on connection
-
     def on_connect(client, userdata, flags, rc):
         subscribe_queues = ['minifed/registerQueue',
                             'minifed/preAggQueue', 'minifed/metricsQueue', 'minifed/ready']
@@ -130,7 +73,6 @@ def server():
             client.subscribe(s)
 
     # callback for registerQueue: add trainer to the pool of trainers
-
     def on_message_ready(client, userdata, message):
         m = json.loads(message.payload.decode("utf-8"))
         controller.add_trainer(m["id"])
@@ -147,35 +89,19 @@ def server():
             'minifed/args', json.dumps({"id": m["id"], "args": CLIENT_ARGS}))
 
     # callback for preAggQueue: get weights of trainers, aggregate and send back
-
     def on_message_agg(client, userdata, message):
         m = json.loads(message.payload.decode("utf-8"))
-        # print(f"checkpoint 1 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
         client_training_response = {}
         weights = [np.asarray(w, dtype=np.float32) for w in m['weights']]
         client_training_response["weights"] = weights
-        # print(f"checkpoint 2 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
 
         if 'training_args' in m:
-            # training_args = [np.asarray(w) for w in m['training_args']]
-            # training_args = []
-            # for w in m['training_args']:
-            #     try:
-            #         # Tenta converter para float32
-            #         training_arg = np.asarray(w, dtype=np.float32)
-            #     except ValueError:
-            #         # Se falhar, converte para um array numpy normal
-            #         training_arg = np.asarray(w)
-            #     training_args.append(training_arg)
-
             client_training_response["training_args"] = m['training_args']
 
         num_samples = m['num_samples']
         client_training_response["num_samples"] = num_samples
-        # print(f"checkpoint 3 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
         controller.add_client_training_response(
             m['id'], client_training_response)
-        # print(f"checkpoint 4 no cliente {m['id']}") # -----------------------------------------------------------------------------------------------
         controller.update_num_responses()
         logger.info(
             f'received weights from trainer {m["id"]}!', extra=executionType)
@@ -185,7 +111,6 @@ def server():
         return " - ".join(f"{name}: {value}" for name, value in data.items())
 
     # callback for metricsQueue: get accuracy of every trainer and compute the mean
-
     def on_message_metrics(client, userdata, message):
         m = json.loads(message.payload.decode("utf-8"))
         controller.add_accuracy(m['accuracy'])
@@ -252,20 +177,8 @@ def server():
             time.sleep(1)
         controller.reset_num_responses()  # reset num_responses for next round
 
-        # # aggregate and send
-        # agg_response = controller.agg_weights()
-        # response = json.dumps({'agg_response': agg_response }, default=default)
-        # client.publish('minifed/posAggQueue', response)
-        # logger.info(f'sent aggregated weights to trainers!', extra=executionType)
-        # print(f'sent aggregated weights to trainers!')
-
-        # aggregate and send TEMP (salvar matriz em arquivo pois ele não passa no mqtt)---------------------------------------------------
+        # aggregate and send
         agg_response = controller.agg_weights()
-        if ENCRYPTED:
-            salvar_matriz_binaria(
-                agg_response['all']['distances'], 'data_temp/data.bin')
-            del agg_response['all']['distances']
-
         response = json.dumps({'agg_response': agg_response}, default=default)
         client.publish('minifed/posAggQueue', response)
         logger.info(f'sent aggregated weights to trainers!',
@@ -295,8 +208,6 @@ def server():
     logger.info('stop_condition: rounds', extra=metricType)
     print(color.RED + f'rounds threshold met! stopping the training!' + color.RESET)
     client.publish('minifed/stopQueue', m)
-    # PODE DA ERRO...
-    # controller.save_training_metrics(CSV_PATH)
     client.loop_stop()
 
 
