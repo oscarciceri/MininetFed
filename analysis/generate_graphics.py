@@ -133,10 +133,9 @@ class Graphics:
         plt.show()
 
     def mean_acc_k_folds(self):
-        # plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(10, 6))
+        possible_colors = ['blue', 'green', 'red', 'purple', 'orange']
         experiments = {}
-        max_tamanho = max(len(item['df']['mean_accuracy'])
-                          for item in self.dfs)
 
         for item in self.dfs:
             df = item['df']
@@ -145,8 +144,10 @@ class Graphics:
 
             experiments[item['experiment']].append(df['mean_accuracy'])
 
-        for experiment in experiments:
+        for idx, experiment in enumerate(experiments.__reversed__()):
             experiments_matrix = experiments[experiment]
+
+            max_tamanho = max(len(line) for line in experiments_matrix)
 
             acc = np.zeros(max_tamanho)
             acc_qtd = np.zeros(max_tamanho)
@@ -161,6 +162,8 @@ class Graphics:
                         acc[i] += line[i]
                         acc_qtd[i] += 1
 
+            # print(acc)
+            # print(acc_qtd)
             for i in range(max_tamanho):
                 mean[i] = acc[i] / acc_qtd[i]
 
@@ -174,15 +177,16 @@ class Graphics:
                 if (error_qtd[i] - 1.0) > 0:
                     std_d[i] = math.sqrt(error[i] / (error_qtd[i] - 1.0))
 
-            plt.figure(figsize=(10, 6))
-
+            # plt.figure(figsize=(10, 6))
             plt.fill_between(range(max_tamanho), mean -
-                             std_d, mean+std_d, alpha=.3)
-            plt.plot(range(max_tamanho), mean, label=f"{experiment}")
+                             std_d, mean+std_d, alpha=.3, color=possible_colors[idx % len(possible_colors)])
+            plt.plot(range(max_tamanho), mean,
+                     label=f"{experiment}", color=possible_colors[idx % len(possible_colors)])
 
             plt.xlabel('Round', fontsize=18)
             plt.ylabel('Accuracy', fontsize=18)
             plt.title('Mean accuracy in K-folds with standard deviation')
             plt.legend(fontsize=16)
             plt.tick_params(labelsize=16)
-            plt.show()
+        plt.savefig(f"experiments_out/{'out'}.pdf")
+        # plt.show()

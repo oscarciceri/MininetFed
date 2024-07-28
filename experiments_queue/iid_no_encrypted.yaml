@@ -9,7 +9,7 @@ general:
 # Experiment settings
 experiment:
   new_experiment: False
-  experiment_name: 25_clientes_no_iid_encrypted
+  experiment_name: 25_clientes_iid_no_encrypted_kfold
   trainer_mode: unbalanced
   max_n_rounds: 100
   stop_accuracy: 0.97
