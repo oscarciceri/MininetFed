@@ -119,7 +119,7 @@ def on_message_agg(client, userdata, message):
                    for w in msg["agg_response"][CLIENT_NAME]["weights"]]
     results = trainer.all_metrics()
     response = json.dumps(
-        {'id': CLIENT_NAME, 'accuracy': results["accuracy"], "metrics": results}, default=default)
+        {'id': CLIENT_NAME, "metrics": results}, default=default)
     trainer.update_weights(agg_weights)
 
     trainer.agg_response_extra_info(
@@ -143,6 +143,8 @@ def get_trainer():
             return Trainer(CLIENT_ID, MODE, CLIENT_NAME, CLIENT_INSTANCIATION_ARGS)
         else:
             return Trainer(CLIENT_ID, MODE, CLIENT_NAME, {})
+
+    # old trainer standard
     except:
         return Trainer(CLIENT_ID, MODE)
 

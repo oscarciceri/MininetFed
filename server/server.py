@@ -110,10 +110,10 @@ def server():
     def create_string_from_json(data):
         return " - ".join(f"{name}: {value}" for name, value in data.items())
 
-    # callback for metricsQueue: get accuracy of every trainer and compute the mean
+    # callback for metricsQueue: get the metrics from each client after it finish its round
     def on_message_metrics(client, userdata, message):
         m = json.loads(message.payload.decode("utf-8"))
-        controller.add_accuracy(m['accuracy'])
+        controller.add_accuracy(m['metrics']['accuracy'])
         controller.update_metrics(m["id"], m['metrics'])
         logger.info(
             f'{m["id"]} {create_string_from_json(m["metrics"])}', extra=metricType)
