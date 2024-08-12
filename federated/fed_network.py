@@ -205,7 +205,7 @@ class FedNetwork:
         count = 0
         for client_type in self.config.get("client_types"):
 
-            args = client_type['client_instantiation_args']
+            args = client_type.get('client_instantiation_args')
             json_str = None
             if args is not None:
                 json_str = json.dumps(args).replace('"', '\\"')
