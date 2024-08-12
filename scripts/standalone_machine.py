@@ -14,14 +14,14 @@ import sys
 # total args
 n = len(sys.argv)
 
-images = "mininetfed:client" 
+images = "mininetfed:client"
 # check args
 if (n != 2):
     print("Default image: mininetfed:client")
-    print("use suggestion: sudo python3 create_env.py <image>")
-   
+    print("use suggestion: sudo python3 standalone_machine.py <image>")
+
 else:
-    images = sys.argv[1] 
+    images = sys.argv[1]
 
 
 setLogLevel('info')
@@ -36,9 +36,9 @@ volumes = [f"{Path.cwd()}:/flw"]
 s1 = net.addSwitch('s1')
 
 info('*** Adicionando Containers\n')
-srv1 = net.addDocker('srv1',dimage=images, volumes=volumes, mem_limit="4096m")
-net.addLink(srv1,s1)
-   
+srv1 = net.addDocker('srv1', dimage=images, volumes=volumes, mem_limit="4096m")
+net.addLink(srv1, s1)
+
 net.start()
 
 CLI(net)
