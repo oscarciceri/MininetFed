@@ -20,9 +20,9 @@ BROKER_ADDR = sys.argv[1]
 CLIENT_NAME = sys.argv[2]
 CLIENT_ID = int(sys.argv[3])
 MODE = sys.argv[4]
-CLIENT_INSTANCIATION_ARGS = None
+CLIENT_INSTANTIATION_ARGS = None
 if len(sys.argv) >= 6 and (sys.argv[5] is not None):
-    CLIENT_INSTANCIATION_ARGS = json.loads(sys.argv[5])
+    CLIENT_INSTANTIATION_ARGS = json.loads(sys.argv[5])
 
 
 # used by json.dump when it enconters something that can't be serialized
@@ -139,8 +139,8 @@ def on_message_stop(client, userdata, message):
 
 def get_trainer():
     try:
-        if CLIENT_INSTANCIATION_ARGS is not None:
-            return Trainer(CLIENT_ID, MODE, CLIENT_NAME, CLIENT_INSTANCIATION_ARGS)
+        if CLIENT_INSTANTIATION_ARGS is not None:
+            return Trainer(CLIENT_ID, MODE, CLIENT_NAME, CLIENT_INSTANTIATION_ARGS)
         else:
             return Trainer(CLIENT_ID, MODE, CLIENT_NAME, {})
 
