@@ -86,7 +86,7 @@ def server():
             f'trainer number {m["id"]} just joined the pool')
 
         client.publish(
-            'minifed/args', json.dumps({"id": m["id"], "args": CLIENT_ARGS}))
+            'minifed/serverArgs', json.dumps({"id": m["id"], "args": CLIENT_ARGS}))
 
     # callback for preAggQueue: get weights of trainers, aggregate and send back
     def on_message_agg(client, userdata, message):
