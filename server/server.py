@@ -43,9 +43,9 @@ def server():
     NUM_ROUNDS = int(sys.argv[3])
     STOP_ACC = float(sys.argv[4])
     CSV_PATH = sys.argv[5]
-    CLIENT_ARGS = None
+    SERVER_ARGS = None
     if len(sys.argv) >= 7 and (sys.argv[6] is not None):
-        CLIENT_ARGS = json.loads(sys.argv[6])
+        SERVER_ARGS = json.loads(sys.argv[6])
 
     FORMAT = "%(asctime)s - %(infotype)-6s - %(levelname)s - %(message)s"
 
@@ -86,7 +86,7 @@ def server():
             f'trainer number {m["id"]} just joined the pool')
 
         client.publish(
-            'minifed/serverArgs', json.dumps({"id": m["id"], "args": CLIENT_ARGS}))
+            'minifed/serverArgs', json.dumps({"id": m["id"], "args": SERVER_ARGS}))
 
     # callback for preAggQueue: get weights of trainers, aggregate and send back
     def on_message_agg(client, userdata, message):

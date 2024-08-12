@@ -192,7 +192,7 @@ class FedNetwork:
         script = self.server["script"]
         vol = self.volume
         cmd = f"""bash -c "cd {vol} && . env/bin/activate && python3 {script} {BROKER_ADDR} {self.min_trainers} {self.max_n_rounds} {self.stop_acc} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt """
-        args = self.exp_conf.get("client_args")
+        args = self.exp_conf.get("server_client_args")
         if args is not None:
             json_str = json.dumps(args).replace('"', '\\"')
             cmd += f"'{json_str}'"
@@ -204,14 +204,12 @@ class FedNetwork:
         info('*** Inicializando clientes\n')
         count = 0
         for client_type in self.config.get("client_types"):
-            
-            args = client_type['client_args']
+
+            args = client_type['client_instantiation_args']
             json_str = None
             if args is not None:
                 json_str = json.dumps(args).replace('"', '\\"')
 
-            
-            
             for x in range(1, client_type["amount"]+1):
                 info(f"*** Subindo cliente {str(count+1).zfill(2)}\n")
                 # vol = client_type["volume"]
