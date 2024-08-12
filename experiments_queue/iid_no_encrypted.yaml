@@ -1,23 +1,23 @@
 ---
 # General settings
 general:
-  n_available_cpu: 6
+  n_available_cpu: 20
   broker_image: mininetfed:broker
-  experiments_folder: experiments
+  experiments_folder: experiments_out
   stop: auto # auto, cli, (None -> auto)
 
 # Experiment settings
 experiment:
   new_experiment: False
-  experiment_name: 40_rounds_deev_fedAvg_TrainerHar_test_10_clients
-  trainer_mode: random
-  max_n_rounds: 40
+  experiment_name: 25_clientes_iid_no_encrypted_kfold
+  trainer_mode: unbalanced
+  max_n_rounds: 100
   stop_accuracy: 0.97
-  min_trainers: 4
-  # server_client_args:
-  #   encrypted: False
-  #   debug: False
-  #   n_clusters: 1
+  min_trainers: 25
+  client_args:
+    encrypted: False
+    debug: False
+    n_clusters: 4
 
 # Network settings
 network:
@@ -33,7 +33,7 @@ network:
 
 # Server settings
 server:
-  memory: 3000m
+  memory: 10000m
   vCPU_percent: 1000
   image: mininetfed:client
   connection: 1
@@ -41,9 +41,9 @@ server:
 
 # Clients settings list
 client_types:
-  - amount: 4
+  - amount: 25
     name: tipo1
-    memory: 2600m
+    memory: 2048m
     vCPU_percent: 100
     image: mininetfed:client
     script: client/client.py
@@ -51,11 +51,7 @@ client_types:
     loss:
     delay:
     bw:
-    # client_instantiation_args:
-    #   encrypted: False
-    #   debug: False
-    #   n_clusters: 1
-    #   fold: 0
+
   # - amount: 1
   #   name: tipo2
   #   memory: 1024m

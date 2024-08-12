@@ -1,28 +1,67 @@
-experiments_folder: experiments/balancing
+experiments_folder: experiments
 
 experiments_analysis:
   #   save_csv: true
 
   from:
-    - experiment: client_balanced
-      # alias: ola
+    - experiment: 2024_06_30_teste1_sem_criptografia_25_clientes_unbalanced
+      files:
+        - 17h54m37steste1_sem_criptografia_25_clientes_unbalanced.log
+      alias: 25 clientes unbalanced clustering
+    - experiment: 2024_06_30_teste1_sem_criptografia_25_clientes_unbalanced
+      files:
+        - 23h34m23steste1_sem_criptografia_25_clientes_unbalanced.log
+      alias: 25 clientes unbalanced no clustering
+    - experiment: 2024_07_04_25_clientes_1_epoch_encypt_ckksfed
+      files:
+        - 17h09m23s25_clientes_1_epoch_encypt_ckksfed.log
+      alias: 25 clientes unbalanced clustering encrypted
+    #- experiment: 2024_07_04_25_clientes_1_epoch_encypt_ckksfed
+    #  alias: 25 clientes unbalanced clustering encrypted
+
+    #- experiment: 2024_06_27_teste1_sem_criptografia
+
+    #  files:
+    #    - 02h09m32steste1_sem_criptografia.log
+    #  alias: 50 rounds 25 clientes
+  #
+  #- experiment: 2024_06_27_teste1_sem_criptografia
+  #  files:
+  #    - 10h44m22steste1_sem_criptografia.log
+  #  alias: 50 rounds 25 clientes (1)
+  #
+  #- experiment: 2024_06_27_teste1_sem_criptografia
+  #  files:
+  #    - 19h26m33steste1_sem_criptografia.log
+  #  alias: 100 rounds 4 clientes
+  #
+  #- experiment: 2024_06_27_teste1_sem_criptografia
+  #  files:
+  #    - 21h01m54steste1_sem_criptografia.log
+  #  alias: "? rounds 10 clientes"
+  #
+  #- experiment: 2024_06_27_teste1_sem_criptografia
+  #  files:
+  #    - 21h39m52steste1_sem_criptografia.log
+  #  alias: 100 rounds 25 clientes
+  # - experiment: 2024_06_24_teste_do_trainer_ckksfed
+  #   alias: não encriptado
 
   graphics:
     - type: deltaT_per_round
 
     - type: mean_acc
-    - type: network_consumption
+    # - type: network_consumption
 
-    - type: n_clients_absolute
-
-datasets_analysis:
-  id: [0, 1, 2, 3, 4, 5]
-  mode: client
-  graphics:
-    # - type: class_distribution_per_client
-    #   y_labels: [A, B, C, D, E]
-    - type: class_distribution_complete
-      y_labels: [A, B, C, D, E]
-    # - type: histogram
-    # - type: boxplot
-    # - type: correlation_matrix
+    # - type: n_clients_absolute
+# datasets_analysis:
+#   id: [0, 1, 2, 3, 4, 5]
+#   mode: client
+#   graphics:
+#     # - type: class_distribution_per_client
+#     #   y_labels: [A, B, C, D, E]
+#     - type: class_distribution_complete
+#       y_labels: [A, B, C, D, E]
+#     # - type: histogram
+#     # - type: boxplot
+#     # - type: correlation_matrix
