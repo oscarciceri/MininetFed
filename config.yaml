@@ -8,13 +8,13 @@ general:
 
 # Experiment settings
 experiment:
-  new_experiment: True
-  experiment_name: 25_clientes_1_epoch_noencrypt_ckksfed_kfold
-  trainer_mode: unbalanced
-  max_n_rounds: 100
+  new_experiment: False
+  experiment_name: 40_rounds_deev_fedAvg_TrainerHar_test_10_clients
+  trainer_mode: random
+  max_n_rounds: 40
   stop_accuracy: 0.97
-  min_trainers: 10
-  # client_args:
+  min_trainers: 4
+  # server_client_args:
   #   encrypted: False
   #   debug: False
   #   n_clusters: 1
@@ -41,9 +41,9 @@ server:
 
 # Clients settings list
 client_types:
-  - amount: 10
+  - amount: 4
     name: tipo1
-    memory: 2048m
+    memory: 2600m
     vCPU_percent: 100
     image: mininetfed:client
     script: client/client.py
@@ -51,11 +51,11 @@ client_types:
     loss:
     delay:
     bw:
-    client_args:
-      encrypted: False
-      debug: False
-      n_clusters: 1
-      fold: 0
+    # client_instantiation_args:
+    #   encrypted: False
+    #   debug: False
+    #   n_clusters: 1
+    #   fold: 0
   # - amount: 1
   #   name: tipo2
   #   memory: 1024m

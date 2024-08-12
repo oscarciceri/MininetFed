@@ -122,8 +122,9 @@ def on_message_agg(client, userdata, message):
         {'id': CLIENT_NAME, "metrics": results}, default=default)
     trainer.update_weights(agg_weights)
 
-    trainer.agg_response_extra_info(
-        msg["agg_response"][CLIENT_NAME] | msg["agg_response"]['all'])
+    if has_method(trainer, "agg_response_extra_info"):
+        trainer.agg_response_extra_info(
+            msg["agg_response"][CLIENT_NAME] | msg["agg_response"]['all'])
 
     print(f'sending eval metrics!\n')
     client.publish('minifed/metricsQueue', response)
