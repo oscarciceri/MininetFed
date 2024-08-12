@@ -9,9 +9,9 @@
 
 Antes de começar
 [X] Adequar treiners, funções antigas de seleção e agregação
-[] Separar envs do cliente e do server
+[-] Separar envs do cliente e do server
 [X] Fazer merge com a development
-[] Fazer uma tag de versão
+[X] Fazer uma tag de versão
 
 [] Conversar com o professor sobre versões da documentação
 
