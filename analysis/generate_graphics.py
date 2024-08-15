@@ -125,7 +125,7 @@ class Graphics:
         for item in self.dfs:
             df = item['df']
             plt.plot(df['round'], df['mean_accuracy'], label=item['name'])
-            print(item)
+            # print(item)
         plt.xlabel('Round', fontsize=18)
         plt.ylabel('Accuracy', fontsize=18)
         plt.legend(fontsize=16)

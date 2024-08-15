@@ -125,32 +125,6 @@ def analysis(analysis_yaml_path):
             # Matriz de correlação
             if 'correlation_matrix' == graphic["type"]:
                 plot.correlation_matrix()
-        # # Distribuição de classes
-        # if 'class_distribution' in datasets_analysis["graphics"]:
-        #     plt.figure(figsize=(10, 6))
-        #     sns.countplot(x=trainer.y_train)
-        #     plt.title('Distribuição de Classes')
-        #     plt.show()
-
-        # # Histograma
-        # if 'histogram' in datasets_analysis["graphics"]:
-        #     trainer.x_train.hist(bins=30, figsize=(15,10))
-        #     plt.title('Histograma')
-        #     plt.show()
-
-        # # Boxplot
-        # if 'boxplot' in datasets_analysis["graphics"]:
-        #     plt.figure(figsize=(10, 6))
-        #     trainer.x_train.boxplot()
-        #     plt.title('Boxplot')
-        #     plt.show()
-
-        # # Matriz de correlação
-        # if 'correlation_matrix' in datasets_analysis["graphics"]:
-        #     plt.figure(figsize=(10, 6))
-        #     sns.heatmap(trainer.x_train.corr(), annot=True, fmt=".2f")
-        #     plt.title('Matriz de Correlação')
-        #     plt.show()
 
 
 if __name__ == '__main__':
