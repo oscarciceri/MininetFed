@@ -1,1 +1,1 @@
-from .all import All as ClientSelection
+from .random import Random as ClientSelection

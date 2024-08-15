@@ -4,18 +4,18 @@ experiments_analysis:
   #   save_csv: true
 
   from:
-    - experiment: 2024_06_30_teste1_sem_criptografia_25_clientes_unbalanced
-      files:
-        - 17h54m37steste1_sem_criptografia_25_clientes_unbalanced.log
-      alias: 25 clientes unbalanced clustering
-    - experiment: 2024_06_30_teste1_sem_criptografia_25_clientes_unbalanced
-      files:
-        - 23h34m23steste1_sem_criptografia_25_clientes_unbalanced.log
-      alias: 25 clientes unbalanced no clustering
-    - experiment: 2024_07_04_25_clientes_1_epoch_encypt_ckksfed
-      files:
-        - 17h09m23s25_clientes_1_epoch_encypt_ckksfed.log
-      alias: 25 clientes unbalanced clustering encrypted
+    - experiment: teste
+    #   files:
+    #     - 17h54m37steste1_sem_criptografia_25_clientes_unbalanced.log
+    #   alias: 25 clientes unbalanced clustering
+    # - experiment: 2024_06_30_teste1_sem_criptografia_25_clientes_unbalanced
+    #   files:
+    #     - 23h34m23steste1_sem_criptografia_25_clientes_unbalanced.log
+    #   alias: 25 clientes unbalanced no clustering
+    # - experiment: 2024_07_04_25_clientes_1_epoch_encypt_ckksfed
+    #   files:
+    #     - 17h09m23s25_clientes_1_epoch_encypt_ckksfed.log
+    #   alias: 25 clientes unbalanced clustering encrypted
     #- experiment: 2024_07_04_25_clientes_1_epoch_encypt_ckksfed
     #  alias: 25 clientes unbalanced clustering encrypted
 

@@ -1,7 +1,7 @@
 ---
 # General settings
 general:
-  n_available_cpu: 6
+  n_available_cpu: 20
   broker_image: mininetfed:broker
   experiments_folder: experiments
   stop: auto # auto, cli, (None -> auto)
@@ -9,11 +9,11 @@ general:
 # Experiment settings
 experiment:
   new_experiment: False
-  experiment_name: 40_rounds_deev_fedAvg_TrainerHar_test_10_clients
+  experiment_name: teste
   trainer_mode: random
   max_n_rounds: 40
   stop_accuracy: 0.97
-  min_trainers: 4
+  min_trainers: 5
   # server_client_args:
   #   encrypted: False
   #   debug: False
@@ -41,7 +41,7 @@ server:
 
 # Clients settings list
 client_types:
-  - amount: 4
+  - amount: 5
     name: tipo1
     memory: 2600m
     vCPU_percent: 100
