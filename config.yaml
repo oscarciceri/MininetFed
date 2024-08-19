@@ -4,7 +4,7 @@ general:
   n_available_cpu: 20
   broker_image: mininetfed:broker
   experiments_folder: experiments
-  stop: auto # auto, cli, (None -> auto)
+  stop: cli # auto, cli, (None -> auto)
 
 # Experiment settings
 experiment:
