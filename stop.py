@@ -30,14 +30,14 @@ def on_message_stop(client, userdata, message):
     print(color.RED + f'received message to stop!')
     print(color.RESET)
     time.sleep(5)
-    client.disconect()
+    client.disconnect()
     exit()
 
 
 def on_message_continue(client, userdata, message):
     print(color.GREEN + f'received message to continue!')
     print(color.RESET)
-    client.disconect()
+    client.disconnect()
     # time.sleep(5)
     exit()
 
