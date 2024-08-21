@@ -111,9 +111,10 @@ class FedNetwork:
         info('*** Adicionando Container do Broker\n')
         # broker container
         self.broker = self.net.addDocker(
-            'brk1', ip='10.0.0.1', dimage=self.broker_image, volumes=self.docker_volume)
+            'brk1', ip=BROKER_ADDR, dimage=self.broker_image, volumes=self.docker_volume)
         self.net.addLink(
             self.broker, self.switchs[self.server["connection"] - 1])
+        self.broker.cmd("iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE")
 
     def insert_monitor_container(self):
         info('*** Adicionando Container do monitor\n')
@@ -121,6 +122,7 @@ class FedNetwork:
             'mnt1', ip='10.0.0.2', dimage=self.network_monitor_image, volumes=self.docker_volume)
         self.net.addLink(
             self.mnt1, self.switchs[self.server["connection"] - 1])
+        self.mnt1.cmd("ifconfig eth0 down")
 
     def insert_server_container(self):
         info('*** Adicionando Container do Server\n')
@@ -128,6 +130,7 @@ class FedNetwork:
                                        mem_limit=self.server["memory"], cpu_quota=self.server_quota)
         self.net.addLink(
             self.srv1, self.switchs[self.server["connection"] - 1])
+        self.srv1.cmd("ifconfig eth0 down")
 
     def insert_client_containers(self):
         info('*** Adicionando Container do Server\n')
@@ -144,20 +147,25 @@ class FedNetwork:
                 self.net.addLink(d, self.switchs[client_type['connection'] - 1],
                                  cls=TCLink, delay=client_type.get("delay"), loss=client_type.get("loss"), bw=client_type.get("bw"))
                 self.clientes.append(d)
+                d.cmd("ifconfig eth0 down")
 
     def auto_wait(self, verbose=False):
         self.stop.cmd(
             f'bash -c "cd {self.volume} && . env/bin/activate && python3 stop.py {BROKER_ADDR}"', verbose=verbose)
 
-    def start(self):
-        info('*** Configurando Links\n')
-
+    def insert_stop(self):
         self.stop = self.net.addDocker(
             'stop', dimage=self.network_monitor_image, volumes=self.docker_volume)
         self.net.addLink(
             self.stop, self.switchs[self.server["connection"] - 1])
+        self.stop.cmd("ifconfig eth0 down")
 
+    def start(self):
+        info('*** Configurando Links\n')
+
+        self.insert_stop()
         self.net.start()
+        self.stop.cmd("route add default gw %s" % BROKER_ADDR)
 
         self.start_broker()
         time.sleep(2)
@@ -185,6 +193,7 @@ class FedNetwork:
     def start_monitor(self):
         info('*** Inicializando monitor\n')
         cmd2 = f"bash -c 'cd {self.volume} && . env/bin/activate && python3 {self.net_conf['''network_monitor_script''']} {BROKER_ADDR} {self.experiment.getFileName(extension='''''')}.net'"
+        self.mnt1.cmd("route add default gw %s" % BROKER_ADDR)
         makeTerm(self.mnt1, cmd=cmd2)
 
     def start_server(self):
@@ -198,6 +207,7 @@ class FedNetwork:
             cmd += f"'{json_str}'"
         cmd += '" ;'
         # print(cmd)
+        self.srv1.cmd("route add default gw %s" % BROKER_ADDR, verbose=True)
         makeTerm(self.srv1, cmd=cmd)
 
     def start_clientes(self):
@@ -219,5 +229,7 @@ class FedNetwork:
                 if json_str is not None:
                     cmd += f"'{json_str}'"
                 cmd += '" ;'
+                self.clientes[count].cmd(
+                    "route add default gw %s" % BROKER_ADDR)
                 makeTerm(self.clientes[count], cmd=cmd)
                 count += 1

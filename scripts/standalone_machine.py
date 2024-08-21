@@ -14,10 +14,10 @@ import sys
 # total args
 n = len(sys.argv)
 
-images = "mininetfed:client"
+images = "mininetfed:container"
 # check args
 if (n != 2):
-    print("Default image: mininetfed:client")
+    print("Default image: mininetfed:container")
     print("use suggestion: sudo python3 standalone_machine.py <image>")
 
 else:

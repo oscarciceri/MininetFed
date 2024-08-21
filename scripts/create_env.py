@@ -14,13 +14,13 @@ import sys
 # total args
 n = len(sys.argv)
 
-images = "mininetfed:client"
+images = "mininetfed:container"
 REQUIREMENTS = ""
 
 # check args
 print(sys.argv)
 if (n == 2):
-    print("Default image: mininetfed:client")
+    print("Default image: mininetfed:container")
     print("use suggestion: sudo python3 create_env.py <image> <requirements.txt>")
     REQUIREMENTS = sys.argv[1]
 else:
