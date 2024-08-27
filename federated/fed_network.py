@@ -20,7 +20,8 @@ from .config import Config
 from .experiment import Experiment
 
 
-BROKER_ADDR = "10.0.0.1"
+BROKER_ADDR = "172.20.72.17"
+BROKER_NODE = "10.0.0.1"
 # MIN_TRAINERS = 3
 # NUM_ROUNDS = 10
 # STOP_ACC = 1.0
@@ -111,7 +112,7 @@ class FedNetwork:
         info('*** Adicionando Container do Broker\n')
         # broker container
         self.broker = self.net.addDocker(
-            'brk1', ip=BROKER_ADDR, dimage=self.broker_image, volumes=self.docker_volume)
+            'brk1', ip=BROKER_NODE, dimage=self.broker_image, volumes=self.docker_volume)
         self.net.addLink(
             self.broker, self.switchs[self.server["connection"] - 1])
         self.broker.cmd("iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE")
@@ -165,7 +166,7 @@ class FedNetwork:
 
         self.insert_stop()
         self.net.start()
-        self.stop.cmd("route add default gw %s" % BROKER_ADDR)
+        self.stop.cmd("route add default gw %s" % BROKER_NODE)
 
         self.start_broker()
         time.sleep(2)
@@ -193,7 +194,7 @@ class FedNetwork:
     def start_monitor(self):
         info('*** Inicializando monitor\n')
         cmd2 = f"bash -c 'cd {self.volume} && . env/bin/activate && python3 {self.net_conf['''network_monitor_script''']} {BROKER_ADDR} {self.experiment.getFileName(extension='''''')}.net'"
-        self.mnt1.cmd("route add default gw %s" % BROKER_ADDR)
+        self.mnt1.cmd("route add default gw %s" % BROKER_NODE)
         makeTerm(self.mnt1, cmd=cmd2)
 
     def start_server(self):
@@ -207,7 +208,7 @@ class FedNetwork:
             cmd += f"'{json_str}'"
         cmd += '" ;'
         # print(cmd)
-        self.srv1.cmd("route add default gw %s" % BROKER_ADDR, verbose=True)
+        self.srv1.cmd("route add default gw %s" % BROKER_NODE, verbose=True)
         makeTerm(self.srv1, cmd=cmd)
 
     def start_clientes(self):
@@ -230,6 +231,6 @@ class FedNetwork:
                     cmd += f"'{json_str}'"
                 cmd += '" ;'
                 self.clientes[count].cmd(
-                    "route add default gw %s" % BROKER_ADDR)
+                    "route add default gw %s" % BROKER_NODE)
                 makeTerm(self.clientes[count], cmd=cmd)
                 count += 1
