@@ -18,6 +18,7 @@ from datetime import datetime
 
 from .config import Config
 from .experiment import Experiment
+from .external_broker import ExtBroker
 
 
 BROKER_ADDR = "172.20.72.17"
@@ -100,6 +101,9 @@ class FedNetwork:
         self.experiment.copyFileToExperimentFolder(filename)
 
     def interrupt_execution(self):
+        info('*** Parando MININET')
+        if ((self.general.get("broker") is not None) and self.general.get("broker") == 'external'):
+            self.ext.stop_ext_brk()
         self.net.stop()
 
     def insert_switch(self, qtd):
@@ -183,13 +187,21 @@ class FedNetwork:
             CLI(self.net)
         else:
             self.auto_wait(verbose=True)
-        info('*** Parando MININET')
-        self.net.stop()
+
+        self.interrupt_execution()
 
     def start_broker(self):
         info('*** Inicializando broker\n')
-        makeTerm(
-            self.broker, cmd=f'bash -c "mosquitto -c {self.volume}/mosquitto.conf"')
+
+        if ((self.general.get("broker") is None) or self.general.get("broker") == 'internal'):
+            makeTerm(
+                self.broker, cmd=f'bash -c "mosquitto -c {self.volume}/mosquitto.conf"')
+        elif (self.general.get("broker") == 'external'):
+            self.ext = ExtBroker()
+            self.ext.run_ext_brk()
+        else:
+            raise Exception(
+                f"Invalid broker type:{self.general.get('broker')}")
 
     def start_monitor(self):
         info('*** Inicializando monitor\n')
