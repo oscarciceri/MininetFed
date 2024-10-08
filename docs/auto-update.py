@@ -7,7 +7,7 @@ from datetime import datetime
 docs_path = 'docs'
 
 # Path to store timestamps of last translation
-timestamps_file = 'last_translations.json'
+timestamps_file = f'{docs_path}/last_translations.json'
 
 # Mapping of Portuguese to English file paths
 file_mapping = {
