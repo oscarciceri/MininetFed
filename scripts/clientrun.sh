@@ -15,4 +15,5 @@ valor=${2:-0}
 mode=${2:-client}
 
 # Executa o script python
-python3 client/client.py 172.20.72.17 $nome $valor $mode
+# python3 client/client.py 172.20.72.17 $nome $valor $mode
+python3 client/client.py 10.0.0.1 $nome $valor $mode

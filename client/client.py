@@ -4,7 +4,10 @@ import numpy as np
 import json
 import time
 import sys
-import torch
+try:
+    import torch
+except:
+    pass
 
 from trainer import Trainer
 

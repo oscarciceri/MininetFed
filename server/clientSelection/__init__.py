@@ -1,1 +1,1 @@
-from .random import Random as ClientSelection
+from .deev import Deev as ClientSelection
