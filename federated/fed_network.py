@@ -71,8 +71,8 @@ class FedNetwork:
         self.exp_conf = self.config.get("experiment")
         self.general = self.config.get("general")
         self.net_conf = self.config.get("network")
-        # self.absolute = self.general["absolute_path"]
-        self.n_cpu = self.general["n_available_cpu"]
+
+        self.n_cpu = os.cpu_count()
         self.broker_image = self.general["broker_image"]
 
         self.network_monitor_image = self.net_conf["network_monitor_image"]

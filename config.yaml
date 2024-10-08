@@ -1,7 +1,7 @@
 ---
 # General settings
 general:
-  n_available_cpu: 20
+  # n_available_cpu: 20 (deprecated)
   broker_image: mininetfed:broker
   experiments_folder: experiments
   stop: cli # auto, cli, (None -> auto)
