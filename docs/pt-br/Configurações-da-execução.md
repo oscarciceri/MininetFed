@@ -26,10 +26,6 @@ broker_image: string;
 experiments_folder: string;
 ```
 
-### _n_available_cpu:_
-
-Número de núcleos lógicos disponíveis no computador. Utilizada como base de cálculo para distribuição de poder de processamento entre os containers.
-
 ### _broker_image:_
 
 Imagem que será utilizada para instanciar um container docker para o broker MQTT. É recomendado usar a imagem padrão já fornecida com o MiniNetFED, mas é possível criar o seu próprio broker mqtt customizado modificando essa opção.
