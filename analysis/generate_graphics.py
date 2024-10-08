@@ -97,11 +97,11 @@ class Graphics:
         plt.figure(figsize=(10, 6))
         for item in self.dfs:
             df = item['netdf']
-            plt.scatter(df['segs'], df['recived']/1e6,
+            plt.scatter(df['segs']/60, df['recived']/2**30,
                         label=item['name'], marker='o', s=20)
 
-        plt.xlabel('Tempo de execução (segundos)', fontsize=18)
-        plt.ylabel('Tráfego de rede no treinamento em Mbytes', fontsize=18)
+        plt.xlabel('Execution time (minutes)', fontsize=18)
+        plt.ylabel('Training network traffic (GBytes)', fontsize=18)
         plt.legend(fontsize=16)
         plt.tick_params(labelsize=16)
         plt.show()
@@ -144,7 +144,7 @@ class Graphics:
 
             experiments[item['experiment']].append(df['mean_accuracy'])
 
-        for idx, experiment in enumerate(experiments.__reversed__()):
+        for idx, experiment in reversed(list(enumerate(experiments.__reversed__()))):
             experiments_matrix = experiments[experiment]
 
             max_tamanho = max(len(line) for line in experiments_matrix)
@@ -178,10 +178,14 @@ class Graphics:
                     std_d[i] = math.sqrt(error[i] / (error_qtd[i] - 1.0))
 
             # plt.figure(figsize=(10, 6))
+            # plt.fill_between(range(max_tamanho), mean -
+            #                  std_d, mean+std_d, alpha=.3, color=possible_colors[idx % len(possible_colors)])
             plt.fill_between(range(max_tamanho), mean -
-                             std_d, mean+std_d, alpha=.3, color=possible_colors[idx % len(possible_colors)])
+                             std_d, mean+std_d, alpha=.3)
+            # plt.plot(range(max_tamanho), mean,
+            #          label=f"{experiment}", color=possible_colors[idx % len(possible_colors)])
             plt.plot(range(max_tamanho), mean,
-                     label=f"{experiment}", color=possible_colors[idx % len(possible_colors)])
+                     label=f"{experiment}")
 
             plt.xlabel('Round', fontsize=18)
             plt.ylabel('Accuracy', fontsize=18)
