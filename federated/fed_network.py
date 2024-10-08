@@ -18,9 +18,11 @@ from datetime import datetime
 
 from .config import Config
 from .experiment import Experiment
+from .external_broker import ExtBroker
 
 
-BROKER_ADDR = "10.0.0.1"
+# self.broker_addr = "172.20.72.17"
+BROKER_NODE = "10.0.0.1"
 # MIN_TRAINERS = 3
 # NUM_ROUNDS = 10
 # STOP_ACC = 1.0
@@ -84,6 +86,13 @@ class FedNetwork:
 
         self.server_images = self.server["image"]
 
+        if ((self.general.get("broker") is None) or self.general.get("broker") == 'internal'):
+            self.broker_addr = BROKER_NODE
+        elif (self.general.get("external_broker_address") is not None):
+            self.broker_addr = self.general.get("external_broker_address")
+        else:
+            raise Exception("external_broker_address needed!")
+
         self.net = Containernet(controller=Controller)
         info('*** Adding controller\n')
         self.net.addController('c0')
@@ -99,6 +108,9 @@ class FedNetwork:
         self.experiment.copyFileToExperimentFolder(filename)
 
     def interrupt_execution(self):
+        info('*** Parando MININET')
+        if ((self.general.get("broker") is not None) and self.general.get("broker") == 'external'):
+            self.ext.stop_ext_brk()
         self.net.stop()
 
     def insert_switch(self, qtd):
@@ -111,9 +123,10 @@ class FedNetwork:
         info('*** Adicionando Container do Broker\n')
         # broker container
         self.broker = self.net.addDocker(
-            'brk1', ip='10.0.0.1', dimage=self.broker_image, volumes=self.docker_volume)
+            'brk1', ip=BROKER_NODE, dimage=self.broker_image, volumes=self.docker_volume)
         self.net.addLink(
             self.broker, self.switchs[self.server["connection"] - 1])
+        self.broker.cmd("iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE")
 
     def insert_monitor_container(self):
         info('*** Adicionando Container do monitor\n')
@@ -121,6 +134,7 @@ class FedNetwork:
             'mnt1', ip='10.0.0.2', dimage=self.network_monitor_image, volumes=self.docker_volume)
         self.net.addLink(
             self.mnt1, self.switchs[self.server["connection"] - 1])
+        self.mnt1.cmd("ifconfig eth0 down")
 
     def insert_server_container(self):
         info('*** Adicionando Container do Server\n')
@@ -128,6 +142,7 @@ class FedNetwork:
                                        mem_limit=self.server["memory"], cpu_quota=self.server_quota)
         self.net.addLink(
             self.srv1, self.switchs[self.server["connection"] - 1])
+        self.srv1.cmd("ifconfig eth0 down")
 
     def insert_client_containers(self):
         info('*** Adicionando Container do Server\n')
@@ -144,20 +159,25 @@ class FedNetwork:
                 self.net.addLink(d, self.switchs[client_type['connection'] - 1],
                                  cls=TCLink, delay=client_type.get("delay"), loss=client_type.get("loss"), bw=client_type.get("bw"))
                 self.clientes.append(d)
+                d.cmd("ifconfig eth0 down")
 
     def auto_wait(self, verbose=False):
         self.stop.cmd(
-            f'bash -c "cd {self.volume} && . env/bin/activate && python3 stop.py {BROKER_ADDR}"', verbose=verbose)
+            f'bash -c "cd {self.volume} && . env/bin/activate && python3 stop.py {self.broker_addr}"', verbose=verbose)
 
-    def start(self):
-        info('*** Configurando Links\n')
-
+    def insert_stop(self):
         self.stop = self.net.addDocker(
             'stop', dimage=self.network_monitor_image, volumes=self.docker_volume)
         self.net.addLink(
             self.stop, self.switchs[self.server["connection"] - 1])
+        self.stop.cmd("ifconfig eth0 down")
 
+    def start(self):
+        info('*** Configurando Links\n')
+
+        self.insert_stop()
         self.net.start()
+        self.stop.cmd("route add default gw %s" % BROKER_NODE)
 
         self.start_broker()
         time.sleep(2)
@@ -174,30 +194,40 @@ class FedNetwork:
             CLI(self.net)
         else:
             self.auto_wait(verbose=True)
-        info('*** Parando MININET')
-        self.net.stop()
+
+        self.interrupt_execution()
 
     def start_broker(self):
         info('*** Inicializando broker\n')
-        makeTerm(
-            self.broker, cmd=f'bash -c "mosquitto -c {self.volume}/mosquitto.conf"')
+
+        if ((self.general.get("broker") is None) or self.general.get("broker") == 'internal'):
+            makeTerm(
+                self.broker, cmd=f'bash -c "mosquitto -c {self.volume}/mosquitto.conf"')
+        elif (self.general.get("broker") == 'external'):
+            self.ext = ExtBroker()
+            self.ext.run_ext_brk()
+        else:
+            raise Exception(
+                f"Invalid broker type:{self.general.get('broker')}")
 
     def start_monitor(self):
         info('*** Inicializando monitor\n')
-        cmd2 = f"bash -c 'cd {self.volume} && . env/bin/activate && python3 {self.net_conf['''network_monitor_script''']} {BROKER_ADDR} {self.experiment.getFileName(extension='''''')}.net'"
+        cmd2 = f"bash -c 'cd {self.volume} && . env/bin/activate && python3 {self.net_conf['''network_monitor_script''']} {self.broker_addr} {self.experiment.getFileName(extension='''''')}.net'"
+        self.mnt1.cmd("route add default gw %s" % BROKER_NODE)
         makeTerm(self.mnt1, cmd=cmd2)
 
     def start_server(self):
         info('*** Inicializando servidor\n')
         script = self.server["script"]
         vol = self.volume
-        cmd = f"""bash -c "cd {vol} && . env/bin/activate && python3 {script} {BROKER_ADDR} {self.min_trainers} {self.max_n_rounds} {self.stop_acc} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt """
+        cmd = f"""bash -c "cd {vol} && . env/bin/activate && python3 {script} {self.broker_addr} {self.min_trainers} {self.max_n_rounds} {self.stop_acc} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt """
         args = self.exp_conf.get("server_client_args")
         if args is not None:
             json_str = json.dumps(args).replace('"', '\\"')
             cmd += f"'{json_str}'"
         cmd += '" ;'
         # print(cmd)
+        self.srv1.cmd("route add default gw %s" % BROKER_NODE, verbose=True)
         makeTerm(self.srv1, cmd=cmd)
 
     def start_clientes(self):
@@ -214,10 +244,12 @@ class FedNetwork:
                 info(f"*** Subindo cliente {str(count+1).zfill(2)}\n")
                 # vol = client_type["volume"]
                 vol = self.volume
-                cmd = f"""bash -c "cd {vol} && . env/bin/activate && python3 {client_type['''script''']} {BROKER_ADDR} {self.clientes[count].name} {count} {self.exp_conf['''trainer_mode''']} 2> client_log/{self.clientes[count].name}.txt """
+                cmd = f"""bash -c "cd {vol} && . env/bin/activate && python3 {client_type['''script''']} {self.broker_addr} {self.clientes[count].name} {count} {self.exp_conf['''trainer_mode''']} 2> client_log/{self.clientes[count].name}.txt """
                 # print(cmd)
                 if json_str is not None:
                     cmd += f"'{json_str}'"
                 cmd += '" ;'
+                self.clientes[count].cmd(
+                    "route add default gw %s" % BROKER_NODE)
                 makeTerm(self.clientes[count], cmd=cmd)
                 count += 1

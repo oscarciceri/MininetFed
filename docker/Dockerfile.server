@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.9.0-labs
 FROM ubuntu:focal
 
 VOLUME /flw
@@ -34,5 +35,10 @@ RUN apt-get install -y python3.10-venv
 
 EXPOSE 1883
 EXPOSE 8883
+
+# Remoção da interface padrão
+# RUN apt install sudo
+# RUN --security=insecure ifconfig eth0 down 
+# RUN --security=insecure route add default gw 10.0.0.1
 
 CMD ["/bin/sh", "-c", "bash"]

@@ -11,7 +11,9 @@ Antes de começar
 [X] Fazer merge com a development
 [X] Fazer uma tag de versão
 
-[] Conversar com o professor sobre versões da documentação
+[x] Conversar com o professor sobre versões da documentação
+-> Olhar foto do quadro Vinícius
+-> Procurar saber da turma de IoT
 
 ---
 

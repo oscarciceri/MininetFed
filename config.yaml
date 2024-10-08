@@ -5,15 +5,16 @@ general:
   broker_image: mininetfed:broker
   experiments_folder: experiments
   stop: cli # auto, cli, (None -> auto)
+  broker: external
 
 # Experiment settings
 experiment:
   new_experiment: False
-  experiment_name: teste
+  experiment_name: teste_broker_externo
   trainer_mode: random
   max_n_rounds: 40
   stop_accuracy: 0.97
-  min_trainers: 5
+  min_trainers: 4
   # server_client_args:
   #   encrypted: False
   #   debug: False
@@ -34,14 +35,14 @@ network:
 # Server settings
 server:
   memory: 3000m
-  vCPU_percent: 1000
-  image: mininetfed:client
+  vCPU_percent: 100
+  image: mininetfed:server
   connection: 1
   script: server/server.py
 
 # Clients settings list
 client_types:
-  - amount: 5
+  - amount: 4
     name: tipo1
     memory: 2600m
     vCPU_percent: 100
