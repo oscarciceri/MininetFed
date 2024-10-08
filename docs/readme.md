@@ -17,20 +17,10 @@ A suas principais funcionalidades incluem:
 
 # Paginas (pt-br)
 
-- [Primeiros Passos](pt-br/Primeiros-Passos)
-- [Clientes](pt-br/Clientes)
-- [Configurações da execução](pt-br/Configurações-da-execução)
-- [Informações adicionais](pt-br/Informações-adicionais)
-- [Script de análise](pt-br/Script-de-análise)
-- [Scripts de apoio](pt-br/Scripts-de-apoio)
-- [Servidor](pt-br/Servidor)
-
-# Pages (en)
-
-- [Primeiros Passos](Primeiros-Passos-PT)
-- [Clientes](Clientes)
-- [Configurações da execução](Configurações-da-execução)
-- [Informações adicionais](Informações-adicionais)
-- [Script de análise](Script-de-análise)
-- [Scripts de apoio](Scripts-de-apoio)
-- [Servidor](Servidor)
+- [Primeiros Passos](pt-br/Primeiros-Passos.md)
+- [Clientes](pt-br/Clientes.md)
+- [Configurações da execução](pt-br/Configurações-da-execução.md)
+- [Informações adicionais](pt-br/Informações-adicionais.md)
+- [Script de análise](pt-br/Script-de-análise.md)
+- [Scripts de apoio](pt-br/Scripts-de-apoio.md)
+- [Servidor](pt-br/Servidor.md)
