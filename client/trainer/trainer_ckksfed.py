@@ -158,7 +158,7 @@ class TrainerCkksfed():
         self.dataloader_train, self.dataloader_test = self.split_data()
         self.model = self.define_model()
         self.model_keys = list(get_params(self.model).keys())
-        self.fedsketch = True
+        self.fedsketch = True  # Lembra de trocar no outro -------------------------
         if self.fedsketch:
 
             self.old_weights = get_params(self.model)
@@ -245,7 +245,34 @@ class TrainerCkksfed():
                              download=True)
 
         if self.mode == "unbalanced-folds":
-            possible_classes = [[1, 2], [3, 4], [1, 5], [7, 8]]
+            possible_classes = [[1, 2], [3, 4], [5, 6], [7, 8]]
+            classes = random.choice(possible_classes)
+            self.classes = classes
+            idx = (train_dataset.targets == classes[0]) | (
+                train_dataset.targets == classes[1])
+            train_dataset.targets = train_dataset.targets[idx]
+            train_dataset.data = train_dataset.data[idx]
+            # print(np.unique(train_dataset.targets))
+            # print(train_dataset)
+            idx = (test_dataset.targets == classes[0]) | (
+                test_dataset.targets == classes[1])
+            test_dataset.targets = test_dataset.targets[idx]
+            test_dataset.data = test_dataset.data[idx]
+            # print(np.unique(test_dataset.targets))
+            # print(test_dataset)
+
+            k_folds = 4
+            dataset = ConcatDataset([train_dataset, test_dataset])
+            kfold = KFold(n_splits=k_folds, shuffle=True, random_state=0)
+            fold = self.args["fold"]
+            fold, (train_ids, test_ids) = list(
+                enumerate(kfold.split(dataset)))[fold]
+
+            train_dataset = torch.utils.data.Subset(dataset, train_ids)
+            test_dataset = torch.utils.data.Subset(dataset, test_ids)
+
+        elif self.mode == "unbalanced-folds-intersection":
+            possible_classes = [[1, 2, 3], [3, 4, 5], [5, 6, 7], [7, 8, 1]]
             classes = random.choice(possible_classes)
             self.classes = classes
             idx = (train_dataset.targets == classes[0]) | (
