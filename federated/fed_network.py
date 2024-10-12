@@ -146,7 +146,7 @@ class FedNetwork:
         self.srv1.cmd("ifconfig eth0 down")
 
     def insert_client_containers(self):
-        info('*** Adicionando Container do Server\n')
+        info('*** Adicionando Container dos Clientes\n')
 
         qtdDevice = 0
         for client_type in self.config.get("client_types"):
@@ -168,7 +168,7 @@ class FedNetwork:
 
     def insert_stop(self):
         self.stop = self.net.addDocker(
-            'stop', dimage=self.network_monitor_image, volumes=self.docker_volume)
+            'stop', ip="10.254.255.255", dimage=self.network_monitor_image, volumes=self.docker_volume)
         self.net.addLink(
             self.stop, self.switchs[self.server["connection"] - 1])
         self.stop.cmd("ifconfig eth0 down")
