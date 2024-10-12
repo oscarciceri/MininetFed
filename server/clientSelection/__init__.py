@@ -1,1 +1,1 @@
-from .deev import Deev as ClientSelection
+from .all import All as ClientSelection

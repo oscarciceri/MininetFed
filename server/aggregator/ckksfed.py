@@ -184,7 +184,7 @@ def cka(X, Y, XTX, YTY, HE=None, crypt=False):
 class Ckksfed:
 
     def __init__(self):
-        self.fedsketch = True
+        self.fedsketch = True  # lembrar de trocar no outro --------------------------------
         dir_path = "temp/ckksfed_fhe/pasta"
         self.HE_f = Pyfhel()  # Empty creation
         self.HE_f.load_context(dir_path + "/context")
@@ -266,32 +266,42 @@ class Ckksfed:
     #       i-= 1
 
     def aggregate(self, client_training_responses, trainers_list):
+        print("Aggregation process initiated")
 
         ENCRYPTED = client_training_responses[trainers_list[0]
                                               ]["training_args"][4]
+
+        print("Calculating the distance matrix")
         self.distance_matrix = self.get_distance_matrix(
             client_training_responses, ENCRYPT=ENCRYPTED)
 
         # for client_i in client_training_responses:
         #   print( client_training_responses[client_i]["training_args"][3])
         if self.fedsketch == False:
+            print("FedAvg selected")
             fed_avg = FedAvg()
         else:
+            print("FedSketchAgg selected")
             fed_avg = FedSketchAgg()
+
         weights_dict = {}
         if len(client_training_responses[trainers_list[0]]["training_args"][3]) == 0:
-
+            print("No cluster provided (first round) => Aggregating all weights")
             weights = fed_avg.aggregate(client_training_responses)
             # print("Pesos Agregados",file=sys.stderr)
             # print(weights,file=sys.stderr)
             weights_dict = {c: weights for c in trainers_list}
         else:
+            print("Aggregating each cluster")
             aggregated_clusters = set()
             for client_i in trainers_list:
                 cluster = client_training_responses[client_i]["training_args"][3]
 
                 if tuple(cluster) in aggregated_clusters:
                     continue
+
+                print("Aggregating:")
+                print(cluster)
 
                 aggregated_clusters.add(tuple(cluster))
                 weights = fed_avg.aggregate(
@@ -305,9 +315,11 @@ class Ckksfed:
             agg_response[client] = {"weights": weights_dict[client]}
 
         if ENCRYPTED:
+            print("Saving encrypted matrix in external file")
             salvar_matriz_binaria(
                 self.distance_matrix, 'data_temp/data.bin')
         else:
+            print("Saving unencrypted matrix")
             agg_response['all'] = {
                 "distances": self.distance_matrix, "clients": trainers_list}
         # for client in client_training_responses:

@@ -4,7 +4,15 @@ experiments_analysis:
   #   save_csv: true
 
   from:
-    - experiment: teste
+    - experiment: 25_clientes_noencrypt_ckksfed_kfold_fedsketch_intersection
+      alias: intersection
+    - experiment: 25_clientes_noencrypt_ckksfed_kfold_fedsketch_more_clusters
+      alias: more clusters
+    - experiment: 25_clientes_noencrypt_ckksfed_kfold_fedsketch_less_clusters
+      alias: less clusters
+    - experiment: 25_clientes_noencrypt_ckksfed_kfold_fedsketch_reference
+      alias: ref
+
     #   files:
     #     - 17h54m37steste1_sem_criptografia_25_clientes_unbalanced.log
     #   alias: 25 clientes unbalanced clustering
@@ -48,10 +56,10 @@ experiments_analysis:
   #   alias: não encriptado
 
   graphics:
-    - type: deltaT_per_round
+    # - type: deltaT_per_round
 
     - type: mean_acc
-    # - type: network_consumption
+    - type: network_consumption
 
     # - type: n_clients_absolute
 # datasets_analysis:

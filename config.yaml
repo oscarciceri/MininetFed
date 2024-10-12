@@ -5,12 +5,12 @@ general:
   broker_image: mininetfed:broker
   experiments_folder: experiments
   stop: cli # auto, cli, (None -> auto)
-  broker: external
+  broker: internal #external, internal, (None -> internal)
 
 # Experiment settings
 experiment:
   new_experiment: False
-  experiment_name: teste_broker_externo
+  experiment_name: ckks_test
   trainer_mode: random
   max_n_rounds: 40
   stop_accuracy: 0.97

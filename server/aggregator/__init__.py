@@ -1,1 +1,1 @@
-from .fed_avg import FedAvg as Aggregator
+from .ckksfed import Ckksfed as Aggregator
