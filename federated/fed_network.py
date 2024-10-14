@@ -77,12 +77,17 @@ class FedNetwork:
         self.broker_image = self.general["broker_image"]
 
         self.network_monitor_image = self.net_conf["network_monitor_image"]
+        self.network_monitor_env = self.net_conf["network_monitor_env"]
 
+        self.envs_folder = self.exp_conf.get("envs_folder")
+        if self.envs_folder is None:
+            self.envs_folder = "envs"
         self.stop_acc = self.exp_conf["stop_accuracy"]
         self.max_n_rounds = self.exp_conf["max_n_rounds"]
         self.min_trainers = self.exp_conf["min_trainers"]
 
         self.server = self.config.get("server")
+        self.server_env = self.server["env"]
         self.server_quota = self.server["vCPU_percent"] * self.n_cpu * 1000
 
         self.server_images = self.server["image"]
@@ -164,7 +169,7 @@ class FedNetwork:
 
     def auto_wait(self, verbose=False):
         self.stop.cmd(
-            f'bash -c "cd {self.volume} && . env/bin/activate && python3 stop.py {self.broker_addr}"', verbose=verbose)
+            f'bash -c "cd {self.volume} && . {self.envs_folder}/{self.network_monitor_env}/bin/activate && python3 stop.py {self.broker_addr}"', verbose=verbose)
 
     def insert_stop(self):
         self.stop = self.net.addDocker(
@@ -213,7 +218,7 @@ class FedNetwork:
 
     def start_monitor(self):
         info('*** Inicializando monitor\n')
-        cmd2 = f"bash -c 'cd {self.volume} && . env/bin/activate && python3 {self.net_conf['''network_monitor_script''']} {self.broker_addr} {self.experiment.getFileName(extension='''''')}.net'"
+        cmd2 = f"bash -c 'cd {self.volume} && . {self.envs_folder}/{self.network_monitor_env}/bin/activate && python3 {self.net_conf['''network_monitor_script''']} {self.broker_addr} {self.experiment.getFileName(extension='''''')}.net'"
         self.mnt1.cmd("route add default gw %s" % BROKER_NODE)
         makeTerm(self.mnt1, cmd=cmd2)
 
@@ -221,7 +226,7 @@ class FedNetwork:
         info('*** Inicializando servidor\n')
         script = self.server["script"]
         vol = self.volume
-        cmd = f"""bash -c "cd {vol} && . env/bin/activate && python3 {script} {self.broker_addr} {self.min_trainers} {self.max_n_rounds} {self.stop_acc} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt """
+        cmd = f"""bash -c "cd {vol} && . {self.envs_folder}/{self.server_env}/bin/activate && python3 {script} {self.broker_addr} {self.min_trainers} {self.max_n_rounds} {self.stop_acc} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt """
         args = self.exp_conf.get("server_client_args")
         if args is not None:
             json_str = json.dumps(args).replace('"', '\\"')
@@ -245,7 +250,10 @@ class FedNetwork:
                 info(f"*** Subindo cliente {str(count+1).zfill(2)}\n")
                 # vol = client_type["volume"]
                 vol = self.volume
-                cmd = f"""bash -c "cd {vol} && . env/bin/activate && python3 {client_type['''script''']} {self.broker_addr} {self.clientes[count].name} {count} {self.exp_conf['''trainer_mode''']} 2> client_log/{self.clientes[count].name}.txt """
+                if client_type['''env'''] is None:
+                    raise Exception(
+                        f"Env para Cliente {str(count+1).zfill(2)} não determinado")
+                cmd = f"""bash -c "cd {vol} && . {self.envs_folder}/{client_type['''env''']}/bin/activate && python3 {client_type['''script''']} {self.broker_addr} {self.clientes[count].name} {count} {self.exp_conf['''trainer_mode''']} 2> client_log/{self.clientes[count].name}.txt """
                 # print(cmd)
                 if json_str is not None:
                     cmd += f"'{json_str}'"

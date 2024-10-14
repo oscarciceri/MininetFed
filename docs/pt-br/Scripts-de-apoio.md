@@ -16,7 +16,37 @@ Caso a execução do MiniNetFED seja interrompida indevidamente, o Containernet 
 sudo mn -c
 ```
 
-# create_env.py
+# Gerenciador de environments
+
+```bash
+sudo python3 scripts/envs_manage/create_container_env.py [-c|-l] req/folder|exemplo.requirements.txt ... -std|image_name
+```
+
+A flag `-c` indica que o ambiente será criado para rodar em um container, e `-l` para se executado na máquina local. Em seguida pode ser passado ou o endereço de uma pasta, ou o endereço de múltiplos arquivos de requirements. Por último, é passada a flag `-std` para utilizar a imagem padrão do container ou o nome da imagem.
+
+**Importante**: Para ser reconhecido, o arquivo deve terminar com `.requirements.txt`. Exemplo: `meu_env.requirements.txt`.
+
+O objetivo desse script é auxiliar na criação dos _environments_ python usandos pelo MininetFed.
+
+O MininetFed acompanha já alguns arquivos de `requirements.txt` dentro da pasta `envs_requirements/local` para ambientes executados pela máquina locao e `envs_requirements/container` para ambientes executados em containers.
+
+A pasta destino é por padrão `envs/`.
+
+Durante o setup do MininetFed, é interessante instanciar os ambientes `clients.requirement`
+
+Para instanciar todos os ambientes locais fornecidos, pode se executar o seguinte comando
+
+```bash
+sudo python3 scripts/envs_manage/create_container_env.py -l envs_requirements/local -std
+```
+
+Para instaciar os seus próprios ambientes contendo dependências adicionais para os algoritmos que você implementou, você pode executar o script da seguinte forma
+
+```bash
+sudo python3 scripts/envs_manage/create_container_env.py -c meu/req/exemplo.requirements.txt -std
+```
+
+<!-- # create_env.py
 
 ```bash
 sudo python3 scripts/create_env.py <imagem docker usada para o cliente> <requirements.txt>
@@ -32,4 +62,4 @@ Um ponto importante é que esse script necesita do _venv_ para python, e se o me
 
 ```bash
 ./scripts/env_analysis.sh
-```
+``` -->

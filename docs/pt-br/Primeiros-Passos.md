@@ -1,5 +1,8 @@
 # Primeiros passos com o MiniNetFED
 
+> **Nota importante**
+> Caso esteja utilizando o arquivo OVA no VitrualBox, pule diretamente para [Executar o MiniNetFED com um exemplo](#executar-o-mininetfed-com-um-exemplo)
+
 ## Clonando o repositório do MiniNetFED
 
 ```
@@ -65,45 +68,41 @@ O MiniNetFED também depende de algumas imagens docker pré configuradas.
 
 Utilize os comandos a seguir para criar essas imagens.
 
-```
+```bash
 cd MininetFed
 ```
 
-```
+<!-- ```bash
 sudo docker build --tag "mininetfed:broker" -f docker/Dockerfile.broker .
 sudo docker build --tag "mininetfed:client" -f docker/Dockerfile.container .
 
+``` -->
+
+```bash
+sudo ./docker/create_images.sh
 ```
 
-"mininetfed:broker" e "mininetfed:client" são os nome das imagens.
+"mininetfed:broker", "mininetfed:container", "mininetfed:client" e "mininetfed:server" são os nome das imagens.
 
 ## Criando o env com as respectivas dependências
 
-O comando a seguir roda um script que cria um **env** python e instala as dependências padrões e as necessárias para os Trainers fornecidos de exemplo. Esse **env** é usado pelos clientes e pelo servidor
+Para criar os _envs_ com as dependências para executar o exemplo, utilize o script de gerenciamento de ambientes. Serão criados os ambientes que serão utilizados pelo servidor, pelos clientes, e pelo script de análise, instalando todas as dependências necessárias. Os _envs_ resultantes estarão na pasta `envs/`.
 
+Criando os _envs_ para os dispositivos conteinerizados:
+
+```bash
+sudo python scripts/envs_manage/create_container_env.py -c envs_requirements/container/client_tensorflow.requirements.txt envs_requirements/container/server.requirements.txt -std
 ```
-sudo python3 scripts/create_env.py mininetfed:client scripts/requirements.txt
 
-```
+Criando _env_ para o script de análise:
 
-O comando a seguir cria o **env_analysis** que será usado posteriormente para analisar os resultados gerados por um experimento
-
-```
-./scripts/env_analysis.sh
+```bash
+sudo python scripts/envs_manage/create_container_env.py -l envs_requirements/local/analysis.requirements.txt -std
 ```
 
 # Executar o MiniNetFED com um exemplo
 
-Para testar se tudo está funcionando adequadamente, é possível executar um dos arquivos de configuração do diretório **exemplos**. Escolha um dos exemplos da pasta e modifique no arquivo config.yaml a chave n_available_cpu: colocando o número de núcleos lógicos disponíveis na máquina utilizada.
-
-```
-general:
-  n_available_cpu: <número de núcleos lógicos>
-  (...)
-
-```
-
-Após essa modificação, modifique e execute o comando a seguir
+Para testar se tudo está funcionando adequadamente, é possível executar um dos arquivos de configuração do diretório **exemplos**. Escolha um dos exemplos da pasta e execute.
 
 ```
 sudo python3 main.py examples/<nome do exemplo escolhido>/config.yaml

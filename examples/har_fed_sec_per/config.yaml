@@ -6,6 +6,7 @@ general:
   experiments_folder: experiments
 
 experiment:
+  envs_folder: envs
   new_experiment: False
   experiment_name: example_har_fed_per_sec
   trainer_mode: client
@@ -16,6 +17,7 @@ experiment:
 network:
   network_monitor_script: network_monitor.py
   network_monitor_image: mininetfed:client
+  network_monitor_env: server
   network_components: 1
 
   connections:
@@ -27,6 +29,7 @@ network:
 
 # Server settings
 server:
+  env: server
   memory: 256m
   vCPU_percent: 20
   image: mininetfed:client
@@ -36,6 +39,7 @@ server:
 # Clients settings list
 client_types:
   - amount: 3
+    env: client_tensorflow
     name: tipo1
     memory: 480m
     # memory: 2048m
@@ -48,6 +52,7 @@ client_types:
     bw: 10
 
   - amount: 1
+    env: client_tensorflow
     name: tipo2
     memory: 480m
     # memory: 2048m

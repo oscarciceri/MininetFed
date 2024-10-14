@@ -8,28 +8,38 @@ The MiniNetFED is distributed with some support scripts. The function of each wi
 scripts/clean.sh
 ```
 
-If the execution of MiniNetFED is interrupted improperly, Containernet or docker may leave behind instances of network elements or dockers containers respectively. If another execution of MiniNetFED is initiated, errors or warnings may occur. In this case, the clean.sh script deletes all active dockers containers and performs Containernet cleanup.
+If the execution of MiniNetFED is interrupted improperly, Containernet or docker may leave behind instances of network elements or dockers respectively. If another instance of MiniNetFED is initiated, there may be errors or warnings. In this case, the clean.sh script deletes all active docker containers and executes a cleanup of Containernet.
 
-**Warning**: The script will delete all dockers containers instantiated, so if there is another application on the machine that uses dockers containers, it may be affected. In this case, it is recommended to manually delete the containers instantiated by MiniNetFED, and then use the following command to only clean Containernet.
+**Attention**: The script will delete all docker containers instantiated, so if there is another application on the machine that uses dockers, it may be affected. In this case, it is recommended to manually delete the containers instantiated by MiniNetFED, and then use the following command to only clean up Containernet.
 
 ```bash
 sudo mn -c
 ```
 
-# create_env.py
+# Environment Manager
 
 ```bash
-sudo python3 scripts/create_env.py <docker image used for client> <requirements.txt>
+sudo python3 scripts/envs_manage/create_container_env.py [-c|-l] req/folder|exemplo.requirements.txt ... -std|image_name
 ```
 
-The script that creates the _env_ instantiates a dockers container using the MiniNetFED client image, so that clients are compatible with the created _env_. As the _env_ is created from a container, it is not necessary to have the _venv_ for python installed on the machine. The script also receives the _requirements.txt_ file, which is also in the /scripts folder.
+The flag `-c` indicates that the environment will be created to run in a container, and `-l` for execution on the local machine. You can then pass either the address of a folder or the address of multiple requirements files. Finally, you can pass the flag `-std` to use the standard container image or the name of the image.
 
-# env_analysis.sh
+**Important**: The file must end with `.requirements.txt` to be recognized. Example: `meu_env.requirements.txt`.
 
-Similar to the previous script, this script creates a python _env_, but with some differences. In it, the _env_ is created by and for the same machine where it is executed, and no additional information needs to be provided. It already searches automatically for the requirements file.
+The purpose of this script is to assist in creating Python environments used by MininetFed.
 
-An important point is that this script needs the _venv_ for python, and if the latter is not available, it will be installed automatically.
+MininetFed already follows some `requirements.txt` files within the `envs_requirements/local` folder for local machine execution and `envs_requirements/container` for container execution.
+
+The destination folder is set to `envs/` by default. During MininetFed setup, it is interesting to instantiate the environments `clients.requirement`
+
+To instantiate all local environments provided, you can execute the following command
 
 ```bash
-./scripts/env_analysis.sh
+sudo python3 scripts/envs_manage/create_container_env.py -l envs_requirements/local -std
+```
+
+To instantiate your own environments containing additional dependencies for the algorithms you have implemented, you can run the script as follows
+
+```bash
+sudo python3 scripts/envs_manage/create_container_env.py -c meu/req/exemplo.requirements.txt -std
 ```
