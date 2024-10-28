@@ -1,1 +1,1 @@
-from .trainer_ckksfed import TrainerCkksfed as Trainer
+from .trainerhar import TrainerHar as Trainer
