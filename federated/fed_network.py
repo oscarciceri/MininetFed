@@ -11,6 +11,14 @@ except:
 from mininet.log import info, setLogLevel
 from mininet.node import Controller
 
+from .ipgen import IPGenerator
+
+try:
+    from containernet.node import DockerP4Sensor, DockerSensor
+except:
+    pass
+
+
 import json
 import os
 from pathlib import Path
@@ -22,48 +30,17 @@ from .config import device_definition, link_definition
 from .experiment import Experiment
 from .external_broker import ExtBroker
 
-
-# self.broker_addr = "172.20.72.17"
-# BROKER_NODE = "10.0.0.1"
 AUTO_WAIT_IMAGE = "mininetfed:client"
-# MIN_TRAINERS = 3
-# NUM_ROUNDS = 10
-# STOP_ACC = 1.0
-# CSV_LOG="logs/novo.log"
 
-
-class IpGen:
-    def __init__(self, start_ip4) -> None:
-        self.ip1 = 10
-        self.ip2 = 0
-        self.ip3 = 0
-        self.ip4 = start_ip4
-        self.devices_ip = {}
-
-    def next_ip(self, name) -> str:
-        ip = f"{self.ip1}.{self.ip2}.{self.ip3}.{self.ip4}"
-
-        self.ip4 += 1
-        if self.ip4 > 254:
-            self.ip4 = 1
-            self.ip3 += 1
-            if self.ip3 > 255:
-                self.ip3 = 0
-                self.ip2 += 1
-                if self.ip2 > 255:
-                    self.ip2 = 0
-                    raise Exception("Error: Ip limit reached!")
-        self.devices_ip[name] = ip
-        return ip
-
-    def get(self, name):
-        return self.devices_ip[name]
+NETWORT_IPV4 = '10.0.0.0/8'
+NETWORT_IPV6 = 'fe80::/10'
 
 
 class FedNetwork:
     def __init__(self, filename):
 
-        self.ip_gen = IpGen(3)
+        self.ipv4_gen = IPGenerator(NETWORT_IPV4)
+        self.ipv6_gen = IPGenerator(NETWORT_IPV6)
 
         self.devices = {}
         self.ext = None
@@ -90,7 +67,11 @@ class FedNetwork:
         self.min_trainers = self.exp_conf["control_metrics"]["min_trainers"]
 
         # Instanciando o containernet
-        self.net = Containernet(controller=Controller)
+        try:
+            self.net = Containernet(
+                iot_module='mac802154_hwsim', controller=Controller, ipBase='10.0.0.0/8')
+        except:
+            self.net = Containernet(controller=Controller, ipBase='10.0.0.0/8')
 
         info('*** Adding controller\n')
         self.net.addController('c0')
@@ -129,6 +110,12 @@ class FedNetwork:
                     case "switch":
                         d = self.insert_switch(
                             device_def, device, f'{device_def["name"]}{x}')
+                    case "DockerSensor":
+                        d = self.insert_sensor(
+                            device_def, device, f'{device_def["name"]}{x}')
+                    case "DockerAPSensor":
+                        d = self.insert_apsensor(
+                            device_def, device, f'{device_def["name"]}{x}')
                     case _:
                         raise Exception(
                             f"""'{device_def["type"]}' is not a valid device type""")
@@ -142,8 +129,39 @@ class FedNetwork:
         info(f'\t*** Adicionando {name}\n')
         volumes = self.docker_volume
         client_quota = device["vCPU_percent"] * self.n_cpu*1000
-        d = self.net.addDocker(name, ip=self.ip_gen.next_ip(name), cpu_quota=client_quota,
+        d = self.net.addDocker(name, ip=self.ipv4_gen.next_host_ip(name), cpu_quota=client_quota,
                                dimage=device["image"], volumes=volumes,  mem_limit=device["memory"])
+        d.cmd("ifconfig eth0 down")
+        return d
+
+    def insert_sensor(self, device_def, device, name):
+        info(f'\t*** Adicionando {name}\n')
+        volumes = self.docker_volume
+        client_quota = device["vCPU_percent"] * self.n_cpu*1000
+        # cpu_shares=20,
+        d = self.net.addSensor(name, ip6=self.ipv6_gen.next_host_ip(name), panid='0xbeef',
+                               cls=DockerSensor, dimage=device["image"], cpu_quota=client_quota,
+                               volumes=volumes,
+                               environment={"DISPLAY": ":0"}, privileged=True, mem_limit=device["memory"])
+
+        d.cmd("ifconfig eth0 down")
+        return d
+
+    def insert_apsensor(self, device_def, device, name):
+        info(f'\t*** Adicionando {name}\n')
+        volumes = self.docker_volume
+        client_quota = device["vCPU_percent"] * self.n_cpu*1000
+        args = device['args']
+        mode = device['mode']
+        dimage = device['image']
+
+        d = self.net.addAPSensor(name, cls=DockerP4Sensor, ip6=self.ipv6_gen.next_host_ip(name), panid='0xbeef',
+                                 dodag_root=True, storing_mode=mode, privileged=True,
+                                 volumes=volumes,
+                                 dimage=dimage, cpu_quota=client_quota, netcfg=True,
+                                 environment={"DISPLAY": ":0"}, loglevel="info",
+                                 thriftport=50001,  mem_limit=device["memory"], IPBASE="172.17.0.0/24", **args)  # IPBASE:##################### Decobobrir o que é esse IPBASE
+
         d.cmd("ifconfig eth0 down")
         return d
 
@@ -152,12 +170,12 @@ class FedNetwork:
         volumes = self.docker_volume
 
         broker = self.net.addDocker(
-            name, ip=self.ip_gen.next_ip(name), dimage=device["image"], volumes=volumes)
+            name, ip=self.ipv4_gen.next_host_ip(name), dimage=device["image"], volumes=volumes)
         broker.cmd(
             "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE")
 
         if ((device.get("mode") is None) or device.get("mode") == 'internal'):
-            self.broker_addr = self.ip_gen.get(name)
+            self.broker_addr = self.ipv4_gen.get_host_ip(name)
         elif (device.get("external_broker_address") is not None):
             self.broker_addr = self.general.get("external_broker_address")
         else:
@@ -176,7 +194,7 @@ class FedNetwork:
         info(f'\t*** Adicionando {name}\n')
         volumes = self.docker_volume
         d = self.net.addDocker(
-            name, ip=self.ip_gen.next_ip(name), dimage=device["image"], volumes=volumes)
+            name, ip=self.ipv4_gen.next_host_ip(name), dimage=device["image"], volumes=volumes)
         d.cmd("ifconfig eth0 down")
         return d
 
@@ -273,6 +291,10 @@ class FedNetwork:
                     case "network_monitor":
                         self.start_monitor(device_def, device, d)
                     case "switch":
+                        pass
+                    case "DockerSensor":
+                        pass
+                    case "DockerAPSensor":
                         pass
                     case _:
                         raise Exception(
