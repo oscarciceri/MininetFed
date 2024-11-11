@@ -47,8 +47,9 @@ client.on_connect = on_connect
 client.message_callback_add('minifed/stopQueue', on_message_stop)
 client.message_callback_add('minifed/autoWaitContinue', on_message_continue)
 try:
-    client.connect(BROKER_ADDR, bind_port=1883)
+    client.connect(BROKER_ADDR, bind_port=1883, keepalive=0)
 except:
     pass
 
+print(color.YELLOW + "Waiting...")
 client.loop_forever()  # Bloqueie a chamada de rede

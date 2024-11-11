@@ -27,29 +27,31 @@ def default(obj):
     raise TypeError('Tipo não pode ser serializado:', type(obj))
 
 
+FORMAT = "%(asctime)s - %(infotype)-6s - %(levelname)s - %(message)s"
+
+
 def server():
     # total args
     os.umask(0o000)
     n = len(sys.argv)
 
     # check args
-    if (n < 6):
+    if (n < 4):
         logging.critical("incorrect use of server.py arguments")
-        print("correct use: python server.py <broker_address> <min_clients> <num_rounds> <accuracy_threshold> <arquivo.log> <...>.")
+        # <min_clients> <num_rounds> <accuracy_threshold>
+        print("correct use: python server.py <broker_address> <arquivo.log> <args>.")
         exit()
 
-    BROKER_ADDR = sys.argv[1]
-    MIN_TRAINERS = int(sys.argv[2])
-    NUM_ROUNDS = int(sys.argv[3])
-    STOP_ACC = float(sys.argv[4])
-    CSV_PATH = sys.argv[5]
-    SERVER_ARGS = None
-    if len(sys.argv) >= 7 and (sys.argv[6] is not None):
-        SERVER_ARGS = json.loads(sys.argv[6])
+    server_args = json.loads(sys.argv[3])
 
-    FORMAT = "%(asctime)s - %(infotype)-6s - %(levelname)s - %(message)s"
+    broker_addr = sys.argv[1]
+    log_file = sys.argv[2]
+    min_trainers = server_args["min_trainers"]
+    nun_rounds = server_args["num_rounds"]
+    stop_acc = server_args["stop_acc"]
+    client_args = server_args.get("client")
 
-    logging.basicConfig(level=logging.INFO, filename=CSV_PATH,
+    logging.basicConfig(level=logging.INFO, filename=log_file,
                         format=FORMAT, filemode="w")
     metricType = {"infotype": "METRIC"}
     executionType = {"infotype": "EXECUT"}
@@ -86,7 +88,7 @@ def server():
             f'trainer number {m["id"]} just joined the pool')
 
         client.publish(
-            'minifed/serverArgs', json.dumps({"id": m["id"], "args": SERVER_ARGS}))
+            'minifed/serverArgs', json.dumps({"id": m["id"], "args": client_args}))
 
     # callback for preAggQueue: get weights of trainers, aggregate and send back
     def on_message_agg(client, userdata, message):
@@ -120,10 +122,10 @@ def server():
         controller.update_num_responses()
 
     # connect on queue
-    controller = Controller(min_trainers=MIN_TRAINERS,
-                            num_rounds=NUM_ROUNDS)
+    controller = Controller(min_trainers=min_trainers,
+                            num_rounds=nun_rounds)
     client = mqtt.Client('server')
-    client.connect(BROKER_ADDR, bind_port=1883)
+    client.connect(broker_addr, bind_port=1883)
     client.on_connect = on_connect
     client.message_callback_add('minifed/registerQueue', on_message_register)
     client.message_callback_add('minifed/preAggQueue', on_message_agg)
@@ -137,12 +139,12 @@ def server():
     client.publish('minifed/autoWaitContinue', json.dumps({'continue': True}))
 
     # wait trainers to connect
-    while controller.get_num_trainers() < MIN_TRAINERS:
+    while controller.get_num_trainers() < min_trainers:
         time.sleep(1)
 
     # begin training
     selected_qtd = 0
-    while controller.get_current_round() != NUM_ROUNDS:
+    while controller.get_current_round() != nun_rounds:
         controller.update_current_round()
         logger.info(
             f'round: {controller.get_current_round()}', extra=metricType)
@@ -196,7 +198,7 @@ def server():
               f'mean accuracy on round {controller.get_current_round()} was {mean_acc}\n' + color.RESET)
 
         # update stop queue or continue process
-        if mean_acc >= STOP_ACC:
+        if mean_acc >= stop_acc:
             logger.info('stop_condition: accuracy', extra=metricType)
             print(color.RED + f'accuracy threshold met! stopping the training!')
             m = json.dumps({'stop': True})
