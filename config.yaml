@@ -1,73 +1,79 @@
 ---
 # General settings
 general:
-  # n_available_cpu: 20 (deprecated)
-  broker_image: mininetfed:broker
-  experiments_folder: experiments
+  experiments_folder: experiments # Experiments output folder
   stop: cli # auto, cli, (None -> auto)
-  broker: internal #external, internal, (None -> internal)
+  envs_folder: envs/.. # Path to folder that contains the envs
+  auto_wait_env: env
 
 # Experiment settings
 experiment:
-  envs_folder: envs/..
-  new_experiment: False
-  experiment_name: envs_test
-  trainer_mode: random
-  max_n_rounds: 40
-  stop_accuracy: 0.97
-  min_trainers: 4
-  # server_client_args:
-  #   encrypted: False
-  #   debug: False
-  #   n_clusters: 1
+  auto_date_on_experiment_name: False # Define if there will be today's date in the experiment name
+  experiment_name: new_yaml_format
+  control_metrics:
+    max_n_rounds: 40
+    stop_accuracy: 0.97
+    min_trainers: 4 # Min trainers to start the training process
 
-# Network settings
-network:
-  network_monitor_script: network_monitor.py
-  network_monitor_image: mininetfed:client
-  network_monitor_env: server
-  network_components: 1
-  connections:
-    - connection1: 1
-      connection2: 2
-      loss: 0
-      delay: 0ms
-      bw: 10
+# Devices instantiation (em ordem de inicialização)
+devices:
+  - def: h 1 switch # Switch
 
-# Server settings
-server:
-  env: env
-  memory: 3000m
-  vCPU_percent: 100
-  image: mininetfed:server
-  connection: 1
-  script: server/server.py
+  - def: brk 1 broker
+    image: mininetfed:broker
+    mode: internal # internal, external, (None=> internal)
+    external_broker_addr:
 
-# Clients settings list
-client_types:
-  - amount: 4
+  - def: mnt 1 network_monitor
     env: env
-    name: tipo1
+    image: mininetfed:client
+    script: network_monitor.py
+
+  - def: srv 1 server_docker_host # docker_host server
+    env: env
+    memory: 3000m
+    vCPU_percent: 100
+    image: mininetfed:server
+    script: server/server.py
+    server_to_client_args:
+
+  - def: cliente 10 client_docker_host # cliente tipo 1
+    env: env
+    trainer_mode: client
     memory: 2600m
     vCPU_percent: 100
     image: mininetfed:client
     script: client/client.py
-    connection: 1
+    args:
+
+  # - def: ap 1 DockerP4Sensor # para o 6lowpan
+
+  # - def: sensor 4 DockerSensor
+
+network_topology:
+  - def: h cliente TCLink
+    bw:
     loss:
     delay:
+
+  - def: brk1 h TCLink
     bw:
-    # client_instantiation_args:
-    #   encrypted: False
-    #   debug: False
-    #   n_clusters: 1
-    #   fold: 0
-  # - amount: 1
-  #   name: tipo2
-  #   memory: 1024m
-  #   vCPU_percent: 15
-  #   image: mininetfed:client
-  #   script: client/client.py
-  #   connection: 1
-  #   loss: 0
-  #   delay: 0ms
-  #   bw: 20
+    loss:
+    delay:
+
+  - def: srv1 h TCLink
+    # bw: 10
+    # loss: 0
+    # delay: 0ms
+
+  - def: mnt h Default
+
+  # - def: sensor1 sensor2 LoWPAN
+
+  # - def: sensor2 ap1 LoWPAN
+
+  # - def: sensor4 sensor3 LoWPAN
+
+  # - def: sensor3 ap1 LoWPAN
+
+  # - def:

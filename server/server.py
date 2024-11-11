@@ -185,7 +185,7 @@ def server():
         client.publish('minifed/posAggQueue', response)
         logger.info(f'sent aggregated weights to trainers!',
                     extra=executionType)
-        print(f'sent aggregated weights to trainers!')
+        print(f'sent aggregated weights to trainers and waiting trainers metrics!')
 
         # wait for metrics response
         while controller.get_num_responses() != controller.get_num_trainers():
