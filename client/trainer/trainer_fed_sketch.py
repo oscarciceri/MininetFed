@@ -1,4 +1,4 @@
-from sketch_utils import compress, decompress, get_params, set_params, set_params_fedsketch, differential_garantee_pytorch, delta_weights, get_random_hashfunc
+from .sketch_utils import compress, decompress, get_params, set_params, set_params_fedsketch, differential_garantee_pytorch, delta_weights, get_random_hashfunc
 from sklearn.metrics import accuracy_score
 import pandas as pd
 import numpy as np
