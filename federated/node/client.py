@@ -14,12 +14,10 @@ class Client (Docker):
     """Node that represents a docker container of a MininerFed client.
     """
 
-    def __init__(self, name, script, broker_addr, env, experiment_controller, numeric_id, trainer_mode="client", args={}, dimage=None, cpu_quota=None, volumes=[], mem_limit=None, **kwargs):
+    def __init__(self, name, script,  env,  numeric_id, trainer_mode="client", args={}, dimage=None, cpu_quota=None, volumes=[], mem_limit=None, **kwargs):
         self.name = name
         self.trainer_mode = trainer_mode
         self.numeric_id = numeric_id
-        self.experiment = experiment_controller
-        self.broker_addr = broker_addr
         self.script = script
         self.args = args
         self.env = env
@@ -33,7 +31,9 @@ class Client (Docker):
 
         self.cmd("ifconfig eth0 down")
 
-    def start(self, args={}):
+    def start(self, broker_addr, experiment_controller, args={}):
+        self.experiment = experiment_controller
+        self.broker_addr = broker_addr
         Docker.start(self)
         cmd = f"""bash -c "cd {VOLUME_FOLDER} && . {ENVS_FOLDER}/{self.env}/bin/activate && python3 {self.script} {self.broker_addr} {self.name} {self.numeric_id} {self.trainer_mode} 2> client_log/{self.name}.txt """
 

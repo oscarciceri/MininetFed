@@ -16,15 +16,15 @@ class AutoStop (Docker):
         'minifed/stopQueue' or 'minifed/autoWaitContinue'
     """
 
-    def __init__(self, name, env, dimage=DEFAULT_IMAGE, broker_addr=None, volumes=[], **kwargs):
-        self.broker_addr = broker_addr
+    def __init__(self, name, env, dimage=DEFAULT_IMAGE,  volumes=[], **kwargs):
         self.env = env
         Docker.__init__(self, name, dimage=dimage, volumes=volumes, **kwargs)
         self.cmd("ifconfig eth0 down")
 
-    def start(self):
+    def start(self, broker_addr):
+        self.broker_addr = broker_addr
         Docker.start(self)
-        self.cmd("route add default gw %s" % self.broker_addr)
+        self.cmd("route add default gw %s" % broker_addr)
 
     def auto_stop(self, verbose=True):
         try:
@@ -32,4 +32,4 @@ class AutoStop (Docker):
                 f'bash -c "cd {VOLUME_FOLDER} && . {ENVS_FOLDER}/{self.env}/bin/activate && python3 stop.py {self.broker_addr}"', verbose=verbose)
 
         except:
-            print(color.BLUE+"Keyboard interrupt: manual continue"+color.RESET)
+            print(color.BLUE+"\nKeyboard interrupt: manual continue"+color.RESET)
