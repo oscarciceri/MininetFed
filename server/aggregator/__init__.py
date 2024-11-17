@@ -1,1 +1,1 @@
-from .fed_sketch import FedSketchAgg as Aggregator
+from .fed_avg import FedAvg as Aggregator

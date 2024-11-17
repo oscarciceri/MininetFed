@@ -1,1 +1,1 @@
-from .trainer_fed_sketch import TrainerFedSketch as Trainer
+from .trainerhar import TrainerHar as Trainer
