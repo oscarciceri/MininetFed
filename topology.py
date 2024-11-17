@@ -10,7 +10,7 @@ from containernet.cli import CLI
 from containernet.net import Containernet
 from pathlib import Path
 
-from federated.devices import Broker, Server, AutoStop, Monitor, Client
+from federated.node import Broker, Server, AutoStop, Monitor, Client
 from federated.experiment import Experiment
 
 
