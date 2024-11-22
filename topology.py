@@ -11,6 +11,7 @@ from pathlib import Path
 from federated.node import Server, Client
 from federated.net import MininetFed
 
+from containernet.energy import Energy
 
 volume = "/flw"
 volumes = [f"{Path.cwd()}:" + volume]
@@ -21,8 +22,8 @@ info('*** Configuring MininetFed basic topology\n')
 
 net = MininetFed(controller=Controller, experiment_name="teste_topology",
                  experiments_folder="experiments", date_prefix=False, default_volumes=volumes)
-info('*** Adding controller\n')
-net.addController('c0')
+# info('*** Adding controller\n')
+# net.addController('c0')
 
 info('*** Adding docker containers\n')
 
