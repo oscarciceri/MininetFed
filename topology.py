@@ -22,14 +22,15 @@ info('*** Configuring MininetFed basic topology\n')
 
 net = MininetFed(controller=Controller, experiment_name="teste_topology",
                  experiments_folder="experiments", date_prefix=False, default_volumes=volumes)
-# info('*** Adding controller\n')
-# net.addController('c0')
+# Se tirar o controller dá erro na conexão?????????
+info('*** Adding controller\n')
+net.addController('c0')
 
 info('*** Adding docker containers\n')
 
 
 args = {"min_trainers": 4, "num_rounds": 40, "stop_acc": 0.95}
-client_args = None
+client_args = {}
 
 srv1 = net.addPriorityHost('srv1', cls=Server, script="server/server.py", env="../env", args=args, volumes=volumes,
                            dimage="mininetfed:server")
