@@ -34,7 +34,7 @@ class Server (Docker):
 
         cmd = f"""bash -c "cd {VOLUME_FOLDER} && . {ENVS_FOLDER}/{self.env}/bin/activate && python3 {self.script} {self.broker_addr} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt """
 
-        if len(self.args) != 0:
+        if self.args != None and len(self.args) != 0:
             json_str = json.dumps(self.args).replace('"', '\\"')
             cmd += f"'{json_str}'"
         cmd += '" ;'
