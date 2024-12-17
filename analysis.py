@@ -85,7 +85,9 @@ def analysis(analysis_yaml_path):
         plot = Graphics(dfs, experiments_analysis.get("save_graphics"), FOLDER)
 
         for graphic in experiments_analysis["graphics"]:
-            if graphic['type'] == 'mean_acc':
+            if graphic['type'] == 'energy_consumption':
+                plot.energy_consumption()
+            elif graphic['type'] == 'mean_acc':
                 plot.mean_acc()
             elif graphic['type'] == 'mean_acc_k_folds':
                 plot.mean_acc_k_folds()

@@ -132,6 +132,21 @@ class Graphics:
         plt.tick_params(labelsize=16)
         plt.show()
 
+    def energy_consumption(self):
+        plt.figure(figsize=(10, 6))
+        for item in self.dfs:
+            df = item['df']
+            for label in df:
+                if 'energy_consumption' in label:
+                    plt.plot(
+                        df['round'], df[label], label=f"{item['name']} {label.replace('_energy_consumption','')}")
+            # print(item)
+        plt.xlabel('Round', fontsize=18)
+        plt.ylabel('Energy consumed (escala ?????)', fontsize=18)
+        plt.legend(fontsize=16)
+        plt.tick_params(labelsize=16)
+        plt.show()
+
     def mean_acc_k_folds(self):
         plt.figure(figsize=(10, 6))
         possible_colors = ['blue', 'green', 'red', 'purple', 'orange']
