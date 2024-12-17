@@ -1,17 +1,11 @@
-experiments_folder: experiments
+experiments_folder: sbrc
 
 experiments_analysis:
-  #   save_csv: true
+  save_csv: true
 
   from:
-    - experiment: 25_clientes_noencrypt_ckksfed_kfold_fedsketch_intersection
-      alias: intersection
-    - experiment: 25_clientes_noencrypt_ckksfed_kfold_fedsketch_more_clusters
-      alias: more clusters
-    - experiment: 25_clientes_noencrypt_ckksfed_kfold_fedsketch_less_clusters
-      alias: less clusters
-    - experiment: 25_clientes_noencrypt_ckksfed_kfold_fedsketch_reference
-      alias: ref
+    - experiment: sbrc_mnist_select_all_same_samples_fixed
+      alias: all
 
     #   files:
     #     - 17h54m37steste1_sem_criptografia_25_clientes_unbalanced.log
@@ -58,10 +52,11 @@ experiments_analysis:
   graphics:
     # - type: deltaT_per_round
 
-    - type: mean_acc
-    - type: network_consumption
+    # - type: mean_acc
+    # - type: network_consumption
 
     # - type: n_clients_absolute
+    - type: energy_consumption
 # datasets_analysis:
 #   id: [0, 1, 2, 3, 4, 5]
 #   mode: client

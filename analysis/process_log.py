@@ -4,11 +4,22 @@ import csv
 from datetime import datetime, timedelta
 import sys
 import numpy as np
+import json
+
+
+def extract_json(log_line):
+    match = re.search(r'{.*}', log_line)
+    if match:
+        json_content = match.group()
+        # Parse the JSON content
+        return json.loads(json_content)
+    else:
+        raise Exception(f"No JSON found in the log line. {log_line}")
 
 
 class File:
     def __init__(self, name):
-
+        self.clients = {}
         self.name = name
         # columns=['round', 'deltaT', 'mean_accuracy']
         self.data = pd.DataFrame()
@@ -17,10 +28,10 @@ class File:
         with open(self.name + '.log', 'r') as file:
             self.content = file.readlines()
 
-        with open(self.name + '.net', 'r') as file:
-            self.network = file.readlines()
+        # with open(self.name + '.net', 'r') as file:
+        #     self.network = file.readlines()
         self.processContent()
-        self.processNetworkContent()
+        # self.processNetworkContent()
 
     def processNetworkContent(self):
         self.n_net_saves = 0
@@ -104,6 +115,18 @@ class File:
                     self.n_selected = int(
                         re.search('n_selected: (\d+)', line).group(1))
 
+                elif 'selected_trainers' in line:
+                    try:
+                        info = extract_json(line)
+                    except:
+                        pass
+                elif 'client_name' in line:
+                    try:
+                        info = extract_json(line)
+                        self.clients[info['client_name']] = info
+                    except:
+                        pass
+
                 elif 'stop_condition' in line and round_start_time is not None:
                     round_end_time = datetime.strptime(
                         line.split(' - ')[0], '%Y-%m-%d %H:%M:%S,%f')
@@ -113,8 +136,15 @@ class File:
                     # self.save_to_csv()
 
     def save_data(self, round, deltaT, mean_accuracy):
-        new_data = pd.DataFrame({'round': [round], 'deltaT': [deltaT], 'mean_accuracy': [
-                                mean_accuracy], 'n_selected': [self.n_selected]})
+        infos = {'round': [round], 'deltaT': [deltaT], 'mean_accuracy': [
+            mean_accuracy], 'n_selected': [self.n_selected]}
+
+        for client in self.clients:
+            for metric in self.clients[client]:
+                infos.update(
+                    {f'{client}_{metric}': self.clients[client][metric]})
+
+        new_data = pd.DataFrame(infos)
         if self.data.empty:
             self.data = new_data
         else:
