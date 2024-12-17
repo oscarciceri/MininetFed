@@ -7,12 +7,12 @@ class LeastEnergyConsumption:
     def select_trainers_for_round(self, trainer_list, metrics):
         mean_energy_consumption = 0
         for trainer in trainer_list:
-            mean_energy_consumption += metrics[trainer]["consumption"]
+            mean_energy_consumption += metrics[trainer]["energy_consumption"]
         mean_energy_consumption /= len(trainer_list)
 
         s = []
         for trainer in trainer_list:
-            if metrics[trainer]["consumption"] <= mean_energy_consumption:
+            if metrics[trainer]["energy_consumption"] <= mean_energy_consumption:
                 s.append(trainer)
 
         return s
