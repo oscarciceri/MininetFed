@@ -1,5 +1,4 @@
 env/
-local/
 .vscode/
 __pycache__/
 localenv/
@@ -17,3 +16,4 @@ local_env/
 experiments_queue/
 docs/env/
 envs/
+sbrc/
