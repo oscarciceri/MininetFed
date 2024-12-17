@@ -17,7 +17,8 @@ file_mapping = {
     "Primeiros-Passos.md": "First-Steps.md",
     "Script-de-análise.md": "Analysis-Script.md",
     "Scripts-de-apoio.md": "Additional-scripts.md",
-    "Servidor.md": "Server.md"
+    "Servidor.md": "Server.md",
+    "../readme.md": "../readme(en).md"
 }
 
 

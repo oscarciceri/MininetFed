@@ -1,30 +1,42 @@
 # Configurações da execução
 
-A maior parte das configurações do experimento são passadas para o MiniNetFED por meio de um arquivo .yaml que é mandado como argumento no início da execução
+A maior parte das configurações do experimento são passadas para o MininetFed por meio do arquivo `topology.py` que segue o padrão do Mininet.
 
 ```jsx
-sudo python3 main.py config.yaml
+sudo python3 topology.py
 ```
 
-É possível editar o arquivo deixado na pasta do MiniNetFED como exemplo ou criar seu próprio.
+É possível editar o arquivo deixado na pasta do MininetFed como exemplo ou criar seu próprio.
 
-A estrutura do arquivo de configuração é a seguinte
+Alguns elementos básicos que existem relacionados com o MininetFed são os seguintes
 
-```jsx
-general:
-experiment:
-network:
-server:
-clients:
+```python
+from federated.node import Server, Client
+from federated.net import MininetFed
 ```
 
-## General
+## MininetFed
 
-```jsx
-general: n_available_cpu: int;
-broker_image: string;
-experiments_folder: string;
-```
+Instancia uma rede Mininet com alguns componentes básicos já incluidos. Esses são os seguintes:
+
+- broker mqtt (mosquitto)
+- monitor de rede
+- autostop
+- controlador de experimento
+
+### broker mqtt
+
+Busca por padrão o arquivo de configurações `mosquitto.conf` na pasta raiz do MininetFed
+
+### monitor de rede
+
+Consome dados da rede para gerar um log que pode ser usado durante a análise do experimento
+
+### autostop
+
+Utilitário que sincroniza a execução dos dispositivos durante o aprendizado federado, garantindo que a execução do código principal `topology.py`.
+
+---
 
 ### _broker_image:_
 
