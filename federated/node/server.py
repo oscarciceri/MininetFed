@@ -27,10 +27,10 @@ class Server (Docker):
 
         self.cmd("ifconfig eth0 down")
 
-    def start(self, broker_addr, experiment_controller, args={}):
+    def run(self, broker_addr, experiment_controller, args={}):
         self.experiment = experiment_controller
         self.broker_addr = broker_addr
-        Docker.start(self)
+        # Docker.start(self)
 
         cmd = f"""bash -c "cd {VOLUME_FOLDER} && . {ENVS_FOLDER}/{self.env}/bin/activate && python3 {self.script} {self.broker_addr} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt """
 

@@ -19,7 +19,7 @@ class Monitor (Docker):
                         volumes=volumes, **kwargs)
         self.cmd("ifconfig eth0 down")
 
-    def start(self, broker_addr):
+    def run(self, broker_addr):
         self.broker_addr = broker_addr
         Docker.start(self)
         self.cmd("route add default gw %s" % self.broker_addr)

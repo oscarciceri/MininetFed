@@ -21,9 +21,9 @@ class AutoStop (Docker):
         Docker.__init__(self, name, dimage=dimage, volumes=volumes, **kwargs)
         self.cmd("ifconfig eth0 down")
 
-    def start(self, broker_addr):
+    def run(self, broker_addr):
         self.broker_addr = broker_addr
-        Docker.start(self)
+        # Docker.start(self)
         self.cmd("route add default gw %s" % broker_addr)
 
     def auto_stop(self, verbose=True):

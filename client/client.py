@@ -13,22 +13,28 @@ from trainer import Trainer
 
 n = len(sys.argv)
 
+print(f"N: {n}", file=sys.stderr)
+
 # check if client_instaciation_args are present
-if (n != 5 and n != 6):
+if (n != 4 and n != 5):
     print(
-        "correct use: python client.py <broker_address> <name> <id> <trainer_mode> [client_instanciation_args].")
+        "correct use: python client.py <broker_address> <name> <id> [client_instanciation_args].")
     exit()
 
 BROKER_ADDR = sys.argv[1]
 CLIENT_NAME = sys.argv[2]
 CLIENT_ID = int(sys.argv[3])
-MODE = sys.argv[4]
-CLIENT_INSTANTIATION_ARGS = None
-if len(sys.argv) >= 6 and (sys.argv[5] is not None):
-    CLIENT_INSTANTIATION_ARGS = json.loads(sys.argv[5])
+# MODE = sys.argv[4]
+CLIENT_INSTANTIATION_ARGS = {}
+if len(sys.argv) == 5 and (sys.argv[4] is not None):
+    CLIENT_INSTANTIATION_ARGS = json.loads(sys.argv[4])
 
+# print(f"{CLIENT_INSTANTIATION_ARGS}", file=sys.stderr)
+# print(f"{sys.argv}", file=sys.stderr)
 
 # used by json.dump when it enconters something that can't be serialized
+
+
 def default(obj):
     if type(obj).__module__ == np.__name__:
         if isinstance(obj, np.ndarray):
@@ -142,15 +148,15 @@ def on_message_stop(client, userdata, message):
 
 
 def get_trainer():
-    try:
-        if CLIENT_INSTANTIATION_ARGS is not None:
-            return Trainer(CLIENT_ID, MODE, CLIENT_NAME, CLIENT_INSTANTIATION_ARGS)
-        else:
-            return Trainer(CLIENT_ID, MODE, CLIENT_NAME, {})
+    # # try:
+    # if CLIENT_INSTANTIATION_ARGS is not None:
+    return Trainer(CLIENT_ID, CLIENT_NAME, CLIENT_INSTANTIATION_ARGS)
+    # else:
+    #     return Trainer(CLIENT_ID, CLIENT_NAME, {})
 
-    # old trainer standard
-    except:
-        return Trainer(CLIENT_ID, MODE)
+    # # old trainer standard
+    # except:
+    #     return Trainer(CLIENT_ID, MODE)
 
 
 # connect on queue and send register

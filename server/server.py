@@ -109,16 +109,17 @@ def server():
             f'received weights from trainer {m["id"]}!', extra=executionType)
         print(f'received weights from trainer {m["id"]}!')
 
-    def create_string_from_json(data):
-        return " - ".join(f"{name}: {value}" for name, value in data.items())
+    # def create_string_from_json(data):
+    #     return " - ".join(f"{name}: {value}" for name, value in data.items())
 
     # callback for metricsQueue: get the metrics from each client after it finish its round
     def on_message_metrics(client, userdata, message):
         m = json.loads(message.payload.decode("utf-8"))
         controller.add_accuracy(m['metrics']['accuracy'])
         controller.update_metrics(m["id"], m['metrics'])
+        m["metrics"]["client_name"] = m["id"]
         logger.info(
-            f'{m["id"]} {create_string_from_json(m["metrics"])}', extra=metricType)
+            f'{json.dumps(m["metrics"])}', extra=metricType)
         controller.update_num_responses()
 
     # connect on queue
@@ -159,7 +160,7 @@ def server():
 
         logger.info(f"n_selected: {len(select_trainers)}", extra=metricType)
         logger.info(
-            f"selected_trainers: {' - '.join(select_trainers)}", extra=metricType)
+            f"{json.dumps({'selected_trainers': select_trainers})}", extra=metricType)
         for t in trainer_list:
             if t in select_trainers:
                 # logger.info(

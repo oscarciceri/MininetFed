@@ -29,8 +29,8 @@ class Broker (Docker):
 
         self.cmd("iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE")
 
-    def start(self):
-        Docker.start(self)
+    def run(self):
+        # Docker.start(self)
 
         if self.mode == "internal":
             makeTerm(

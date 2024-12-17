@@ -9,51 +9,106 @@ from ..experiment import Experiment
 class MininetFed(Containernet):
 
     def __init__(self, experiment_name,
-                 experiments_folder, default_volumes, date_prefix=False, broker_mode="internal", ext_broker_ip='127.0.0.1', **kwargs):
+                 experiments_folder, default_volumes, default_connection='s1', date_prefix=False, broker_mode="internal", ext_broker_ip='127.0.0.1', topology_file=None, **kwargs):
 
-        self.nodes = []
+        self.default_connection = default_connection
+        self.ext_broker_ip = ext_broker_ip
+        self.broker_mode = broker_mode
+
+        self.nodes = {}
         self.priority_nodes = []
         self.default_volumes = default_volumes
         self.experiment_controller = Experiment(experiment_name=experiment_name,
                                                 experiments_folder=experiments_folder, create_new=date_prefix)
-        Containernet.__init__(self, **kwargs)
+        if topology_file is not None:
+            self.experiment_controller.copyFileToExperimentFolder(
+                topology_file)
+        super().__init__(**kwargs)
 
-        self.brk = super().addHost('brk', cls=Broker, mode=broker_mode, ext_broker_ip=ext_broker_ip, volumes=default_volumes,
+    def addFlHost(self, name, cls=None, start_priority=0, **params):
+        """
+        Adiciona um host à estrutura 'nodes' baseada em prioridade.
+        Cada prioridade é representada por uma lista que contém os hosts associados.
+        """
+
+        # Certifica-se de que a prioridade existe no dicionário
+        if start_priority not in self.nodes:
+            self.nodes[start_priority] = []
+
+        # Adiciona o host à lista correspondente à prioridade
+        # host = super().addHost(name, cls, **params)
+        host = super().addSensor(name, cls, **params)
+        self.nodes[start_priority].append(host)
+        return host
+
+    def addAPSensor(self, name, cls=None, **params):
+        self.apsensor = super().addAPSensor(name, cls, **params)
+        return self.apsensor
+
+    def configureMininetFed(self):
+        self.brk = super().addHost('brk', cls=Broker, mode=self.broker_mode, ext_broker_ip=self.ext_broker_ip, volumes=self.default_volumes,
                                    dimage="mininetfed:broker")
 
         self.mnt = super().addHost('mnt', cls=Monitor, env='../env', script="network_monitor.py",
-                                   experiment_controller=self.experiment_controller, volumes=default_volumes)
+                                   experiment_controller=self.experiment_controller, volumes=self.default_volumes)
 
         self.auto_stop = super().addHost('stop', cls=AutoStop, env='../env',
-                                         volumes=default_volumes)
+                                         volumes=self.default_volumes)
 
-    def addHost(self, name, cls=None, **params):
-        self.nodes.append(super().addHost(name, cls, **params))
-        return self.nodes[-1]
+        self.addLink(self.default_connection, self.brk)
+        self.addLink(self.default_connection, self.mnt)
+        self.addLink(self.default_connection, self.auto_stop)
 
-    def addPriorityHost(self, name, cls=None, **params):
-        self.priority_nodes.append(super().addHost(name, cls, **params))
-        return self.priority_nodes[-1]
+    def runFlDevices(self):
+        """
+        Executa dispositivos agrupados por prioridade, na ordem crescente de prioridade.
+        """
+        # Executa o broker e inicializa outros componentes
+        self.brk.run()
 
-    def start(self, start_cli=False):
-        super().start()
-        self.brk.start()
-
+        # Obtem o endereço do broker
         self.broker_addr = self.brk.IP(intf="brk-eth0")
 
-        self.auto_stop.start(broker_addr=self.broker_addr)
-        self.mnt.start(broker_addr=self.broker_addr)
+        # Executa serviços adicionais usando o endereço do broker
+        self.auto_stop.run(broker_addr=self.broker_addr)
+        self.mnt.run(broker_addr=self.broker_addr)
 
-        for node in self.priority_nodes:
-            node.start(broker_addr=self.broker_addr,
-                       experiment_controller=self.experiment_controller)
+        # Ordena as prioridades e executa os dispositivos por prioridade
+        for priority in sorted(self.nodes.keys()):
+            for device in self.nodes[priority]:
+                device.run()
 
-        self.auto_stop.auto_stop()
+    # def start(self):
 
-        for node in self.nodes:
-            node.start(broker_addr=self.broker_addr,
-                       experiment_controller=self.experiment_controller)
+    #     super().build()
+    #     self.addNAT(name='nat0', linkTo='s1',
+    #                 ip='10.168.210.254').configDefault()
 
+    #     self.apsensor.start([])
+    #     # self.apsensor.start([])
+
+    #     # super().start() # o DockerP4Sensor fala que não tem 'command'
+    #     self.brk.start()
+
+    #     self.broker_addr = self.brk.IP(intf="brk-eth0")
+
+    #     self.auto_stop.start(broker_addr=self.broker_addr)
+    #     self.mnt.start(broker_addr=self.broker_addr)
+
+    #     # for node in self.priority_nodes:
+    #     #     node.start(broker_addr=self.broker_addr,
+    #     #                experiment_controller=self.experiment_controller)
+
+    #     # self.auto_stop.auto_stop()
+
+    #     # for node in self.nodes:
+    #     #     node.start(broker_addr=self.broker_addr,
+    #     #                experiment_controller=self.experiment_controller)
+
+    #     self.staticArp()
+    #     self.configRPLD(self.sensors + self.apsensors)
+
+    def wait_experiment(self, start_cli=False):
         if start_cli:
             CLI(self)
         else:

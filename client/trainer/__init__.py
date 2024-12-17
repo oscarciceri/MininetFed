@@ -1,1 +1,1 @@
-from .trainerhar import TrainerHar as Trainer
+from .trainer_mnist_local import TrainerMNIST as Trainer
