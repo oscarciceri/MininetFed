@@ -1,12 +1,15 @@
 import random
 import numpy as np
 import pandas as pd
-from clientSelection import ClientSelection
+from clientSelection import *
 from aggregator import Aggregator
+
+client_selectors = {'All': All, 'Random': Random,
+                    'LeastEnergyConsumption': LeastEnergyConsumption}
 
 
 class Controller:
-    def __init__(self, min_trainers=2, trainers_per_round=2, num_rounds=5):
+    def __init__(self, min_trainers=2, num_rounds=5, client_selector='Random'):
         self.trainer_list = []
         self.min_trainers = min_trainers
         # self.trainers_per_round = trainers_per_round
@@ -17,7 +20,7 @@ class Controller:
         self.trainer_samples = []  # save num_samples scale for agg
         self.acc_list = []
         self.mean_acc_per_round = []
-        self.clientSelection = ClientSelection()
+        self.clientSelection = client_selectors[client_selector]()
         self.aggregator = Aggregator()
         self.metrics = {}
 
