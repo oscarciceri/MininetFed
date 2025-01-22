@@ -27,7 +27,13 @@ sudo apt-get install ansible git aptitude
 
 #### Versão do ContainerNet testada (recomendado)
 
-A versão usada do ContainerNet está em um arquivo .zip na pasta **containernet** do repositório do MiniNetFED. Copie esse arquivo .zip e cole ele no lugar onde deseja instalar o ContainerNet na sua máquina
+A versão recomendada para o uso de todas as funcionalidade do MininetFed pode ser encontrada no seguinte repositório:
+
+```
+git clone https://github.com/ramonfontes/containernet.git
+```
+
+<!-- A versão usada do ContainerNet está em um arquivo .zip na pasta **containernet** do repositório do MiniNetFED. Copie esse arquivo .zip e cole ele no lugar onde deseja instalar o ContainerNet na sua máquina -->
 
 > #### Outras versões (não recomendado)
 >
@@ -42,16 +48,12 @@ A versão usada do ContainerNet está em um arquivo .zip na pasta **containernet
 > É importante que o método de instalação seja "Bare-metal installation" para que o MiniNetFED funcione adequadamente
 > Os passos de instalação dessa versão podem ser encontrados no seguinte link: https://containernet.github.io/
 > Após a instalação, pule para o passo _Gerando as imagens docker_
->
-> ##### Alternativo
->
-> ```
-> git clone https://github.com/ramonfontes/containernet.git
-> ```
 
 #### Script de instalação (caso você estiver instalando a versão recomendada)
 
-Uma vez selecionado o local de instalação de sua preferência, clone ou decompacte os arquivos do containernet e siga com os seguintes comandos
+<!-- FALTA INCLUIR COMANDOS PARA A INSTALAÇÃO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+<!-- Uma vez selecionado o local de instalação de sua preferência, clone ou decompacte os arquivos do containernet e siga com os seguintes comandos
 
 ```
 cd containernet
@@ -60,7 +62,7 @@ cd containernet
 ```
 sudo util/install.sh -W
 
-```
+``` -->
 
 ## Gerando as imagens docker
 
@@ -100,7 +102,7 @@ Criando _env_ para o script de análise:
 sudo python scripts/envs_manage/create_container_env.py -l envs_requirements/local/analysis.requirements.txt -std
 ```
 
-# Executar o MiniNetFED com um exemplo
+<!-- # Executar o MiniNetFED com um exemplo
 
 Para testar se tudo está funcionando adequadamente, é possível executar um dos arquivos de configuração do diretório **exemplos**. Escolha um dos exemplos da pasta e execute.
 
@@ -142,4 +144,4 @@ python3 analysis.py examples/<nome do experimento>/analysis.yaml
 >
 > ```
 > python3 analysis.py examples/har_fed_sec_per/analysis.yaml
-> ```
+> ``` -->

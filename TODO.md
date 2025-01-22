@@ -29,3 +29,8 @@
 ---
 
 [] Olhar como o Eduardo fez a parte genérica de métricas. Colocar prefixo (ms??)
+
+---
+
+Reprodutibilidade:
+[] Incluir na documentação do MininetFed o comando para a instalação do Containernet
