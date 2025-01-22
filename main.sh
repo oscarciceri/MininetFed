@@ -6,8 +6,6 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-# Obtém o diretório raiz do script
-SCRIPT_DIR=$(dirname "$0")
 
 # Itera sobre cada argumento (nome de arquivo Python)
 for file in "$@"; do
@@ -17,7 +15,7 @@ for file in "$@"; do
         BASENAME=$(basename "$file")
 
         # Caminho de destino no diretório raiz do script
-        DEST_FILE="$SCRIPT_DIR/$BASENAME"
+        DEST_FILE="$BASENAME"
 
         # Copia o arquivo para o diretório raiz do script
         echo "Copiando $file para $DEST_FILE"
