@@ -37,10 +37,20 @@ Os resultados da execução estarão na no diretório `sbrc/sbrc_mnist_select_al
 sudo ./main.sh casos_de_uso/sbrc_2025/topology_random.py
 ```
 
+Os resultados da execução estarão na no diretório `sbrc/sbrc_mnist_select_random`
+
 ## Seleção Considerando o Consumo de Energia (energy)
 
 ```shell
 sudo ./main.sh casos_de_uso/sbrc_2025/topology_energy.py
+```
+
+Os resultados da execução estarão na no diretório `sbrc/sbrc_mnist_select_energy`
+
+## (Alternativa) Executar os 3 de uma só vez
+
+```shell
+sudo ./main.sh casos_de_uso/sbrc_2025/topology_all.py casos_de_uso/sbrc_2025/topology_random.py casos_de_uso/sbrc_2025/topology_energy.py
 ```
 
 ## Gráfico de Consumo de Energia Acumulado
