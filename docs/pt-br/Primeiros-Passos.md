@@ -6,7 +6,7 @@
 ## Clonando o repositório do MiniNetFED
 
 ```
-git clone https://github.com/lprm-ufes/MininetFed.git
+git clone -b development https://github.com/lprm-ufes/MininetFed.git
 ```
 
 ## Pré requisitos
@@ -35,7 +35,7 @@ git clone https://github.com/ramonfontes/containernet.git
 
 <!-- A versão usada do ContainerNet está em um arquivo .zip na pasta **containernet** do repositório do MiniNetFED. Copie esse arquivo .zip e cole ele no lugar onde deseja instalar o ContainerNet na sua máquina -->
 
-> #### Outras versões (não recomendado)
+<!-- > #### Outras versões (não recomendado)
 >
 > Caso deseje instalar o ContainerNet de outras fontes, ele pode ser encontrado nos seguintes repositórios
 >
@@ -47,7 +47,7 @@ git clone https://github.com/ramonfontes/containernet.git
 >
 > É importante que o método de instalação seja "Bare-metal installation" para que o MiniNetFED funcione adequadamente
 > Os passos de instalação dessa versão podem ser encontrados no seguinte link: https://containernet.github.io/
-> Após a instalação, pule para o passo _Gerando as imagens docker_
+> Após a instalação, pule para o passo _Gerando as imagens docker_ -->
 
 #### Script de instalação (caso você estiver instalando a versão recomendada)
 
@@ -84,22 +84,22 @@ sudo docker build --tag "mininetfed:client" -f docker/Dockerfile.container .
 sudo ./docker/create_images.sh
 ```
 
-"mininetfed:broker", "mininetfed:container", "mininetfed:client" e "mininetfed:server" são os nome das imagens.
+<!-- "mininetfed:broker", "mininetfed:container", "mininetfed:client" e "mininetfed:server" são os nome das imagens. -->
 
 ## Criando o env com as respectivas dependências
 
 Para criar os _envs_ com as dependências para executar o exemplo, utilize o script de gerenciamento de ambientes. Serão criados os ambientes que serão utilizados pelo servidor, pelos clientes, e pelo script de análise, instalando todas as dependências necessárias. Os _envs_ resultantes estarão na pasta `envs/`.
 
-Criando os _envs_ para os dispositivos conteinerizados:
+<!-- Criando os _envs_ para os dispositivos conteinerizados:
 
 ```bash
 sudo python scripts/envs_manage/create_container_env.py -c envs_requirements/container/client_tensorflow.requirements.txt envs_requirements/container/server.requirements.txt -std
-```
+``` -->
 
 Criando _env_ para o script de análise:
 
 ```bash
-sudo python scripts/envs_manage/create_container_env.py -l envs_requirements/local/analysis.requirements.txt -std
+sudo python scripts/envs_manage/create_container_env.py -l requirements/local/analysis.requirements.txt -std
 ```
 
 <!-- # Executar o MiniNetFED com um exemplo

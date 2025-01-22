@@ -13,11 +13,11 @@ Siga o passo-a-passo descrito na documentação para instalar o MininetFed na m�
 
 <!-- > Atenção: Vá até antes da seção "Executar o MininetFED com um exemplo". A versão atual do MininetFed **não** é retrocompatível com o sistema de .yaml e os exemplos antigos ainda não foram atualizados. -->
 
-> Note: Para fazer o git clone do reposeitório, use o comando a seguir ao invez do sugerido na documentação
+<!-- > Note: Para fazer o git clone do reposeitório, use o comando a seguir ao invez do sugerido na documentação
 >
 > ```shell
 > git clone -b development https://github.com/lprm-ufes/MininetFed.git
-> ```
+> ``` -->
 
 - [Primeiros Passos](docs/pt-br/Primeiros-Passos.md)
 
