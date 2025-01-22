@@ -4,8 +4,35 @@ experiments_analysis:
   save_csv: true
 
   from:
-    - experiment: sbrc_mnist_select_all_same_samples_3
+    # - experiment: sbrc_mnist_select_all_fix
+    #   alias: all
+    # - experiment: sbrc_mnist_select_random_5_fix
+    #   alias: random
+    # - experiment: sbrc_mnist_select_energy_fix
+    #   alias: energy
+
+    #   chart_title: "Dados iid"
+    # chart_title: "Dados balanceados"
+
+    # - experiment: sbrc_mnist_select_all_mild_iid
+    #   alias: all
+    # - experiment: sbrc_mnist_select_random_5_mild_iid
+    #   alias: random
+    # - experiment: sbrc_mnist_select_energy_mild_iid
+    #   alias: energy
+
+    #   chart_title: "Dados mid-iid"
+    # chart_title: "Dados Parcialmente Desbalanceados"
+
+    - experiment: sbrc_mnist_select_all_non_iid
       alias: all
+    - experiment: sbrc_mnist_select_random_5_non_iid
+      alias: random
+    - experiment: sbrc_mnist_select_energy_non_iid
+      alias: energy
+
+      chart_title: "Dados non-iid"
+    #   chart_title: "Dados Desbalanceados"
 
     #   files:
     #     - 17h54m37steste1_sem_criptografia_25_clientes_unbalanced.log
@@ -52,11 +79,16 @@ experiments_analysis:
   graphics:
     # - type: deltaT_per_round
 
-    # - type: mean_acc
     # - type: network_consumption
 
     # - type: n_clients_absolute
-    - type: energy_consumption
+
+    ##################
+    - type: mean_acc
+    # - type: total_energy_consumption_centrais
+    # - type: total_energy_consumption
+    # - type: energy_consumption
+    # - type: total_energy_consumption_all
 # datasets_analysis:
 #   id: [0, 1, 2, 3, 4, 5]
 #   mode: client

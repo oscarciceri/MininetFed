@@ -55,7 +55,7 @@ def analysis(analysis_yaml_path):
                     if csv:
                         f.save_to_csv()
                     dfs.append(
-                        {'name': name, 'experiment': exp_alias, 'df': df, 'netdf': netdf})
+                        {'name': name, 'experiment': exp_alias, 'df': df, 'netdf': netdf, 'from_yaml': experiment})
             else:
                 idx = 0
                 for fileName in os.listdir(f"{FOLDER}/{experiment_name}"):
@@ -79,13 +79,19 @@ def analysis(analysis_yaml_path):
                         if csv:
                             f.save_to_csv()
                         dfs.append(
-                            {'name': name, 'experiment': exp_alias, 'df': df, 'netdf': netdf})
+                            {'name': name, 'experiment': exp_alias, 'df': df, 'netdf': netdf, 'from_yaml': experiment})
                         idx += 1
 
         plot = Graphics(dfs, experiments_analysis.get("save_graphics"), FOLDER)
 
         for graphic in experiments_analysis["graphics"]:
-            if graphic['type'] == 'energy_consumption':
+            if graphic['type'] == 'total_energy_consumption':
+                plot.total_energy_consumption()
+            elif graphic['type'] == 'total_energy_consumption_all':
+                plot.total_energy_consumption_all()
+            elif graphic['type'] == 'total_energy_consumption_centrais':
+                plot.energy_consumption_centrais()
+            elif graphic['type'] == 'energy_consumption':
                 plot.energy_consumption()
             elif graphic['type'] == 'mean_acc':
                 plot.mean_acc()
