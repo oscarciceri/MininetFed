@@ -7,7 +7,9 @@ import os
 import pickle
 import sys
 
-from .trainer_utils import read_energy
+from datetime import datetime
+
+from .trainer_utils import read_energy, copiar_arquivo
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -97,10 +99,10 @@ class TrainerMNIST:
         # select a random number ranging from 10000 < num_samples < 20000
         self.num_samples = -1
 
-        if mode == 'random':
+        if 'r_samples' in mode:
             self.num_samples = int(np.random.choice(
                 np.arange(10000, 20000, 1000)))
-        elif mode == 'random_same':
+        elif 'same_samples' in mode:
             self.num_samples = int(args['num_samples'])
 
         print(
@@ -170,7 +172,25 @@ class TrainerMNIST:
         test_labels = tf.one_hot(np.squeeze(
             test_labels), depth=num_classes).numpy()
 
-        if self.mode == 'random' or self.mode == 'random_same':
+        if 'n_classes' in self.mode:
+            # Criar um gerador de números aleatórios usando self.id como seed
+            rng = np.random.default_rng(seed=(self.id + 1))
+
+            # Selecionar n_classes de maneira aleatória e determinística com base na seed
+            selected_classes = rng.choice(
+                num_classes, size=self.n_classes_per_trainer, replace=False)
+
+            # Filtrar índices para as classes selecionadas
+            train_indices = np.where(
+                np.isin(np.argmax(train_labels, axis=1), selected_classes))[0]
+            test_indices = np.where(
+                np.isin(np.argmax(test_labels, axis=1), selected_classes))[0]
+
+            # Selecionar os dados correspondentes
+            train_images, train_labels = train_images[train_indices], train_labels[train_indices]
+            test_images, test_labels = test_images[test_indices], test_labels[test_indices]
+
+        if 'random' in self.mode:
             # Calculate the proportion of test samples
             test_ratio = test_images.shape[0] / \
                 (train_images.shape[0] + test_images.shape[0])
@@ -189,15 +209,7 @@ class TrainerMNIST:
             train_labels = train_labels[train_indices]
             test_images = test_images[test_indices]
             test_labels = test_labels[test_indices]
-        elif self.mode == 'class':
-            selected_label = self.id % num_classes
-            train_indices = np.where(
-                np.argmax(train_labels, axis=1) == selected_label)[0]
-            test_indices = np.where(
-                np.argmax(test_labels, axis=1) == selected_label)[0]
 
-            train_images, train_labels = train_images[train_indices], train_labels[train_indices]
-            test_images, test_labels = test_images[test_indices], test_labels[test_indices]
         elif self.mode == 'all':
             pass
 
@@ -228,6 +240,10 @@ class TrainerMNIST:
         self.model.set_weights(weights)
 
     def set_stop_true(self):
+        self.now = datetime.now()
+        now_str = self.now.strftime("%Hh%Mm%Ss")
+        copiar_arquivo("../tmp/consumption.log",
+                       f"client_log/{now_str}{self.name}.log")
         self.stop_flag = True
 
     def get_stop_flag(self):
