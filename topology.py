@@ -9,6 +9,8 @@ from mininet.log import info, setLogLevel
 from mn_wifi.sixLoWPAN.link import LoWPAN
 from mininet.term import makeTerm
 from containernet.energy import Energy
+from mn_wifi.energy import BitZigBeeEnergy
+# from mn_wifi.bitEnergy import BitEnergy
 
 from federated.net import MininetFed
 from federated.node import ClientSensor, ServerSensor
@@ -17,12 +19,13 @@ from federated.node import ClientSensor, ServerSensor
 volume = "/flw"
 volumes = [f"{Path.cwd()}:" + volume, "/tmp/.X11-unix:/tmp/.X11-unix:rw"]
 
-server_args = {"min_trainers": 8, "num_rounds": 20, "stop_acc": 0.99}
+server_args = {"min_trainers": 8, "num_rounds": 20,
+               "stop_acc": 0.99, 'client_selector': 'All'}
 client_args = {"mode": 'random_same', 'num_samples': 15000}
 
 
 def topology():
-    net = MininetFed(ipBase='10.0.0.0/24', iot_module='mac802154_hwsim', controller=[], experiment_name="sbrc_mnist_select_all_same_samples_3",
+    net = MininetFed(ipBase='10.0.0.0/24', iot_module='mac802154_hwsim', controller=[], experiment_name="sbrc_mnist_energy_test",
                      experiments_folder="sbrc", date_prefix=False, default_volumes=volumes, topology_file=sys.argv[0])
 
     t = 5
@@ -75,6 +78,7 @@ def topology():
                                      dimage='mininetfed:clientsensor'
 
                                      ))
+    net.addAutoStop6()
     # i = 2
     # client2 = net.addSensor(f'sta{i}', privileged=True, environment={"DISPLAY": ":0"},  # ip6='fe80::2/64',
     #                         cls=ClientSensor, script="client/client.py",
@@ -169,6 +173,7 @@ def topology():
     net.addLink(clients[4], clients[6], cls=LoWPAN)
     net.addLink(clients[4], clients[7], cls=LoWPAN)
     net.addLink(ap1, h1)
+    net.addLinkAutoStop(ap1)
     # net.addLink(ap1, client2, cls=LoWPAN)
     # net.addLink(ap1, client3, cls=LoWPAN)
     # net.addLink(ap1, client4, cls=LoWPAN)
@@ -194,6 +199,7 @@ def topology():
 
     info("*** Measuring energy consumption\n")
     Energy(net.sensors)
+    BitZigBeeEnergy(net.sensors)
 
     info('*** Running devices...\n')
     net.configRPLD(net.sensors + net.apsensors)
@@ -209,7 +215,9 @@ def topology():
     info('*** Server...\n')
     srv1.run(broker_addr=broker_addr,
              experiment_controller=net.experiment_controller, args=server_args)
-
+    # sleep(1)
+    # srv1.auto_stop()
+    # net.wait_experiment(broker_addr=broker_addr)
     sleep(5)
 
     info('*** Clients...\n')
@@ -233,8 +241,11 @@ def topology():
 
     h1.cmd("ifconfig h1-eth1 down")
 
-    info('*** Running CLI...\n')
-    CLI(net)
+    # info('*** Running CLI...\n')
+    # CLI(net)
+    info('*** Running Autostop...\n')
+    # srv1.auto_stop()
+    net.wait_experiment(broker_addr=broker_addr)
 
     os.system('pkill -9 -f xterm')
 
