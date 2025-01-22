@@ -34,6 +34,8 @@ if len(sys.argv) == 5 and (sys.argv[4] is not None):
 
 # used by json.dump when it enconters something that can't be serialized
 
+selected = False
+
 
 def default(obj):
     if type(obj).__module__ == np.__name__:
@@ -98,9 +100,11 @@ the client trains and send the training results back.
 
 
 def on_message_selection(client, userdata, message):
+    global selected
     msg = json.loads(message.payload.decode("utf-8"))
     if msg['id'] == CLIENT_NAME:
         if bool(msg['selected']) == True:
+            selected = True
             print(color.BOLD_START + 'new round starting' + color.BOLD_END)
             print(
                 f'trainer was selected for training this round and will start training!')
@@ -115,6 +119,7 @@ def on_message_selection(client, userdata, message):
             client.publish('minifed/preAggQueue', response)
             print(f'finished training and sent weights!')
         else:
+            selected = False
             print(color.BOLD_START + 'new round starting' + color.BOLD_END)
             print(f'trainer was not selected for training this round')
 
@@ -122,11 +127,13 @@ def on_message_selection(client, userdata, message):
 
 
 def on_message_agg(client, userdata, message):
+    global selected
     print(f'received aggregated weights!')
     msg = json.loads(message.payload.decode("utf-8"))
     agg_weights = [np.asarray(w, dtype=np.float32)
                    for w in msg["agg_response"][CLIENT_NAME]["weights"]]
     results = trainer.all_metrics()
+    results['selected'] = selected
     response = json.dumps(
         {'id': CLIENT_NAME, "metrics": results}, default=default)
     trainer.update_weights(agg_weights)
