@@ -6,20 +6,30 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-# Define o diretório raiz do projeto (o local deste script)
-RAIZ=$(dirname "$(realpath "$0")")
+# Obtém o diretório raiz do script
+SCRIPT_DIR=$(dirname "$0")
 
 # Itera sobre cada argumento (nome de arquivo Python)
 for file in "$@"; do
     # Verifica se o arquivo existe
     if [ -f "$file" ]; then
-        # Extrai o diretório do arquivo
-        FILE_DIR=$(dirname "$(realpath "$file")")
+        # Nome do arquivo base
+        BASENAME=$(basename "$file")
 
-        echo "Executando: sudo PYTHONPATH=$RAIZ python3 $file -s"
-        
-        # Executa o arquivo Python com o PYTHONPATH definido para a raiz
-        sudo PYTHONPATH="$RAIZ" python3 "$file"
+        # Caminho de destino no diretório raiz do script
+        DEST_FILE="$SCRIPT_DIR/$BASENAME"
+
+        # Copia o arquivo para o diretório raiz do script
+        echo "Copiando $file para $DEST_FILE"
+        cp "$file" "$DEST_FILE"
+
+        # Executa o arquivo copiado
+        echo "Executando: sudo python3 $DEST_FILE"
+        sudo python3 "$DEST_FILE"
+
+        # Remove o arquivo copiado após a execução
+        echo "Removendo $DEST_FILE"
+        rm "$DEST_FILE"
     else
         echo "Erro: Arquivo $file não encontrado."
     fi
