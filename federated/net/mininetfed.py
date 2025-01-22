@@ -2,8 +2,10 @@
 from containernet.net import Containernet
 from containernet.cli import CLI
 
-from ..node import Broker, Monitor, AutoStop
+from ..node import Broker, Monitor, AutoStop, AutoStop6
 from ..experiment import Experiment
+
+from mn_wifi.sixLoWPAN.link import LoWPAN
 
 
 class MininetFed(Containernet):
@@ -24,6 +26,17 @@ class MininetFed(Containernet):
             self.experiment_controller.copyFileToExperimentFolder(
                 topology_file)
         super().__init__(**kwargs)
+
+    def addAutoStop6(self):
+        self.auto_stop = self.addSensor('auto_stop', privileged=True, environment={"DISPLAY": ":0"},
+                                        cls=AutoStop6,
+                                        ip6=f'fe80::fffe/64', volumes=self.default_volumes,
+                                        dimage='mininetfed:serversensor'
+
+                                        )
+
+    def addLinkAutoStop(self, device2):
+        self.addLink(self.auto_stop, device2, cls=LoWPAN)
 
     def addFlHost(self, name, cls=None, start_priority=0, **params):
         """
@@ -108,8 +121,8 @@ class MininetFed(Containernet):
     #     self.staticArp()
     #     self.configRPLD(self.sensors + self.apsensors)
 
-    def wait_experiment(self, start_cli=False):
+    def wait_experiment(self, broker_addr=None, start_cli=False):
         if start_cli:
             CLI(self)
         else:
-            self.auto_stop.auto_stop()
+            self.auto_stop.auto_stop(broker_addr)

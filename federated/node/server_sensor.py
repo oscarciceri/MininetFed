@@ -46,3 +46,11 @@ class ServerSensor (DockerSensor):
         #          self.broker_addr)
 
         makeTerm(self, cmd=cmd)
+
+    def auto_stop(self, verbose=True):
+        try:
+            self.cmd(
+                f'bash -c "cd {VOLUME_FOLDER} && python3 stop.py {self.broker_addr}"', verbose=verbose)
+
+        except:
+            print(color.BLUE+"\nKeyboard interrupt: manual continue"+color.RESET)

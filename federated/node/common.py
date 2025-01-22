@@ -2,6 +2,7 @@ VOLUME_FOLDER = 'flw'
 CPU_PERIOD = 100000
 ENVS_FOLDER = 'envs'
 DEFAULT_IMAGE = "mininetfed:container"
+DEFAULT_IMAGE_6 = 'mininetfed:serversensor'
 
 
 class color:
