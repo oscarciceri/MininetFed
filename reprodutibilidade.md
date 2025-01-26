@@ -56,7 +56,7 @@ sudo ./main.sh casos_de_uso/sbrc_2025/topology_all.py casos_de_uso/sbrc_2025/top
 ## Gráfico de Consumo de Energia Acumulado
 
 ```shell
-. env/analysis/bin/activate
+. envs/analysis/bin/activate
 ```
 
 ```shell
@@ -68,7 +68,7 @@ python analysis.py casos_de_uso/sbrc_2025/energia_all.yaml casos_de_uso/sbrc_202
 > Caso tenha pulado o passo anterior
 >
 > ```shell
-> . env/analysis/bin/activate
+> . envs/analysis/bin/activate
 > ```
 
 ```shell

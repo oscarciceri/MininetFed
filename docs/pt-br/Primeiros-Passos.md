@@ -53,16 +53,16 @@ git clone https://github.com/ramonfontes/containernet.git
 
 <!-- FALTA INCLUIR COMANDOS PARA A INSTALAÇÃO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 
-<!-- Uma vez selecionado o local de instalação de sua preferência, clone ou decompacte os arquivos do containernet e siga com os seguintes comandos
+Uma vez selecionado o local de instalação de sua preferência, clone ou decompacte os arquivos do containernet e siga com os seguintes comandos
 
-```
+```shell
 cd containernet
 ```
 
-```
+```shell
 sudo util/install.sh -W
 
-``` -->
+```
 
 ## Gerando as imagens docker
 
