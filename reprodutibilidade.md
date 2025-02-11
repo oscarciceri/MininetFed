@@ -29,7 +29,7 @@ Executar o arquivo topology_all.py utilizando o script de execução conforme mo
 sudo ./main.sh casos_de_uso/sbrc_2025/topology_all.py
 ```
 
-Os resultados da execução estarão na no diretório `sbrc/sbrc_mnist_select_all`
+Os resultados da execução estarão no diretório `sbrc/sbrc_mnist_select_all`
 
 ## Seleção Aleatória (random)
 
@@ -37,7 +37,7 @@ Os resultados da execução estarão na no diretório `sbrc/sbrc_mnist_select_al
 sudo ./main.sh casos_de_uso/sbrc_2025/topology_random.py
 ```
 
-Os resultados da execução estarão na no diretório `sbrc/sbrc_mnist_select_random`
+Os resultados da execução estarão no diretório `sbrc/sbrc_mnist_select_random`
 
 ## Seleção Considerando o Consumo de Energia (energy)
 
@@ -45,7 +45,7 @@ Os resultados da execução estarão na no diretório `sbrc/sbrc_mnist_select_ra
 sudo ./main.sh casos_de_uso/sbrc_2025/topology_energy.py
 ```
 
-Os resultados da execução estarão na no diretório `sbrc/sbrc_mnist_select_energy`
+Os resultados da execução estarão no diretório `sbrc/sbrc_mnist_select_energy`
 
 ## (Alternativa) Executar os 3 de uma só vez
 

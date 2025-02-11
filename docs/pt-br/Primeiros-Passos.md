@@ -11,11 +11,11 @@ git clone -b development https://github.com/lprm-ufes/MininetFed.git
 
 ## Pré requisitos
 
-### Instalar o docker engine
+<!-- ### Instalar o docker engine
 
 Acesse a documentação oficial e siga os passos para a instalação do docker engine:
 
-https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository -->
 
 ### Instalar ContainerNet
 
