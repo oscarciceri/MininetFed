@@ -58,7 +58,7 @@ class MininetFed(Containernet):
         self.apsensor = super().addAPSensor(name, cls, **params)
         return self.apsensor
 
-    def configureMininetFed(self):
+    def configureMininetFedInternalDevices(self):
         self.brk = super().addHost('brk', cls=Broker, mode=self.broker_mode, ext_broker_ip=self.ext_broker_ip, volumes=self.default_volumes,
                                    dimage="mininetfed:broker")
 
@@ -68,14 +68,13 @@ class MininetFed(Containernet):
         self.auto_stop = super().addHost('stop', cls=AutoStop, env='../env',
                                          volumes=self.default_volumes)
 
-        self.addLink(self.default_connection, self.brk)
-        self.addLink(self.default_connection, self.mnt)
-        self.addLink(self.default_connection, self.auto_stop)
+    def connectMininetFedInternalDevices(self, connection="s1"):
+        self.addLink(connection, self.brk)
+        self.addLink(connection, self.mnt)
+        self.addLink(connection, self.auto_stop)
 
     def runFlDevices(self):
-        """
-        Executa dispositivos agrupados por prioridade, na ordem crescente de prioridade.
-        """
+
         # Executa o broker e inicializa outros componentes
         self.brk.run()
 
@@ -85,11 +84,6 @@ class MininetFed(Containernet):
         # Executa serviços adicionais usando o endereço do broker
         self.auto_stop.run(broker_addr=self.broker_addr)
         self.mnt.run(broker_addr=self.broker_addr)
-
-        # Ordena as prioridades e executa os dispositivos por prioridade
-        for priority in sorted(self.nodes.keys()):
-            for device in self.nodes[priority]:
-                device.run()
 
     # def start(self):
 
