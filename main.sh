@@ -6,7 +6,6 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-
 # Itera sobre cada argumento (nome de arquivo Python)
 for file in "$@"; do
     # Verifica se o arquivo existe
@@ -26,8 +25,10 @@ for file in "$@"; do
         sudo python3 "$DEST_FILE"
 
         # Remove o arquivo copiado após a execução
-        echo "Removendo $DEST_FILE"
-        rm "$DEST_FILE"
+        if [ "$DEST_FILE" != "$file" ]; then
+            echo "Removendo $DEST_FILE"
+            rm "$DEST_FILE"
+        fi
     else
         echo "Erro: Arquivo $file não encontrado."
     fi
