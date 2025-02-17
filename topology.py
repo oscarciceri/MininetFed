@@ -20,8 +20,9 @@ volume = "/flw"
 volumes = [f"{Path.cwd()}:" + volume, "/tmp/.X11-unix:/tmp/.X11-unix:rw"]
 
 server_args = {"min_trainers": 8, "num_rounds": 20,
-               "stop_acc": 0.99, 'client_selector': 'All'}
-client_args = {"mode": 'random_same', 'num_samples': 15000}
+               "stop_acc": 0.999, 'client_selector': 'All'}
+client_args = {"mode": 'random same_samples',
+               'num_samples': 15000}
 
 
 def topology():
@@ -43,9 +44,9 @@ def topology():
 
     clients = []
     for i in range(8):
-        clients.append(net.addHost(f'sta{i}', cls=Client, script="server/server.py",
-                                   args=server_args, volumes=volumes,
-                                   dimage='mininetfed:server',
+        clients.append(net.addHost(f'sta{i}', cls=Client, script="client/client.py",
+                                   args=client_args, volumes=volumes,
+                                   dimage='mininetfed:client',
                                    env="../env",
                                    numeric_id=i
                                    )
@@ -68,6 +69,12 @@ def topology():
     net.runFlDevices()
     srv1.run(broker_addr=net.broker_addr,
              experiment_controller=net.experiment_controller)
+
+    # net.wait_experiment(broker_addr=net.broker_addr)
+    sleep(3)
+    for client in clients:
+        client.run(broker_addr=net.broker_addr,
+                   experiment_controller=net.experiment_controller)
     # ap1.cmd("nohup mosquitto -c /etc/mosquitto/mosquitto.conf &")
     # makeTerm(
     #     ap1, cmd="bash -c 'tail -f /var/log/mosquitto/mosquitto.log'")
