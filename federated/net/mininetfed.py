@@ -115,8 +115,8 @@ class MininetFed(Containernet):
     #     self.staticArp()
     #     self.configRPLD(self.sensors + self.apsensors)
 
-    def wait_experiment(self, broker_addr=None, start_cli=False):
+    def wait_experiment(self, start_cli=False):
         if start_cli:
             CLI(self)
         else:
-            self.auto_stop.auto_stop(broker_addr)
+            self.auto_stop.auto_stop(self.broker_addr)

@@ -11,16 +11,26 @@ from federated.node import Server, Client
 volume = "/flw"
 volumes = [f"{Path.cwd()}:" + volume, "/tmp/.X11-unix:/tmp/.X11-unix:rw"]
 
-server_args = {"min_trainers": 8, "num_rounds": 20,
+experiment_config = {
+    "ipBase": "10.0.0.0/24",
+    "experiments_folder": "experiments",
+    "experiment_name": "ipv4_test",
+    "date_prefix": False
+}
+
+server_args = {"min_trainers": 8, "num_rounds": 1,
                "stop_acc": 0.999, 'client_selector': 'All'}
 client_args = {"mode": 'random same_samples',
                'num_samples': 15000}
 
 
 def topology():
-    net = MininetFed(ipBase='10.0.0.0/24',
-                     controller=[], experiment_name="ipv4_test",
-                     experiments_folder="experiments", date_prefix=False, default_volumes=volumes, topology_file=sys.argv[0])
+    net = MininetFed(
+        **experiment_config,
+        controller=[],
+        default_volumes=volumes,
+        topology_file=sys.argv[0]
+    )
 
     info('*** Adding Nodes...\n')
     s1 = net.addSwitch("s1", failMode='standalone')
@@ -58,17 +68,18 @@ def topology():
 
     info('*** Running FL internal devices...\n')
     net.runFlDevices()
+
     srv1.run(broker_addr=net.broker_addr,
              experiment_controller=net.experiment_controller)
 
-    # net.wait_experiment(broker_addr=net.broker_addr)
+    # net.wait_experiment()
     sleep(3)
     for client in clients:
         client.run(broker_addr=net.broker_addr,
                    experiment_controller=net.experiment_controller)
 
     info('*** Running Autostop...\n')
-    net.wait_experiment(start_cli=True)
+    net.wait_experiment(start_cli=False)
 
     # os.system('pkill -9 -f xterm')
 
