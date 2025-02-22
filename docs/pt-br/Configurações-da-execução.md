@@ -26,7 +26,7 @@ Instancia uma rede Mininet com alguns componentes básicos já incluidos. Esses 
 
 ### broker mqtt
 
-Busca por padrão o arquivo de configurações `mosquitto.conf` na pasta raiz do MininetFed
+Busca por padrão o arquivo de configurações `mosquitto/mosquitto.conf` na pasta raiz do MininetFed
 
 ### monitor de rede
 

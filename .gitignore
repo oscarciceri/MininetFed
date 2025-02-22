@@ -24,3 +24,4 @@ client/data/*.zip
 data/
 client_log/
 ~client_log/graph.py
+TODO.md

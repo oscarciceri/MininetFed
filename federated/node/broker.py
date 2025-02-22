@@ -34,7 +34,7 @@ class Broker (Docker):
 
         if self.mode == "internal":
             makeTerm(
-                self, cmd=f'bash -c "mosquitto -c {VOLUME_FOLDER}/mosquitto.conf"')
+                self, cmd=f'bash -c "mosquitto -c {VOLUME_FOLDER}/mosquitto/mosquitto.conf"')
         elif self.mode == "external":
             self.ext = ExtBroker()
             self.ext.run_ext_brk()
