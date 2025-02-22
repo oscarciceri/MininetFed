@@ -39,11 +39,7 @@ def on_message_continue(client, userdata, message):
 
 
 def cleanup_and_exit(client):
-    # print(Color.BLUE + "Cleaning up and disconnecting..." + Color.RESET)
-    client.loop_stop()  # Stop the loop
-    client.disconnect()  # Disconnect from the broker
-    time.sleep(5)
-    sys.exit(0)  # Exit cleanly
+    client.disconnect()
 
 
 client = mqtt.Client('auto_stop')
@@ -52,7 +48,8 @@ client.message_callback_add('minifed/stopQueue', on_message_stop)
 client.message_callback_add('minifed/autoWaitContinue', on_message_continue)
 
 try:
-    client.connect(BROKER_ADDR, bind_port=1883, keepalive=0)
+    client.connect(BROKER_ADDR, bind_port=1883,
+                   keepalive=0)
     print(Color.YELLOW + "Waiting for messages..." + Color.RESET)
     client.loop_forever()  # Start network loop
 except KeyboardInterrupt:
