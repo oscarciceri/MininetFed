@@ -1,3 +1,4 @@
+import importlib
 import paho.mqtt.client as mqtt
 import numpy as np
 
@@ -9,7 +10,18 @@ try:
 except:
     pass
 
-from trainer import Trainer
+# from trainer import Trainer
+
+
+def criar_objeto(pacote, nome_classe, **atributos):
+    try:
+        modulo = importlib.import_module(f"{pacote}")
+        classe = getattr(modulo, nome_classe)  # Obtém a classe do módulo
+        return classe(**atributos)  # Instancia a classe
+    except (ModuleNotFoundError, AttributeError) as e:
+        print(f"Erro: {e}", file=sys.stderr)
+        return None
+
 
 n = len(sys.argv)
 
@@ -28,6 +40,10 @@ CLIENT_ID = int(sys.argv[3])
 CLIENT_INSTANTIATION_ARGS = {}
 if len(sys.argv) == 5 and (sys.argv[4] is not None):
     CLIENT_INSTANTIATION_ARGS = json.loads(sys.argv[4])
+
+trainer_class = CLIENT_INSTANTIATION_ARGS.get("trainer_class")
+if trainer_class is None:
+    trainer_class = "TrainerMNIST"
 
 # print(f"{CLIENT_INSTANTIATION_ARGS}", file=sys.stderr)
 # print(f"{sys.argv}", file=sys.stderr)
@@ -154,20 +170,23 @@ def on_message_stop(client, userdata, message):
     exit()
 
 
-def get_trainer():
-    # # try:
-    # if CLIENT_INSTANTIATION_ARGS is not None:
-    return Trainer(CLIENT_ID, CLIENT_NAME, CLIENT_INSTANTIATION_ARGS)
-    # else:
-    #     return Trainer(CLIENT_ID, CLIENT_NAME, {})
+# def get_trainer():
+#     # # try:
+#     # if CLIENT_INSTANTIATION_ARGS is not None:
 
-    # # old trainer standard
-    # except:
-    #     return Trainer(CLIENT_ID, MODE)
+#     return criar_objeto("trainer", trainer_class, id=CLIENT_ID, name=CLIENT_NAME, args=CLIENT_INSTANTIATION_ARGS)
+#     # else:
+#     #     return Trainer(CLIENT_ID, CLIENT_NAME, {})
+
+#     # # old trainer standard
+#     # except:
+#     #     return Trainer(CLIENT_ID, MODE)
 
 
 # connect on queue and send register
-trainer = get_trainer()
+
+trainer = criar_objeto("trainer", trainer_class, id=CLIENT_ID,
+                       name=CLIENT_NAME, args=CLIENT_INSTANTIATION_ARGS)
 client = mqtt.Client(str(CLIENT_NAME))
 client.connect(BROKER_ADDR, keepalive=0)
 client.on_connect = on_connect
