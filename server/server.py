@@ -48,6 +48,7 @@ def server():
     log_file = sys.argv[2]
     min_trainers = server_args["min_trainers"]
     client_selector = server_args["client_selector"]
+    aggregator = server_args["aggregator"]
     nun_rounds = server_args["num_rounds"]
     stop_acc = server_args["stop_acc"]
     client_args = server_args.get("client")
@@ -125,7 +126,7 @@ def server():
 
     # connect on queue
     controller = Controller(min_trainers=min_trainers,
-                            num_rounds=nun_rounds, client_selector=client_selector)
+                            num_rounds=nun_rounds, client_selector=client_selector, aggregator=aggregator)
     client = mqtt.Client('server')
     client.connect(broker_addr, bind_port=1883)
     client.on_connect = on_connect

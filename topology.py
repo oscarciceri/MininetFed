@@ -19,7 +19,7 @@ experiment_config = {
 }
 
 server_args = {"min_trainers": 8, "num_rounds": 1,
-               "stop_acc": 0.999, 'client_selector': 'All'}
+               "stop_acc": 0.999, 'client_selector': 'All', 'aggregator': "FedAvg"}
 client_args = {"mode": 'random same_samples',
                'num_samples': 15000}
 

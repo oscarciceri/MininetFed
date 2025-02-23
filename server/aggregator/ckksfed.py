@@ -1,8 +1,8 @@
 import sys
 import numpy as np
 
-from .fed_avg import FedAvg
-from .fed_sketch import FedSketchAgg
+from .fedavg import FedAvg
+from .fedsketch import FedSketchAgg
 
 import torch  # Precisa importar isso para o Pyfhel funcional
 from Pyfhel import Pyfhel, PyCtxt

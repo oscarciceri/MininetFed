@@ -2,14 +2,25 @@ import random
 import numpy as np
 import pandas as pd
 from clientSelection import *
-from aggregator import Aggregator
+from aggregator import *
+import importlib
 
 client_selectors = {'All': All, 'Random': Random,
                     'LeastEnergyConsumption': LeastEnergyConsumption}
 
 
+def criar_objeto(pacote, nome_classe):
+    try:
+        modulo = importlib.import_module(f"{pacote}.{nome_classe.lower()}")
+        classe = getattr(modulo, nome_classe)  # Obtém a classe do módulo
+        return classe()  # Instancia a classe
+    except (ModuleNotFoundError, AttributeError) as e:
+        print(f"Erro: {e}")
+        return None
+
+
 class Controller:
-    def __init__(self, min_trainers=2, num_rounds=5, client_selector='Random'):
+    def __init__(self, min_trainers=2, num_rounds=5, client_selector='Random', aggregator="FedAvg"):
         self.trainer_list = []
         self.min_trainers = min_trainers
         # self.trainers_per_round = trainers_per_round
@@ -20,8 +31,9 @@ class Controller:
         self.trainer_samples = []  # save num_samples scale for agg
         self.acc_list = []
         self.mean_acc_per_round = []
-        self.clientSelection = client_selectors[client_selector]()
-        self.aggregator = Aggregator()
+        # client_selectors[client_selector]()
+        self.clientSelection = criar_objeto("clientSelection", client_selector)
+        self.aggregator = criar_objeto("aggregator", aggregator)
         self.metrics = {}
 
     # getters
