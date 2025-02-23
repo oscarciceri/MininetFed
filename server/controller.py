@@ -5,13 +5,10 @@ from clientSelection import *
 from aggregator import *
 import importlib
 
-client_selectors = {'All': All, 'Random': Random,
-                    'LeastEnergyConsumption': LeastEnergyConsumption}
-
 
 def criar_objeto(pacote, nome_classe):
     try:
-        modulo = importlib.import_module(f"{pacote}.{nome_classe.lower()}")
+        modulo = importlib.import_module(f"{pacote}")
         classe = getattr(modulo, nome_classe)  # Obtém a classe do módulo
         return classe()  # Instancia a classe
     except (ModuleNotFoundError, AttributeError) as e:
