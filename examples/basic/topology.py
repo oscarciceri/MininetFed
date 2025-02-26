@@ -14,7 +14,7 @@ volumes = [f"{Path.cwd()}:" + volume, "/tmp/.X11-unix:/tmp/.X11-unix:rw"]
 experiment_config = {
     "ipBase": "10.0.0.0/24",
     "experiments_folder": "experiments",
-    "experiment_name": "ipv4_test",
+    "experiment_name": "basic",
     "date_prefix": False
 }
 
@@ -72,7 +72,6 @@ def topology():
     srv1.run(broker_addr=net.broker_addr,
              experiment_controller=net.experiment_controller)
 
-    net.wait_experiment()
     sleep(3)
     for client in clients:
         client.run(broker_addr=net.broker_addr,
@@ -80,8 +79,6 @@ def topology():
 
     info('*** Running Autostop...\n')
     net.wait_experiment(start_cli=False)
-
-    # os.system('pkill -9 -f xterm')
 
     info('*** Stopping network...\n')
     net.stop()
