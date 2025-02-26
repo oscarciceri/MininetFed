@@ -14,7 +14,7 @@ for file in "$@"; do
         BASENAME=$(basename "$file")
 
         # Caminho de destino no diretório raiz do script
-        DEST_FILE="$BASENAME"
+        DEST_FILE="temp_top.py"
 
         # Copia o arquivo para o diretório raiz do script
         echo "Copiando $file para $DEST_FILE"
