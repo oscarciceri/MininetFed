@@ -13,10 +13,9 @@ class Server (Docker):
     """Node that represents a docker container of a MininerFed server.
     """
 
-    def __init__(self, name, script, env, args={}, dimage=None, cpu_quota=None, volumes=[], mem_limit=None, **kwargs):
+    def __init__(self, name, script, args={}, dimage=None, cpu_quota=None, volumes=[], mem_limit=None, **kwargs):
         self.script = script
         self.args = args
-        self.env = env
 
         if cpu_quota is not None:
             kwargs["cpu_period"] = CPU_PERIOD
@@ -30,9 +29,8 @@ class Server (Docker):
     def run(self, broker_addr, experiment_controller, args={}):
         self.experiment = experiment_controller
         self.broker_addr = broker_addr
-        # Docker.start(self)
 
-        cmd = f"""bash -c "cd {VOLUME_FOLDER} && . {ENVS_FOLDER}/{self.env}/bin/activate && python3 {self.script} {self.broker_addr} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt """
+        cmd = f"""bash -c "python3 {self.script} {self.broker_addr} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt """
 
         if self.args != None and len(self.args) != 0:
             json_str = json.dumps(self.args).replace('"', '\\"')

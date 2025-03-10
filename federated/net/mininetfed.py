@@ -62,15 +62,15 @@ class MininetFed(Containernet):
         self.brk = super().addHost('brk', cls=Broker, mode=self.broker_mode, ext_broker_ip=self.ext_broker_ip, volumes=self.default_volumes,
                                    dimage="mininetfed:broker")
 
-        self.mnt = super().addHost('mnt', cls=Monitor, env='../env', script="network_monitor.py",
-                                   experiment_controller=self.experiment_controller, volumes=self.default_volumes)
+        # self.mnt = super().addHost('mnt', cls=Monitor, env='../env', script="network_monitor.py",
+        #                            experiment_controller=self.experiment_controller, volumes=self.default_volumes)
 
         self.auto_stop = super().addHost('stop', cls=AutoStop, env='../env',
-                                         volumes=self.default_volumes)
+                                         volumes=self.default_volumes, dimage="mininetfed:auto_wait")
 
     def connectMininetFedInternalDevices(self, connection="s1"):
         self.addLink(connection, self.brk)
-        self.addLink(connection, self.mnt)
+        # self.addLink(connection, self.mnt)
         self.addLink(connection, self.auto_stop)
 
     def runFlDevices(self):
@@ -83,7 +83,7 @@ class MininetFed(Containernet):
 
         # Executa serviços adicionais usando o endereço do broker
         self.auto_stop.run(broker_addr=self.broker_addr)
-        self.mnt.run(broker_addr=self.broker_addr)
+        # self.mnt.run(broker_addr=self.broker_addr)
 
     # def start(self):
 

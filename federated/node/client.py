@@ -14,13 +14,12 @@ class Client (Docker):
     """Node that represents a docker container of a MininerFed client.
     """
 
-    def __init__(self, name, script,  env,  numeric_id,  args={}, dimage=None, cpu_quota=None, volumes=[], mem_limit=None, **kwargs):
+    def __init__(self, name, script,  numeric_id,  args={}, dimage=None, cpu_quota=None, volumes=[], mem_limit=None, **kwargs):
         self.name = name
         # self.trainer_mode = trainer_mode
         self.numeric_id = numeric_id
         self.script = script
         self.args = args
-        self.env = env
 
         if cpu_quota is not None:
             kwargs["cpu_period"] = CPU_PERIOD
@@ -35,7 +34,7 @@ class Client (Docker):
         self.experiment = experiment_controller
         self.broker_addr = broker_addr
         # Docker.start(self) {self.trainer_mode}
-        cmd = f"""bash -c "cd {VOLUME_FOLDER} && . {ENVS_FOLDER}/{self.env}/bin/activate && python3 {self.script} {self.broker_addr} {self.name} {self.numeric_id} 2> client_log/{self.name}.txt """
+        cmd = f"""bash -c "python3 {self.script} {self.broker_addr} {self.name} {self.numeric_id} 2> {VOLUME_FOLDER}/client_log/{self.name}.txt """
 
         if self.args != None and len(self.args) != 0:
             json_str = json.dumps(self.args).replace('"', '\\"')

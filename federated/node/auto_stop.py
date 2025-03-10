@@ -16,8 +16,7 @@ class AutoStop (Docker):
         'minifed/stopQueue' or 'minifed/autoWaitContinue'
     """
 
-    def __init__(self, name, env, dimage=DEFAULT_IMAGE,  volumes=[], **kwargs):
-        self.env = env
+    def __init__(self, name, dimage=DEFAULT_IMAGE,  volumes=[], **kwargs):
         Docker.__init__(self, name, dimage=dimage, volumes=volumes, **kwargs)
         self.cmd("ifconfig eth0 down")
 
@@ -29,7 +28,7 @@ class AutoStop (Docker):
     def auto_stop(self, verbose=True):
         try:
             self.cmd(
-                f'bash -c "cd {VOLUME_FOLDER} && . {ENVS_FOLDER}/{self.env}/bin/activate && python3 stop.py {self.broker_addr}"', verbose=verbose)
+                f'bash -c "python3 stop.py {self.broker_addr}"', verbose=verbose)
 
         except:
             print(color.BLUE+"\nKeyboard interrupt: manual continue"+color.RESET)

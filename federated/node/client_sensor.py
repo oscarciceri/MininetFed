@@ -20,7 +20,6 @@ class ClientSensor (DockerSensor):
         self.numeric_id = numeric_id
         self.script = script
         self.args = args
-        # self.env =
 
         if cpu_quota is not None:
             kwargs["cpu_period"] = CPU_PERIOD
@@ -35,7 +34,7 @@ class ClientSensor (DockerSensor):
         self.experiment = experiment_controller
         self.broker_addr = broker_addr
         # DockerSensor.start(self) {self.trainer_mode}
-        cmd = f"""bash -c "cd {VOLUME_FOLDER} && python3 {self.script} {self.broker_addr} {self.name} {self.numeric_id} 2> client_log/{self.name}.txt """
+        cmd = f"""bash -c "python3 {self.script} {self.broker_addr} {self.name} {self.numeric_id} 2> {VOLUME_FOLDER}/client_log/{self.name}.txt """
 
         if self.args != None and len(self.args) != 0:
             json_str = json.dumps(self.args).replace('"', '\\"')

@@ -34,7 +34,7 @@ class ServerSensor (DockerSensor):
         self.broker_addr = broker_addr
         # super().start()
 # . {ENVS_FOLDER}/{self.env}/bin/activate &&
-        cmd = f"""bash -c "cd {VOLUME_FOLDER} && python3 {self.script} {self.broker_addr} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt """
+        cmd = f"""bash -c "python3 {self.script} {self.broker_addr} {self.experiment.getFileName()} 2> {self.experiment.getFileName(extension='''''')}_err.txt """
 
         if self.args != None and len(self.args) != 0:
             json_str = json.dumps(self.args).replace('"', '\\"')

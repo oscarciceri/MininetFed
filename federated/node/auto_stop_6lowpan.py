@@ -27,7 +27,7 @@ class AutoStop6 (DockerSensor):
                  broker_addr)
         try:
             self.cmd(
-                f'bash -c "cd {VOLUME_FOLDER} && python3 stop.py {broker_addr}"', verbose=verbose)
+                f'bash -c "python3 stop.py {broker_addr}"', verbose=verbose)
 
         except:
             print(color.BLUE+"\nKeyboard interrupt: manual continue"+color.RESET)

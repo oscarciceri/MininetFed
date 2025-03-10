@@ -40,7 +40,6 @@ def topology():
     srv1 = net.addHost('srv1', cls=Server, script="server/server.py",
                        args=server_args, volumes=volumes,
                        dimage='mininetfed:server',
-                       env="../env"
                        )
 
     clients = []
@@ -48,7 +47,6 @@ def topology():
         clients.append(net.addHost(f'sta{i}', cls=Client, script="client/client.py",
                                    args=client_args, volumes=volumes,
                                    dimage='mininetfed:client',
-                                   env="../env",
                                    numeric_id=i
                                    )
                        )
@@ -72,14 +70,13 @@ def topology():
     srv1.run(broker_addr=net.broker_addr,
              experiment_controller=net.experiment_controller)
 
-    net.wait_experiment()
     sleep(3)
     for client in clients:
         client.run(broker_addr=net.broker_addr,
                    experiment_controller=net.experiment_controller)
 
     info('*** Running Autostop...\n')
-    net.wait_experiment(start_cli=False)
+    net.wait_experiment(start_cli=True)
 
     # os.system('pkill -9 -f xterm')
 
