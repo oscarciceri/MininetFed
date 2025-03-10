@@ -4,7 +4,6 @@ from tensorflow.keras.optimizers import SGD
 from tensorflow.keras import layers, models
 import tensorflow as tf
 import os
-import pickle
 import sys
 
 from datetime import datetime
