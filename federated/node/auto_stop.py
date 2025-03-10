@@ -1,10 +1,5 @@
 from containernet.node import Docker
-try:
-    from containernet.term import makeTerm
-except:
-    from mininet.term import makeTerm
 
-from ..external_broker import ExtBroker
 
 from .common import *
 

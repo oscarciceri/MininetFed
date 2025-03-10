@@ -1,10 +1,4 @@
 from containernet.node import DockerSensor
-try:
-    from containernet.term import makeTerm
-except:
-    from mininet.term import makeTerm
-
-import json
 
 
 from .common import *

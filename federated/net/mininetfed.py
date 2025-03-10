@@ -31,7 +31,7 @@ class MininetFed(Containernet):
         self.auto_stop = self.addSensor('auto_stop', privileged=True, environment={"DISPLAY": ":0"},
                                         cls=AutoStop6,
                                         ip6=f'fe80::fffe/64', volumes=self.default_volumes,
-                                        dimage='mininetfed:serversensor'
+                                        dimage="mininetfed:auto_wait6"
 
                                         )
 
@@ -65,7 +65,7 @@ class MininetFed(Containernet):
         # self.mnt = super().addHost('mnt', cls=Monitor, env='../env', script="network_monitor.py",
         #                            experiment_controller=self.experiment_controller, volumes=self.default_volumes)
 
-        self.auto_stop = super().addHost('stop', cls=AutoStop, env='../env',
+        self.auto_stop = super().addHost('stop', cls=AutoStop,
                                          volumes=self.default_volumes, dimage="mininetfed:auto_wait")
 
     def connectMininetFedInternalDevices(self, connection="s1"):
