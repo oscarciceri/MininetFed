@@ -12,6 +12,10 @@ setup(
     author_email='johann.bastos@edu.ufes.br',
     url='https://github.com/lprm-ufes/MininetFed',
     packages=find_packages(exclude=('client*', 'analysis*')),
+    include_package_data=True,
+    package_data={
+        'mininetfed.scripts': ['clean.sh'],
+    },
     entry_points={
         'console_scripts': [
             'mnf_clean=scripts.clean:main',
