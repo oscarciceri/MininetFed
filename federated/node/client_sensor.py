@@ -30,7 +30,7 @@ class ClientSensor (DockerSensor):
 
         self.cmd("ifconfig eth0 down")
 
-    def run(self, broker_addr, experiment_controller, args={}):
+    def run(self, broker_addr, experiment_controller):
         self.experiment = experiment_controller
         self.broker_addr = broker_addr
         # DockerSensor.start(self) {self.trainer_mode}

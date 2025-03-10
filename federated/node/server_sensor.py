@@ -29,7 +29,7 @@ class ServerSensor (DockerSensor):
         # funcionar como gateway
         self.cmd("iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE")
 
-    def run(self, broker_addr, experiment_controller, args={}):
+    def run(self, broker_addr, experiment_controller):
         self.experiment = experiment_controller
         self.broker_addr = broker_addr
         # super().start()
