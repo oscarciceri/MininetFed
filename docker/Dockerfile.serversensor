@@ -43,6 +43,7 @@ EXPOSE 8883
 # Copy the requirements file into the container
 
 COPY ../requirements/container/server.requirements.txt .
+COPY ../server /server
 
 # Install the Python dependencies
 RUN pip install --no-cache-dir -r server.requirements.txt 
