@@ -1,6 +1,3 @@
-import yaml
-
-
 def device_definition(device: dict) -> dict:
     input_string = device["def"]
     parts = input_string.split()
@@ -27,16 +24,16 @@ def link_definition(link: dict) -> dict:
     return result
 
 
-class Config:
-    def __init__(self, filename):
-        with open(filename, 'r') as f:
-            self.config = yaml.safe_load(f)
+# class Config:
+#     def __init__(self, filename):
+#         with open(filename, 'r') as f:
+#             self.config = yaml.safe_load(f)
 
-    def get(self, key):
-        return self.config.get(key)
+#     def get(self, key):
+#         return self.config.get(key)
 
-    def data(self):
-        return self.config
+#     def data(self):
+#         return self.config
 
 # # Exemplo de uso
 # config = Config('flower/config.yaml')
