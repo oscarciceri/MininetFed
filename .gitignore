@@ -25,3 +25,5 @@ data/
 client_log/
 ~client_log/graph.py
 TODO.md
+mininetfed.egg-info/
+build/
