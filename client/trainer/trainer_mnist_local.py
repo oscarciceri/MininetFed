@@ -12,7 +12,7 @@ from .trainer_utils import read_energy, copiar_arquivo
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-DATASET_PATH = 'client/data/MNIST'
+DATASET_PATH = 'flw/data/MNIST'
 
 
 class MNISTLoader:

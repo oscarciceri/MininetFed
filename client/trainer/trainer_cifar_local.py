@@ -10,7 +10,7 @@ from .trainer_utils import read_energy
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-DATASET_PATH = 'client/data/cifar-10-batches-py'
+DATASET_PATH = 'flw/data/cifar-10-batches-py'
 
 
 class TrainerCifar:

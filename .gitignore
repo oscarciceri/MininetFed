@@ -17,11 +17,11 @@ docs/env/
 envs/
 sbrc/
 
-client/data/cifar-10-batches-py/
-client/data/mnist.npz
+# client/data/cifar-10-batches-py/
+# client/data/mnist.npz
 # client/data/*.csv
-client/data/*.zip
-data/
+# client/data/*.zip
+# data/
 client_log/
 ~client_log/graph.py
 TODO.md
