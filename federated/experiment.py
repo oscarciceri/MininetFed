@@ -11,8 +11,13 @@ class Experiment:
         self.name = experiment_name
         self.experiments_folder = experiments_folder
         self.create_new = create_new
-
+        self.create_client_log_folder()
         self.create_folder()
+
+    def create_client_log_folder():
+        caminho = Path("client_log")
+        if not caminho.exists():
+            os.makedirs(caminho)
 
     def create_folder(self):
         # Salve a máscara atual
