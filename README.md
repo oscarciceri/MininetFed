@@ -1,23 +1,31 @@
 # MiniNetFED
 
 <img align="left" src="https://github.com/lprm-ufes/MininetFed/blob/main/FED.svg" alt="logo" width="225"/>
-MiniNetFED is a tool for emulating federated learning environments.
 
-Its main features include:
-* Defining network characteristics of the server and clients
-* Defining RAM and CPU allocation for the server and clients
-* Defining client groups
-* Facilitating the implementation of new aggregation and client selection functions
-* Allowing the implementation of new trainers (model + dataset + manipulations)
+O MininetFed é uma ferramenta de emulação de ambientes de aprendizado federado baseada no Mininet e no Containernet.
 
-# Getting Started with MiniNetFED
+A suas principais funcionalidades incluem:
 
-Visit the wiki to learn more
-[Link](https://github.com/lprm-ufes/MininetFed/wiki)
+- Adição de novos _nodes_ Mininet: Server, Client
+  - Esses _nodes_ conteinerizados permitem configurar características de suas conexões, disponibilidade de RAM, CPI etc.
+- Definição automática de um ambiente de comunicação por meio de Mqtt
+- Facilitar a implementação de novas funções de agregação e de seleção de clientes
+- Permitir a implementação de novos treinadores que serão executados nos clientes (modelo + dataset + manipulações)
 
-## Installation Video
+# Primeiros passos com o MiniNetFED
+
+Acesse a documentação para saber mais
+[Link](https://github.com/lprm-ufes/MininetFed/blob/development/docs/pt-br/Primeiros-Passos.md)
+
+<!-- ## Vídeo de instalação
 
 [Link](https://youtu.be/G8hIIM3Xmr4)
 
-## Usage Demonstration Video:
-[Link](https://youtu.be/ZyunOvp50IQ)
+## Vídeo de demonstração da utilização:
+
+[Link](https://youtu.be/ZyunOvp50IQ) -->
+
+# Documentação completa
+
+[Link](https://github.com/lprm-ufes/MininetFed/tree/development/docs)
+
