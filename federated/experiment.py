@@ -14,7 +14,7 @@ class Experiment:
         self.create_client_log_folder()
         self.create_folder()
 
-    def create_client_log_folder():
+    def create_client_log_folder(self):
         caminho = Path("client_log")
         if not caminho.exists():
             os.makedirs(caminho)
