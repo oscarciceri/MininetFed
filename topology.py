@@ -18,7 +18,7 @@ experiment_config = {
     "date_prefix": False
 }
 
-server_args = {"min_trainers": 8, "num_rounds": 1,
+server_args = {"min_trainers": 4, "num_rounds": 3,
                "stop_acc": 0.999, 'client_selector': 'All', 'aggregator': "FedAvg"}
 client_args = {"mode": 'random same_samples',
                'num_samples': 15000, "trainer_class": "TrainerMNIST"}
@@ -43,7 +43,7 @@ def topology():
                        )
 
     clients = []
-    for i in range(8):
+    for i in range(server_args["min_trainers"]):
         clients.append(net.addHost(f'sta{i}', cls=Client, script="client/client.py",
                                    args=client_args, volumes=volumes,
                                    dimage='mininetfed:client',
