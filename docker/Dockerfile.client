@@ -45,27 +45,26 @@ EXPOSE 1883
 EXPOSE 8883
 
 # Copia requisitos e cliente
-COPY ../requirements/container/client_he.requirements.txt .
+COPY ../requirements/container/client_tensorflow.requirements.txt .
 COPY ../client /client
 
 # Instala dependências Python do projeto
-RUN python3 -m pip install --no-cache-dir -r client_he.requirements.txt
+RUN python3 -m pip install --no-cache-dir -r client_tensorflow.requirements.txt
 
 # Clona Pyfhel com submódulos
-WORKDIR /opt
-RUN git clone --recursive https://github.com/ibarrond/Pyfhel.git && \
-    cd Pyfhel && \
-    git checkout v3.4.2 && \
-    git submodule update --init --recursive
+# WORKDIR /opt
 
-# Compila o backend SEAL (requisito do Pyfhel)
-RUN cmake -S /opt/Pyfhel/Pyfhel/backend/SEAL \
+# Clona e compila Pyfhel
+RUN git clone --recursive https://github.com/ibarrond/Pyfhel.git /opt/Pyfhel && \
+    cd /opt/Pyfhel && \
+    git checkout v3.4.2 && \
+    git submodule update --init --recursive && \
+    cmake -S /opt/Pyfhel/Pyfhel/backend/SEAL \
           -B /opt/Pyfhel/Pyfhel/backend/SEAL/build \
           -DCMAKE_BUILD_TYPE=Release \
           -DSEAL_BUILD_EXAMPLES=OFF && \
-    cmake --build /opt/Pyfhel/Pyfhel/backend/SEAL/build
+    cmake --build /opt/Pyfhel/Pyfhel/backend/SEAL/build && \
+    python3 -m pip install --no-build-isolation /opt/Pyfhel
 
-# Instala Pyfhel apontando para SEAL compilado
-RUN python3 -m pip install --no-build-isolation /opt/Pyfhel
 
 CMD ["/bin/bash"]

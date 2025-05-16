@@ -2,33 +2,43 @@
 FROM ubuntu:focal
 
 VOLUME /flw
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
+    software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y \
     net-tools \
     iputils-ping \
-    iproute2
-
-# Atualize a lista de pacotes
-RUN apt-get update
-
-# Instale as dependências necessárias
-RUN apt-get install -y software-properties-common
-
-# Adicione o repositório deadsnakes
-RUN add-apt-repository ppa:deadsnakes/ppa
-
-# Instale o Python 3.10
-RUN apt-get install -y python3.10
-
-# Crie um link simbólico para python3 apontar para python3.10
-RUN ln -sf /usr/bin/python3.10 /usr/bin/python3
-
-# Instale o pip para Python 3.10
-RUN apt-get install -y \
+    iproute2 \
     curl \
-    python3.10-distutils
+    git \
+    make \
+    cmake \
+    g++ \
+    gcc \
+    libxml2-dev \
+    libgmp-dev \
+    libmpfr-dev \
+    pybind11-dev \
+    libxslt1-dev \
+    zlib1g-dev \
+    libssl-dev \
+    pkg-config \
+    python3.10 \
+    python3.10-distutils \
+    python3.10-venv \
+    python3.10-dev && \
+    ln -sf /usr/bin/python3.10 /usr/bin/python3 && \
+    ln -sf /usr/include/python3.10 /usr/include/python3
+
+# Instala pip manualmente (evita conflito com versões antigas)
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3
+
+# Atualiza pip e instala Cython necessário para Pyfhel
+RUN python3 -m pip install --upgrade pip setuptools wheel cython==3.0.10
+
 
 # Instale o venv para Python 3.10
 RUN apt-get install -y python3.10-venv
@@ -47,6 +57,17 @@ COPY ../server /server
 # Install the Python dependencies
 RUN python3.10 -m pip install --no-cache-dir -r server.requirements.txt
 
+# Clona e compila Pyfhel
+RUN git clone --recursive https://github.com/ibarrond/Pyfhel.git /opt/Pyfhel && \
+    cd /opt/Pyfhel && \
+    git checkout v3.4.2 && \
+    git submodule update --init --recursive && \
+    cmake -S /opt/Pyfhel/Pyfhel/backend/SEAL \
+          -B /opt/Pyfhel/Pyfhel/backend/SEAL/build \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DSEAL_BUILD_EXAMPLES=OFF && \
+    cmake --build /opt/Pyfhel/Pyfhel/backend/SEAL/build && \
+    python3 -m pip install --no-build-isolation /opt/Pyfhel
 
 # Remoção da interface padrão
 # RUN apt install sudo

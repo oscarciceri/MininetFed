@@ -14,7 +14,7 @@ volumes = [f"{Path.cwd()}:" + volume, "/tmp/.X11-unix:/tmp/.X11-unix:rw"]
 experiment_config = {
     "ipBase": "10.0.0.0/24",
     "experiments_folder": "experiments",
-    "experiment_name": "test_01",
+    "experiment_name": "test_04",
     "date_prefix": False
 }
 
