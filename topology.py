@@ -1,4 +1,6 @@
 import sys
+
+
 from pathlib import Path
 from time import sleep
 
@@ -9,20 +11,42 @@ from federated.node import Server, Client
 
 
 volume = "/flw"
-volumes = [f"{Path.cwd()}:" + volume, "/tmp/.X11-unix:/tmp/.X11-unix:rw"]
+# volumes = [f"{Path.cwd()}:" + volume, "/tmp/.X11-unix:/tmp/.X11-unix:rw"]
+
+volumes = [
+    f"{Path.cwd()}:" + volume,
+    "/tmp/.X11-unix:/tmp/.X11-unix:rw",
+    "/home/user/INESC_TEC/MininetFed/temp/ckksfed_fhe/pasta:/home/user/INESC_TEC/MininetFed/temp/ckksfed_fhe/pasta"
+]
 
 experiment_config = {
     "ipBase": "10.0.0.0/24",
     "experiments_folder": "experiments",
-    "experiment_name": "test_04",
+    "experiment_name": "test_07",
     "date_prefix": False
 }
 
-server_args = {"min_trainers": 4, "num_rounds": 3,
-               "stop_acc": 0.999, 'client_selector': 'All', 'aggregator': "FedAvg"}
-client_args = {"mode": 'random same_samples',
-               'num_samples': 15000, "trainer_class": "TrainerMNIST"}
+# server_args = {"min_trainers": 4, "num_rounds": 3,
+#                "stop_acc": 0.999, 'client_selector': 'All', 'aggregator': "FedAvg"}
+# client_args = {"mode": 'random same_samples',
+#                'num_samples': 15000, "trainer_class": "TrainerMNIST"}
 
+
+server_args = {
+    "min_trainers": 4,
+    "num_rounds": 3,
+    "stop_acc": 0.999,
+    "client_selector": "All",
+    "aggregator": "Ckksfed"
+}
+
+client_args = {
+    "mode": 'random same_samples',
+    "num_samples": 15000,
+    "trainer_class": "TrainerCkksfed",
+    "encrypted": True,
+    "n_clusters": 2,  
+}
 
 def topology():
     net = MininetFed(
@@ -41,7 +65,7 @@ def topology():
                        args=server_args, volumes=volumes,
                        dimage='mininetfed:server',
                        )
-
+    
     clients = []
     for i in range(server_args["min_trainers"]):
         clients.append(net.addHost(f'sta{i}', cls=Client, script="client/client.py",

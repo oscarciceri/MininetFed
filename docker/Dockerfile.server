@@ -50,6 +50,9 @@ EXPOSE 8883
 
 # Copy the requirements file into the container
 
+RUN pip install torch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1
+
+
 COPY ../requirements/container/server.requirements.txt .
 COPY ../server /server
 
@@ -57,7 +60,7 @@ COPY ../server /server
 # Install the Python dependencies
 RUN python3.10 -m pip install --no-cache-dir -r server.requirements.txt
 
-# Clona e compila Pyfhel
+# Clonar e compilar Pyfhel
 RUN git clone --recursive https://github.com/ibarrond/Pyfhel.git /opt/Pyfhel && \
     cd /opt/Pyfhel && \
     git checkout v3.4.2 && \

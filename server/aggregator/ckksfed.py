@@ -1,4 +1,5 @@
 import sys
+import os
 import numpy as np
 
 from .fedavg import FedAvg
@@ -185,7 +186,15 @@ class Ckksfed:
 
     def __init__(self):
         self.fedsketch = True  # lembrar de trocar no outro --------------------------------
-        dir_path = "temp/ckksfed_fhe/pasta"
+        #dir_path = "temp/ckksfed_fhe/pasta"
+        dir_path = "/home/user/INESC_TEC/MininetFed/temp/ckksfed_fhe/pasta"
+        print("DEBUG CKKSFED dir_path:", dir_path + "/context")
+
+        print("DEBUG: Verificando arquivo de contexto")
+        print(os.path.exists("/home/user/INESC_TEC/MininetFed/temp/ckksfed_fhe/pasta/context"))
+        with open("/home/user/INESC_TEC/MininetFed/temp/ckksfed_fhe/pasta/context", "rb") as f:
+            print(f.read(10))
+
         self.HE_f = Pyfhel()  # Empty creation
         self.HE_f.load_context(dir_path + "/context")
         self.HE_f.load_public_key(dir_path + "/pub.key")

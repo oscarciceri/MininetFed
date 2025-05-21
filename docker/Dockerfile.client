@@ -54,7 +54,7 @@ RUN python3 -m pip install --no-cache-dir -r client_tensorflow.requirements.txt
 # Clona Pyfhel com submódulos
 # WORKDIR /opt
 
-# Clona e compila Pyfhel
+# Clonar e compilar Pyfhel
 RUN git clone --recursive https://github.com/ibarrond/Pyfhel.git /opt/Pyfhel && \
     cd /opt/Pyfhel && \
     git checkout v3.4.2 && \

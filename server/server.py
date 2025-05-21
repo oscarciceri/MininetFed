@@ -1,3 +1,5 @@
+#!/usr/bin/python3.10
+
 import paho.mqtt.client as mqtt
 from controller import Controller
 import json

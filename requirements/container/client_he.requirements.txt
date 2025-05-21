@@ -51,6 +51,6 @@ setuptools
 wheel
 toml 
 cython
-
+mmh3
 
     
